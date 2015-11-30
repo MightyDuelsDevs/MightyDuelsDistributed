@@ -5,11 +5,13 @@
  */
 package Shared.Domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Loek
  */
-public abstract class Card {
+public abstract class Card implements Serializable{
 
     private final String name;
     private final String filename;
