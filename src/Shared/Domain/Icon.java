@@ -5,11 +5,13 @@
  */
 package Shared.Domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Loek
  */
-public class Icon {
+public class Icon implements Serializable{
 
     private final int id;
     private final int ratingLock;
