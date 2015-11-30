@@ -12,6 +12,8 @@ import Shared.Domain.Icon;
 import java.rmi.server.UnicastRemoteObject;
 import Shared.Interfaces.IMainScreenProvider;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.List;
 
 /**
@@ -20,8 +22,14 @@ import java.util.List;
  */
 public class MainScreenProvider extends UnicastRemoteObject implements IMainScreenProvider {
 
+    private Registry providerRegistry;
+    private static final int portNumber = 422;
+    private static final String bindingName = "mainScreenProvider";
+    
     public MainScreenProvider() throws RemoteException{
-        
+        providerRegistry = LocateRegistry.createRegistry(portNumber);
+        //TODO
+        providerRegistry.rebind(bindingName, this);
     }
     
     @Override

@@ -1,5 +1,6 @@
 package Client.Domain;
 
+import Shared.Domain.PlayerShared;
 import java.util.Timer;
 //import java.util.TimerTask;
 import java.util.logging.Logger;
@@ -15,8 +16,8 @@ public class Match {
 	private int turns;
     private GameState gameState;
 
-    private final Player player1;
-    private Player player2;
+    private final PlayerShared player1;
+    private PlayerShared player2;
 
     private final Hero hero1;
     private Hero hero2;

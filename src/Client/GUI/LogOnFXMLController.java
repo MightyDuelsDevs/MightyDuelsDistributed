@@ -7,7 +7,8 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
-import Client.Domain.Player;
+import Client.Domain.Game;
+import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -28,6 +29,7 @@ public class LogOnFXMLController implements Initializable {
      * Initializes the controller class.
      */
     private StageController sc;
+    private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
 
     @FXML
     private TextField tfUserName;
@@ -88,12 +90,12 @@ public class LogOnFXMLController implements Initializable {
         if (tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty()) {
             sc.popup("Error", false, "Fill both fields.");
         } else {
-            Player player = PlayerIconController.logInPlayer(tfUserName.getText(), tfPassWord.getText());
+            PlayerShared player = PlayerIconController.logInPlayer(tfUserName.getText(), tfPassWord.getText());
             if (player == null) {
                 sc.popup("Error", false, "Username & Password do not match.");
                 tfPassWord.setText("");
             } else {
-                Client.Run.MightyDuelsClient.loggedInPlayer = player;
+                loggedInPlayer = player;
                 //Give the player to the next page;
                 String title = "Mighty Duels Welcome: " + player.getUsername();
                 String root = "MainScreenFXML.fxml";

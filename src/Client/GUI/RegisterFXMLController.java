@@ -7,7 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
-import Client.Domain.Player;
+import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,7 +44,7 @@ public class RegisterFXMLController implements Initializable {
     @FXML
     private Button btnBack;
 
-    Player player;
+    PlayerShared player;
 
     /**
      * Initializes the controller class.
@@ -86,7 +86,7 @@ public class RegisterFXMLController implements Initializable {
                     sc.popup("Error", false, "Account already exists.");
                     break;
                 case 3:
-                    //Add the Player to the database.
+                    //Add the PlayerShared to the database.
                     sc.popup("Error", false, "Account succesfully registered.");     
                     String title = "Mighty Duels";
                     String root = "LogOnFXML.fxml";

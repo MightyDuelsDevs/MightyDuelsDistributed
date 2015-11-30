@@ -7,6 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import Shared.Domain.Icon;
 import java.io.IOException;
 import java.net.URL;
@@ -17,7 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.geometry.HPos;
-import Client.Domain.Player;
+import Shared.Domain.PlayerShared;
 import java.util.ArrayList;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -32,7 +33,7 @@ import javafx.scene.layout.GridPane;
 public class AccountFXMLController implements Initializable {
 
     private StageController sc;
-    private Player loggedInPlayer;
+    private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
     private static int selectedIcon = 1;
 
     @FXML
@@ -63,24 +64,24 @@ public class AccountFXMLController implements Initializable {
     private ImageView ivSelectedIcon;
 
     private ArrayList<Icon> icons = new ArrayList<>();
-    
 
     @FXML
     private void btnSaveIcon_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         // Set the selected icon into the database.
         PlayerIconController.changePlayerIcon(loggedInPlayer.getId(), selectedIcon);
         Image image = new Image("/Client/Images/I" + selectedIcon + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(image);
-        MightyDuelsServer.loggedInPlayer.setIconId(selectedIcon);
+        
+        loggedInPlayer.setIconId(selectedIcon);
         //JOptionPane.showMessageDialog(null, "You have succesfully changed your icon to Icon number: " + selectedIcon + ".", "Icon saved", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @FXML
     private void btnBack_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
         String root = "MainScreenFXML.fxml";
         sc.navigate(root, title);
@@ -95,7 +96,7 @@ public class AccountFXMLController implements Initializable {
         lblAmountOfWins.setText(" " + loggedInPlayer.getWins());
         lblAmountOfLosses.setText(" " + loggedInPlayer.getLosses());
 
-        Image imageSI = new Image("/Client/Images/I" + loggedInPlayer.getIconId()+ ".png", 120, 120, false, false);
+        Image imageSI = new Image("/Client/Images/I" + loggedInPlayer.getIconId() + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(imageSI);
 
         // Load all the Icons from the Database. Set them into a list.

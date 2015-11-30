@@ -5,7 +5,7 @@
  */
 package Client.GUI;
 
-import Client.Domain.Player;
+import Shared.Domain.PlayerShared;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -23,9 +23,9 @@ public class HeroControl {
     private int health;
     private ProgressBar pHealth;
     private Label lHealt;
-    private Player player;
+    private PlayerShared player;
 
-    public HeroControl(int health, Player player) {
+    public HeroControl(int health, PlayerShared player) {
         this.health = health;
         this.player = player;
     }
