@@ -44,7 +44,7 @@ public interface IMainScreenProvider extends Remote {
     public List<Icon> getIcons(String token);
 
     /**
-     * Method to save a icon as your in-game icon
+     * Method to save an icon as your in-game icon
      * @param token Your token so the server knows who is changing an icon
      * @param iconID The ID of the selected icon so the server knows what icon is selected 
      * @return true if successful
@@ -54,7 +54,7 @@ public interface IMainScreenProvider extends Remote {
 
     /**
      * Save a deck on your profile so you can use it later
-     * @param token Token to let the server know who is changing a icon
+     * @param token Token to let the server know who is adding a deck
      * @param cards The list of cards that are in the deck (Must be 30 cards)
      * @param name The name of the deck
      * @return true if successful
