@@ -6,18 +6,16 @@
 package Client.GUI;
 
 import Client.Controller.SoundController;
+import Client.Controller.StageController;
 import Shared.Domain.Icon;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 import javafx.geometry.HPos;
 import Client.Domain.Player;
 import java.util.ArrayList;
@@ -25,8 +23,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javax.swing.JOptionPane;
-import Client.Run.MightyDuelsClient;
 
 /**
  * FXML Controller class
@@ -35,8 +31,7 @@ import Client.Run.MightyDuelsClient;
  */
 public class AccountFXMLController implements Initializable {
 
-    private Stage stage;
-    private Parent root;
+    private StageController sc;
     private Player loggedInPlayer;
     private static int selectedIcon = 1;
 
@@ -87,9 +82,8 @@ public class AccountFXMLController implements Initializable {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
         
         String title = "Mighty Duels";
-        stage = (Stage) btnBack.getScene().getWindow();
-        root = FXMLLoader.load(getClass().getResource("MainScreenFXML.fxml"));
-        MightyDuelsClient.navigate(stage, root, title);
+        String root = "MainScreenFXML.fxml";
+        sc.navigate(root, title);
     }
 
     @Override
@@ -119,7 +113,7 @@ public class AccountFXMLController implements Initializable {
             ivIcon.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
                 ImageView iv = (ImageView) event.getSource();
                 if (AccountFXMLController.selectedIcon != Integer.parseInt(iv.getId())) {
-                    JOptionPane.showMessageDialog(null, "You have selected Icon number: " + iv.getId() + ".", "Icon selected", JOptionPane.INFORMATION_MESSAGE);
+                    //TODO sc.popup("Error", false, "You have selected Icon number: " + iv.getId() + ".", "Icon selected");
                 }
                 AccountFXMLController.setSelectedIcon(Integer.parseInt(iv.getId()));
             });

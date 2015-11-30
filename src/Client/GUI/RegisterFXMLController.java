@@ -6,19 +6,16 @@
 package Client.GUI;
 
 import Client.Controller.SoundController;
+import Client.Controller.StageController;
 import Client.Domain.Player;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -27,8 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class RegisterFXMLController implements Initializable {
 
-    private Stage stage;
-    private Parent root;
+    private StageController sc;
 
     @FXML
     private TextField tfEmail;
@@ -50,8 +46,6 @@ public class RegisterFXMLController implements Initializable {
 
     Player player;
 
-    //Variables for playing sound.
-    private final String buttonPressFilePath = "src/Sound/buttonPress.wav";
     /**
      * Initializes the controller class.
      *
@@ -74,38 +68,32 @@ public class RegisterFXMLController implements Initializable {
     @FXML
     private void btnRegisterAccount_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         //Check  if  the UserName already exists
         //If not, Check if the 2 inserted passwords match. If they do, Make the Account.
         if (tfEmail.getText().isEmpty() || tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty() || tfPassWordRe.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Fill all the fields.", "Error", JOptionPane.INFORMATION_MESSAGE);
+            sc.popup("Error", false, "Fill all the fields.");
         } else {
             int result = playerIconController.signUpPlayer(tfEmail.getText(), tfUserName.getText(), tfPassWord.getText(), tfPassWordRe.getText());
             switch (result) {
                 case 0:
-                    JOptionPane.showMessageDialog(null, "An unexpected error occurred.", "Error", JOptionPane.INFORMATION_MESSAGE);
-                    System.out.println("An unexpected error occurred.");
+                    sc.popup("Error", false, "An unexpected error occurred.");
                     break;
                 case 1:
-                    JOptionPane.showMessageDialog(null, "The two inserted passwords do NOT match.", "Error", JOptionPane.INFORMATION_MESSAGE);
-                    System.out.println("The two inserted passwords do NOT match.");
+                    sc.popup("Error", false, "The two inserted passwords do NOT match.");
                     break;
                 case 2:
-                    JOptionPane.showMessageDialog(null, "Account already exists.", "Error", JOptionPane.INFORMATION_MESSAGE);
-                    System.out.println("Account already exists in the datbase.");
+                    sc.popup("Error", false, "Account already exists.");
                     break;
                 case 3:
                     //Add the Player to the database.
+                    sc.popup("Error", false, "Account succesfully registered.");     
                     String title = "Mighty Duels";
-                    stage = (Stage) btnRegisterAccount.getScene().getWindow();
-                    root = FXMLLoader.load(getClass().getResource("LogOnFXML.fxml"));
-                    Client.Run.MightyDuelsClient.navigate(stage, root, title);
-                    JOptionPane.showMessageDialog(null, "Account succesfully registered.", "Error", JOptionPane.INFORMATION_MESSAGE);
-                    System.out.println("Account succesfully registered");
+                    String root = "LogOnFXML.fxml";
+                    sc.navigate(root, title);
                     break;
                 default:
-                    JOptionPane.showMessageDialog(null, "An unexpected error occurred.", "Error", JOptionPane.INFORMATION_MESSAGE);
-                    System.out.println("An unexpected error occurred.");
+                    sc.popup("Error", false, "An unexpected error occurred.");
                     break;
             }
         }
@@ -114,11 +102,10 @@ public class RegisterFXMLController implements Initializable {
     @FXML
     private void btnBack_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
-        stage = (Stage) btnBack.getScene().getWindow();
-        root = FXMLLoader.load(getClass().getResource("LogOnFXML.fxml"));
-        Client.Run.MightyDuelsClient.navigate(stage, root, title);
+        String root = "LogOnFXML.fxml";
+        sc.navigate(root, title);
     }
 
 }

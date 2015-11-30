@@ -7,7 +7,6 @@ package Server.Run;
 
 import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
-import Client.GUI.LogOn;
 import Server.Domain.Game;
 import Server.Domain.Player;
 import java.awt.SplashScreen;
@@ -55,6 +54,5 @@ public class MightyDuelsServer {
         if (splash != null) {
             splash.close();
         }
-        LogOn.main(args);
     }
 }
