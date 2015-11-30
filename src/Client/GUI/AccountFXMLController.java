@@ -7,6 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import Shared.Domain.Icon;
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +33,7 @@ import javafx.scene.layout.GridPane;
 public class AccountFXMLController implements Initializable {
 
     private StageController sc;
-    private PlayerShared loggedInPlayer;
+    private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
     private static int selectedIcon = 1;
 
     @FXML
@@ -72,7 +73,8 @@ public class AccountFXMLController implements Initializable {
         PlayerIconController.changePlayerIcon(loggedInPlayer.getId(), selectedIcon);
         Image image = new Image("/Client/Images/I" + selectedIcon + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(image);
-        MightyDuelsServer.loggedInPlayer.setIconId(selectedIcon);
+        
+        loggedInPlayer.setIconId(selectedIcon);
         //JOptionPane.showMessageDialog(null, "You have succesfully changed your icon to Icon number: " + selectedIcon + ".", "Icon saved", JOptionPane.INFORMATION_MESSAGE);
     }
 

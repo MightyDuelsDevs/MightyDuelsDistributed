@@ -17,6 +17,10 @@ public class Game {
     private PlayerShared player;
     private Match match;
 
+    public PlayerShared getPlayer() {
+        return player;
+    }
+
     /**
      * Initialise the game instace
      */

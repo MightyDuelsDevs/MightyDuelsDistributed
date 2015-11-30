@@ -6,11 +6,14 @@
 package Client.GUI;
 
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import Shared.Domain.Card;
 import Client.Domain.GameState;
 import Shared.Domain.HeroCard;
 import Client.Domain.Match;
+import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.PlayerShared;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,6 +27,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
@@ -38,21 +42,22 @@ public class GUIMatchController implements Initializable {
      * Initializes the controller class.
      */
     @FXML
-    GridPane gridPlayedCards;
+    private GridPane gridPlayedCards;
     @FXML
-    GridPane gridChooseCard;
+    private GridPane gridChooseCard;
     @FXML
-    GridPane gridYourSide;
+    private GridPane gridYourSide;
     @FXML
-    GridPane gridOpponentSide;
+    private GridPane gridOpponentSide;
     @FXML
-    ImageView buttonEndTurn;
+    private ImageView buttonEndTurn;
     @FXML
-    ImageView buttonConcede;
+    private ImageView buttonConcede;
 
-    SocketManager sM = new SocketManager();
+    private SocketManager sM = new SocketManager();
 
     private StageController sc;
+    private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
 
     private ArrayList<HeroCard> cards;
     private ArrayList<HeroCardControl> heroCardControls;
@@ -84,7 +89,7 @@ public class GUIMatchController implements Initializable {
     }
 
     public void InitialiseHeroes() {
-        player_1 = MightyDuelsServer.loggedInPlayer;
+        player_1 = loggedInPlayer;
         player_2 = new PlayerShared(2, player_1.getUsername() + "Clone".toUpperCase(), player_1.getIconId(), player_1.getRating(), player_1.getWins(), player_1.getLosses(), player_1.getMatches());// TODO
 
         Random random = new Random();
@@ -119,21 +124,13 @@ public class GUIMatchController implements Initializable {
 
                 @FXML
                 private void buttonConcede_OnClick(ActionEvent event) throws IOException {
-                    try {
-                        sM.connect();
-                    } catch (IOException ex) {
-                        throw new IOException("Connection to host failed.", ex);                       
-                    }
+                    sM.connect();
                     sM.concede();
                 }
 
                 @FXML
                 private void buttonEndTurn_OnClick(ActionEvent event) throws IOException {
-                     try {
-                        sM.connect();
-                    } catch (IOException ex) {
-                        throw new IOException("Connection to host failed.", ex);                       
-                    }
+                    sM.connect();
                     sM.setFinished(Boolean.TRUE);
                 }
 
