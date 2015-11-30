@@ -10,7 +10,9 @@ import Server.Domain.Match;
 import Server.Domain.Player;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -134,6 +136,52 @@ public class SocketClient {
                     match.concede(hero);
                     //todo return accepted
                     break;
+                case (byte)0x80://MESSAGE
+                    ByteBuffer mbuf = ByteBuffer.allocate(1024);
+                    int message = -1;
+                    try {
+                        message = in.read();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SocketClient.class.getName()+"-"+player.getUsername()).log(Level.SEVERE, null, ex);
+                    }      
+                    while(message!=0x00){
+                        if(message == -1){
+                            //todo throw error
+                        }
+                        mbuf.put((byte)message);
+                        try {
+                            message = in.read();
+                        } catch (IOException ex) {
+                            Logger.getLogger(SocketClient.class.getName()+"-"+player.getUsername()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    String mes;
+                    try {
+                        mes = new String(mbuf.array(),"UTF-8");
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(SocketClient.class.getName()+"-"+player.getUsername()).log(Level.SEVERE, null, ex);
+                        //todo fatal
+                    }
+                    //todo send message to other client
+                    break;
+                    case (byte)0xE0://PING
+                    //todo respond with PONG
+                    break;
+                case (byte)0xE1://PONG
+                    //todo finish last PING request
+                    break;
+                case 0xF0://ACCEPTD
+                    //todo accept last request
+                    break;
+                case 0xF1://ILLEGAL_ACTION
+                    //todo fail last command
+                    break;
+                case 0xFA:
+                    //todo notify fatal disconnection
+                    break;
+                case 0xFB:
+                    //todo notify non fatal disconnection
+                    break;
             }
             
         }
@@ -148,9 +196,181 @@ public class SocketClient {
         
     }
     
+    public void newMatch(Match match,String username, int id){
+        byte[] usernameEncoded;
+        try {
+            usernameEncoded = username.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+            return;
+        }
+        byte[] int16Id = int16Encode(id);
+        byte[] data = new byte[usernameEncoded.length +4];
+        data[0] = 0x04;
+        System.arraycopy(usernameEncoded, 0, data, 1, usernameEncoded.length);
+        data[usernameEncoded.length]=0x00;
+        System.arraycopy(int16Id, 0, data, usernameEncoded.length+1, 2);
+        try {
+            sendData(data);
+            //todo wait for accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+        }
+    }
+    
+    public void turnEnd(int card){
+        byte[] data = new byte[3];
+        data[0] = 0x05;
+        byte[] int16 = int16Encode(card);
+        data[1]=int16[0];
+        data[2]=int16[1];
+        try {
+            sendData(data);
+            //todo wait for accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+        }
+        
+    }
+    
+    public void addMinion(boolean self, int pos, int card){
+        byte totalPos = (byte)(self?pos:pos+2);
+        byte[] int16Card = int16Encode(card);
+        byte[] data = new byte[4];
+        data[0] = 0x06;
+        data[1] = totalPos;
+        data[2]=int16Card[0];
+        data[3]=int16Card[1];
+        try {
+            sendData(data);
+            //todo wait for accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+        }
+    }
+    
+    public void setHealth(boolean self, int pos, int value){
+        byte totalPos = (byte)(self?pos:pos+3);
+        byte[] data = new byte[3];
+        data[0]=0x07;
+        data[1]=totalPos;
+        data[2]=(byte)value;
+        try {
+            sendData(data);
+            //todo wait for accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+        }
+    }
+    
+    public void newTurn(int[] cards){
+        byte[] data = new byte[7];
+        data[0]=0x08;
+        for(int i = 0;i<3;i++){
+            byte[] card = int16Encode(cards[i]);
+            data[i*2+1]=card[0];
+            data[i*2+2]=card[1];
+        }
+        try {
+            sendData(data);
+            //todo wait for accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+        }
+    }
+    
+    //0=lose 1=tie 2=win
+    public void matchEnd(int win){
+        byte[] data = new byte[2];
+        data[0]=0x09;
+        data[1] = (byte)win;
+        try {
+            sendData(data);
+            //todo wait for accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //fatal error
+        }
+    }
+    
+    public void sendMessage(String message){
+        byte[] encodedString;
+        try {
+            encodedString = message.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //todo throw fatal
+            return;
+        }
+        byte[] data = new byte[encodedString.length+2];
+        data[0] = (byte)0x80;
+        System.arraycopy(encodedString, 0, data, 1, encodedString.length);
+        data[data.length-1]=0x00;
+        try {
+            sendData(data);
+            //todo await accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //todo throw fatal
+        }
+        
+    }
+    
+    public void fatalDisconnect(){
+        if(!socket.isConnected()){
+            //todo throw error
+            return;
+        }
+        byte[] data = new byte[]{(byte)0xFA};
+        try {
+            sendData(data);
+            //todo disconnect socket
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //socket dead
+        }
+    }
+    
+    public void nonFatalDisconnect(){
+        if(!socket.isConnected()){
+            //todo throw error
+            return;
+        }
+        byte[] data = new byte[]{(byte)0xFA};
+        try {
+            sendData(data);
+            //todo disconnect socket
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            //socket dead
+        }
+    }
+    
     private int readInt16(InputStream in) throws IOException{
         int lb = in.read();
         int ub = in.read();
         return lb+ub*0x100;
+    }
+    
+    private byte[] int16Encode(int input){
+        byte[] data = new byte[2];
+        if(input<0x100){
+            data[0] = (byte)input;
+            data[1] = 0;
+        }else{
+            data[0] = (byte)(input % 0x100);
+            data[1] = (byte)((input-data[0])/0x100);
+        }
+        return data;
+    }
+    
+    private synchronized void sendData(byte[] data) throws IOException{
+        socket.getOutputStream().write(data);
     }
 }
