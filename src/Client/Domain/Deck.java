@@ -1,5 +1,6 @@
 package Client.Domain;
 
+import Shared.Domain.Card;
 import java.util.ArrayList;
 import Shared.Domain.Card;
 /**

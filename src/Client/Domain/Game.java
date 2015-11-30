@@ -1,5 +1,7 @@
 package Client.Domain;
 
+import Shared.Domain.Card;
+import Shared.Domain.Icon;
 import java.util.ArrayList;
 import Shared.Domain.Icon;
 import Shared.Domain.Card;
@@ -83,7 +85,7 @@ public class Game {
      * @return match creates a match with the param player
      */
     public Match startMatch() {//TODO
-        this.match = new Match(player);
+        this.match = new Match("token");
         return this.match;
     }
 
