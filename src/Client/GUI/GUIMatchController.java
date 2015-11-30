@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,6 +45,12 @@ public class GUIMatchController implements Initializable {
     GridPane gridYourSide;
     @FXML
     GridPane gridOpponentSide;
+    @FXML
+    ImageView buttonEndTurn;
+    @FXML
+    ImageView buttonConcede;
+
+    SocketManager sM = new SocketManager();
 
     private StageController sc;
 
@@ -109,6 +116,26 @@ public class GUIMatchController implements Initializable {
 
             EventHandler handler = new EventHandler() {
                 StackPane pane = heroCardControls.get(count).HeroCardControlPane();
+
+                @FXML
+                private void buttonConcede_OnClick(ActionEvent event) throws IOException {
+                    try {
+                        sM.connect();
+                    } catch (IOException ex) {
+                        throw new IOException("Connection to host failed.", ex);                       
+                    }
+                    sM.concede();
+                }
+
+                @FXML
+                private void buttonEndTurn_OnClick(ActionEvent event) throws IOException {
+                     try {
+                        sM.connect();
+                    } catch (IOException ex) {
+                        throw new IOException("Connection to host failed.", ex);                       
+                    }
+                    sM.setFinished(Boolean.TRUE);
+                }
 
                 @Override
                 public void handle(Event event) {
