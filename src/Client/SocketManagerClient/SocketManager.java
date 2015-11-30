@@ -225,6 +225,12 @@ public class SocketManager {
                 case (byte)0xF1://ILLEGAL_ACTION
                     //todo fail last command
                     break;
+                case (byte)0xFA:
+                    //todo notify fatal disconnection
+                    break;
+                case (byte)0xFB:
+                    //todo notify non fatal disconnection
+                    break;
                     
             }
         }
@@ -337,6 +343,59 @@ public class SocketManager {
             //todo throw error
         }
         
+    }
+    
+    public void sendMessage(String message){
+        byte[] encodedString;
+        try {
+            encodedString = message.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo throw fatal
+            return;
+        }
+        byte[] data = new byte[encodedString.length+2];
+        data[0] = (byte)0x80;
+        System.arraycopy(encodedString, 0, data, 1, encodedString.length);
+        data[data.length-1]=0x00;
+        try {
+            sendData(data);
+            //todo await accepted
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo throw fatal
+        }
+        
+    }
+    
+    public void fatalDisconnect(){
+        if(!socket.isConnected()){
+            //todo throw error
+            return;
+        }
+        byte[] data = new byte[]{(byte)0xFA};
+        try {
+            sendData(data);
+            //todo disconnect socket
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //socket dead
+        }
+    }
+    
+    public void nonFatalDisconnect(){
+        if(!socket.isConnected()){
+            //todo throw error
+            return;
+        }
+        byte[] data = new byte[]{(byte)0xFA};
+        try {
+            sendData(data);
+            //todo disconnect socket
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //socket dead
+        }
     }
     
     private synchronized void sendData(byte[] data) throws IOException{
