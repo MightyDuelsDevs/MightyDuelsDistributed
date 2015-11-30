@@ -9,6 +9,8 @@ import java.rmi.server.UnicastRemoteObject;
 import Shared.Interfaces.ILoginProvider;
 import Server.Domain.Player;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Map;
 
 /**
@@ -18,8 +20,14 @@ import java.util.Map;
 public class LoginProvider extends UnicastRemoteObject implements ILoginProvider {
     Map<String, Player> mapTokenPlayer;
 
+    private Registry providerRegistry;
+    private static final int portNumber = 421;
+    private static final String bindingName = "loginProvider";
+    
     public LoginProvider() throws RemoteException{
-        
+        providerRegistry = LocateRegistry.createRegistry(portNumber);
+        //TODO
+        providerRegistry.rebind(bindingName, this);
     }
     
     @Override

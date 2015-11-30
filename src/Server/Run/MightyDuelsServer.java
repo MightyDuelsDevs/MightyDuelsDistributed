@@ -5,12 +5,17 @@
  */
 package Server.Run;
 
+import Client.GUI.MainScreenFXMLController;
 import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
 import Server.Domain.Game;
 import Server.Domain.Player;
+import Server.RMI.LoginProvider;
+import Server.RMI.MainScreenProvider;
 import java.awt.SplashScreen;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +58,13 @@ public class MightyDuelsServer {
         SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash != null) {
             splash.close();
+        }
+        
+        try {
+            LoginProvider loginProvider = new LoginProvider();
+            MainScreenProvider mainScreenProvider = new MainScreenProvider();
+        } catch (RemoteException ex) {
+            Logger.getLogger(MightyDuelsServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
