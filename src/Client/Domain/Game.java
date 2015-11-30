@@ -1,5 +1,6 @@
 package Client.Domain;
 
+import Shared.Domain.PlayerShared;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class Game {
     private static Game instance;
     private ArrayList<Icon> icons;
     private ArrayList<Card> cards;
-    private Player player;
+    private PlayerShared player;
     private Match match;
 
     /**
@@ -50,8 +51,8 @@ public class Game {
      * @param password the player password
      * @return player returns the player that gets logged in
      */
-    public Player login(String username, String password) {
-        this.player = new Player(0, username, 0, 0, 0, 0, 0); //TODO!!!
+    public PlayerShared login(String username, String password) {
+        this.player = new PlayerShared(0, username, 0, 0, 0, 0, 0); //TODO!!!
         return this.player;
     }
 
@@ -75,7 +76,7 @@ public class Game {
         if (username.isEmpty() || password.isEmpty()) {
             return false;
         }
-        Player newplayer = new Player(0, username, 0, 0, 0, 0, 0); //TODO!!!
+        PlayerShared newplayer = new PlayerShared(0, username, 0, 0, 0, 0, 0); //TODO!!!
         return true;
     }
 

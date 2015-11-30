@@ -10,7 +10,7 @@ import Shared.Domain.Card;
 import Client.Domain.GameState;
 import Shared.Domain.HeroCard;
 import Client.Domain.Match;
-import Client.Domain.Player;
+import Shared.Domain.PlayerShared;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -60,8 +60,8 @@ public class GUIMatchController implements Initializable {
     private HeroControl yourHero;
     private HeroControl opponentsHero;
 
-    private Player player_1;
-    private Player player_2;
+    private PlayerShared player_1;
+    private PlayerShared player_2;
 
     private Match match;
 
@@ -85,7 +85,7 @@ public class GUIMatchController implements Initializable {
 
     public void InitialiseHeroes() {
         player_1 = MightyDuelsServer.loggedInPlayer;
-        player_2 = new Player(2, player_1.getUsername() + "Clone".toUpperCase(), player_1.getIconId(), player_1.getRating(), player_1.getWins(), player_1.getLosses(), player_1.getMatches());// TODO
+        player_2 = new PlayerShared(2, player_1.getUsername() + "Clone".toUpperCase(), player_1.getIconId(), player_1.getRating(), player_1.getWins(), player_1.getLosses(), player_1.getMatches());// TODO
 
         Random random = new Random();
 

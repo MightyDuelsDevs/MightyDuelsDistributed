@@ -2,10 +2,11 @@ package Server.Domain;
 
 import Shared.Domain.Icon;
 import java.io.Serializable;
+import Shared.Domain.PlayerShared;
 /**
  * An class containing attributes of an player
  */
-public class Player implements Serializable{
+public class Player extends PlayerShared implements Serializable {
 
     private int id;
     private final String username;
@@ -29,6 +30,7 @@ public class Player implements Serializable{
      * @param matches the players matches
      */
     public Player(int id, String username, int iconId, int rating, int wins, int losses, int matches) /* throws UnkownUsername, IncorrectPassword */ {
+        super(id, username, iconId, rating, wins, losses, matches);
         this.id = id;
         this.username = username;
         this.iconId = iconId;

@@ -1,9 +1,9 @@
-package Client.Domain;
+package Shared.Domain;
 
 /**
  * An class containing attributes of an player
  */
-public class Player {
+public class PlayerShared {
 
     private int id;
     private final String username;
@@ -26,7 +26,7 @@ public class Player {
      * @param losses the players losses
      * @param matches the players matches
      */
-    public Player(int id, String username, int iconId, int rating, int wins, int losses, int matches) /* throws UnkownUsername, IncorrectPassword */ {
+    public PlayerShared(int id, String username, int iconId, int rating, int wins, int losses, int matches) /* throws UnkownUsername, IncorrectPassword */ {
         this.id = id;
         this.username = username;
         this.iconId = iconId;

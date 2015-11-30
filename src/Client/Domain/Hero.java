@@ -1,5 +1,6 @@
 package Client.Domain;
 
+import Shared.Domain.PlayerShared;
 import java.util.ArrayList;
 import java.util.Random;
 import Shared.Domain.Card;
@@ -14,7 +15,7 @@ public class Hero {
     private int hitPoints = 50;
     private boolean finished;
     private Deck deck;
-    private final Player player;
+    private final PlayerShared player;
     
     private ArrayList<Minion> minions;
     private ArrayList<Card> cardsInHand;
@@ -27,7 +28,7 @@ public class Hero {
      * @param player the player he represents
      * @param deck the deck the player wants to play with
      */
-    public Hero(Match match, Player player, Deck deck) {
+    public Hero(Match match, PlayerShared player, Deck deck) {
         // TODO - implement Hero.Hero
         this.match = match;
         this.player = player;
@@ -74,7 +75,7 @@ public class Hero {
     }
 
     /**
-     * tries to play the card the Player selected
+     * tries to play the card the PlayerShared selected
      *
      * @param card
      * @return boolean if the method succeeded
