@@ -1,5 +1,6 @@
 package Client.Domain;
 
+import Shared.Domain.MinionCard;
 /**
  * An class containing info about an minion, its attributes and its actions
  */
