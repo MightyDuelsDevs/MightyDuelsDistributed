@@ -5,6 +5,7 @@
  */
 package Client.GUI;
 
+import Client.Controller.SoundController;
 import Client.Run.MightyDuelsClient;
 import Shared.Domain.Card;
 import Client.Domain.GameState;
@@ -19,6 +20,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,10 +28,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
+import Client.SocketManagerClient.SocketManager;
 
 /**
  * FXML Controller class
@@ -49,6 +54,12 @@ public class GUIMatchController implements Initializable {
     GridPane gridYourSide;
     @FXML
     GridPane gridOpponentSide;
+    @FXML
+    ImageView buttonEndTurn;
+    @FXML
+    ImageView buttonConcede;
+
+    SocketManager sM = new SocketManager();
 
     private Stage stage;
     private Parent root;
@@ -64,7 +75,6 @@ public class GUIMatchController implements Initializable {
 
     private Match match;
 
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         heroCardControls = new ArrayList<>();
@@ -79,7 +89,7 @@ public class GUIMatchController implements Initializable {
                 cards.add((HeroCard) card);
             }
         }
-        
+
         drawCards();
     }
 
@@ -94,7 +104,6 @@ public class GUIMatchController implements Initializable {
 
         opponentsHero = new HeroControl(50, player_2);
         gridOpponentSide.add(opponentsHero.getHeroControl(), 5, 0);
-
 
     }
 
@@ -118,12 +127,31 @@ public class GUIMatchController implements Initializable {
             EventHandler handler = new EventHandler() {
                 StackPane pane = heroCardControls.get(count).HeroCardControlPane();
 
+                @FXML
+                private void buttonConcede_OnClick(ActionEvent event) throws IOException {
+                    try {
+                        sM.connect();
+                    } catch (IOException ex) {
+                        throw new IOException("Connection to host failed.", ex);                       
+                    }
+                    sM.concede();
+                }
+
+                @FXML
+                private void buttonEndTurn_OnClick(ActionEvent event) throws IOException {
+                     try {
+                        sM.connect();
+                    } catch (IOException ex) {
+                        throw new IOException("Connection to host failed.", ex);                       
+                    }
+                    sM.setFinished(Boolean.TRUE);
+                }
+
                 @Override
                 public void handle(Event event) {
                     if (!yourCardPlayed) {
                         yourCardPlayed = true;
-                        
-            
+
                         gridYourSide.add(pane, 1, 0);
                         gridYourSide.setAlignment(Pos.BASELINE_LEFT);
                         gridChooseCard.getChildren().clear();
