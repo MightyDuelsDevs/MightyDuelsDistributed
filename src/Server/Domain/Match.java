@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.logging.Logger;
 
+import Shared.Domain.Card;
+import Shared.Domain.MinionCard;
+import Shared.Domain.HeroCard;
+
 /**
  * Controller for an match between two players
  */

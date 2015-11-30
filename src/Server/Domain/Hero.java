@@ -3,6 +3,7 @@ package Server.Domain;
 import java.util.ArrayList;
 import java.util.Random;
 import Shared.Domain.Card;
+import Shared.Domain.MinionCard;
 
 /**
  * An class containin info about an Hero and metods what he can do
