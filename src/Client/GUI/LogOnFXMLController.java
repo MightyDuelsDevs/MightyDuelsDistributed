@@ -29,7 +29,8 @@ public class LogOnFXMLController implements Initializable {
      * Initializes the controller class.
      */
     private StageController sc;
-    private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
+    private Game game = Game.getInstance();
+    private PlayerShared loggedInPlayer = game.getPlayer();
 
     @FXML
     private TextField tfUserName;
@@ -90,7 +91,7 @@ public class LogOnFXMLController implements Initializable {
         if (tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty()) {
             sc.popup("Error", false, "Fill both fields.");
         } else {
-            PlayerShared player = PlayerIconController.logInPlayer(tfUserName.getText(), tfPassWord.getText());
+            PlayerShared player = game.loginPlayer(tfUserName.getText(), tfPassWord.getText());
             if (player == null) {
                 sc.popup("Error", false, "Username & Password do not match.");
                 tfPassWord.setText("");

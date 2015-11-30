@@ -20,7 +20,7 @@ import java.util.Map;
 public class LoginProvider extends UnicastRemoteObject implements ILoginProvider {
     Map<String, Player> mapTokenPlayer;
 
-    private Registry providerRegistry;
+    private Registry providerRegistry = null;
     private static final int portNumber = 421;
     private static final String bindingName = "loginProvider";
     

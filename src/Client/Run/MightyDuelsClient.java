@@ -9,6 +9,7 @@ import Client.Domain.Game;
 import java.awt.SplashScreen;
 import java.util.logging.Logger;
 import Client.Controller.StageController;
+import Client.RMI.RMIClient;
 
 
 /**

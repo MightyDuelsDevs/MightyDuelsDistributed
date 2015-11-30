@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class MainScreenProvider extends UnicastRemoteObject implements IMainScreenProvider {
 
-    private Registry providerRegistry;
+    private Registry providerRegistry = null;
     private static final int portNumber = 422;
     private static final String bindingName = "mainScreenProvider";
     

@@ -7,6 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
@@ -45,6 +46,7 @@ public class RegisterFXMLController implements Initializable {
     private Button btnBack;
 
     PlayerShared player;
+    Game game = Game.getInstance();
 
     /**
      * Initializes the controller class.
@@ -74,7 +76,7 @@ public class RegisterFXMLController implements Initializable {
         if (tfEmail.getText().isEmpty() || tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty() || tfPassWordRe.getText().isEmpty()) {
             sc.popup("Error", false, "Fill all the fields.");
         } else {
-            int result = playerIconController.signUpPlayer(tfEmail.getText(), tfUserName.getText(), tfPassWord.getText(), tfPassWordRe.getText());
+            int result = game.signUpPlayer(tfEmail.getText(), tfUserName.getText(), tfPassWord.getText(), tfPassWordRe.getText());
             switch (result) {
                 case 0:
                     sc.popup("Error", false, "An unexpected error occurred.");

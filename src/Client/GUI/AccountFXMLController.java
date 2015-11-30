@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.geometry.HPos;
 import Shared.Domain.PlayerShared;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -33,7 +34,8 @@ import javafx.scene.layout.GridPane;
 public class AccountFXMLController implements Initializable {
 
     private StageController sc;
-    private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
+    private Game game = Game.getInstance();
+    private PlayerShared loggedInPlayer;
     private static int selectedIcon = 1;
 
     @FXML
@@ -63,18 +65,18 @@ public class AccountFXMLController implements Initializable {
     @FXML
     private ImageView ivSelectedIcon;
 
-    private ArrayList<Icon> icons = new ArrayList<>();
+    private List<Icon> icons = new ArrayList<>();
 
     @FXML
     private void btnSaveIcon_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
+        //TODO update player everytime player updates
         // Set the selected icon into the database.
-        PlayerIconController.changePlayerIcon(loggedInPlayer.getId(), selectedIcon);
         Image image = new Image("/Client/Images/I" + selectedIcon + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(image);
         
-        loggedInPlayer.setIconId(selectedIcon);
+        game.setIcon(game.getToken(), selectedIcon);
         //JOptionPane.showMessageDialog(null, "You have succesfully changed your icon to Icon number: " + selectedIcon + ".", "Icon saved", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -89,7 +91,7 @@ public class AccountFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.loggedInPlayer = MightyDuelsServer.loggedInPlayer;
+        this.loggedInPlayer = game.getPlayer();
         lblAccountName.setText(" " + loggedInPlayer.getUsername());
         lblTheRating.setText(" " + loggedInPlayer.getRating());
         lblAmountOfGames.setText(" " + loggedInPlayer.getMatches());
@@ -100,7 +102,7 @@ public class AccountFXMLController implements Initializable {
         ivSelectedIcon.setImage(imageSI);
 
         // Load all the Icons from the Database. Set them into a list.
-        icons = PlayerIconController.getIcons(loggedInPlayer.getRating());
+        icons = game.getIcons(game.getToken());
 
         final ToggleGroup tg = new ToggleGroup();
         int l = 1; // ID
