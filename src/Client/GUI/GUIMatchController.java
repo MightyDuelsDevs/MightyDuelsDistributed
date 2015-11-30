@@ -5,13 +5,12 @@
  */
 package Client.GUI;
 
-import Client.Run.MightyDuelsClient;
+import Client.Controller.StageController;
 import Shared.Domain.Card;
 import Client.Domain.GameState;
 import Shared.Domain.HeroCard;
 import Client.Domain.Match;
 import Client.Domain.Player;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,14 +21,10 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -50,8 +45,7 @@ public class GUIMatchController implements Initializable {
     @FXML
     GridPane gridOpponentSide;
 
-    private Stage stage;
-    private Parent root;
+    private StageController sc;
 
     private ArrayList<HeroCard> cards;
     private ArrayList<HeroCardControl> heroCardControls;
@@ -64,7 +58,6 @@ public class GUIMatchController implements Initializable {
 
     private Match match;
 
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         heroCardControls = new ArrayList<>();
@@ -79,7 +72,7 @@ public class GUIMatchController implements Initializable {
                 cards.add((HeroCard) card);
             }
         }
-        
+
         drawCards();
     }
 
@@ -94,7 +87,6 @@ public class GUIMatchController implements Initializable {
 
         opponentsHero = new HeroControl(50, player_2);
         gridOpponentSide.add(opponentsHero.getHeroControl(), 5, 0);
-
 
     }
 
@@ -122,8 +114,7 @@ public class GUIMatchController implements Initializable {
                 public void handle(Event event) {
                     if (!yourCardPlayed) {
                         yourCardPlayed = true;
-                        
-            
+
                         gridYourSide.add(pane, 1, 0);
                         gridYourSide.setAlignment(Pos.BASELINE_LEFT);
                         gridChooseCard.getChildren().clear();
@@ -168,18 +159,18 @@ public class GUIMatchController implements Initializable {
                                     if (match.getGameState() == GameState.Defined || match.getGameState() == GameState.Tie) {
                                         if (match.getHero1().getHitPoints() <= 0 && match.getHero2().getHitPoints() <= 0) {
                                             Platform.runLater(() -> {
-                                                JOptionPane.showMessageDialog(null, "It's a tie between " + player_1.getUsername() + " and " + player_2.getUsername() + ".", "Tie", JOptionPane.PLAIN_MESSAGE);
+                                                sc.popup("Tie", false, "It's a tie between " + player_1.getUsername() + " and " + player_2.getUsername() + ".");
                                                 backToMainScreen();
                                             });
 
                                         } else if (match.getHero1().getHitPoints() <= 0) {
                                             Platform.runLater(() -> {
-                                                JOptionPane.showMessageDialog(null, player_2.getUsername() + " is victorious!", "Victory", JOptionPane.PLAIN_MESSAGE);
+                                                sc.popup("Victory", false, player_1.getUsername() + " is victorious!");
                                                 backToMainScreen();
                                             });
                                         } else if (match.getHero2().getHitPoints() <= 0) {
                                             Platform.runLater(() -> {
-                                                JOptionPane.showMessageDialog(null, player_1.getUsername() + " is victorious!", "Victory", JOptionPane.PLAIN_MESSAGE);
+                                                sc.popup("Defeat", false, player_2.getUsername() + " has defeated you");
                                                 backToMainScreen();
                                             });
 
@@ -202,15 +193,8 @@ public class GUIMatchController implements Initializable {
     }
 
     private void backToMainScreen() {
-        try {
-            String title = "Mighty Duels";
-            stage = (Stage) gridChooseCard.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("MainScreenFXML.fxml"));
-            MightyDuelsClient.navigate(stage, root, title);
-
-        } catch (IOException ex) {
-            Logger.getLogger(GUIMatchController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
+        String title = "Mighty Duels";
+        String root = "MainScreenFXML.fxml";
+        sc.navigate(root, title);
     }
 }

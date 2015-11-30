@@ -6,21 +6,16 @@
 package Client.GUI;
 
 import Client.Controller.SoundController;
+import Client.Controller.StageController;
 import Client.Domain.Player;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import javax.swing.JOptionPane;
 
 /**
  * FXML Controller class
@@ -32,8 +27,7 @@ public class LogOnFXMLController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    private Stage stage;
-    private Parent root;
+    private StageController sc;
 
     @FXML
     private TextField tfUserName;
@@ -49,7 +43,7 @@ public class LogOnFXMLController implements Initializable {
 
     //Variables for playing sound.
     private final String buttonPressFilePath = "src/Sound/buttonPress.wav";
-    
+
     /**
      * If the Username already exists, give a message. If the Username and
      * Password do not match. give a message. When The username and password
@@ -61,7 +55,7 @@ public class LogOnFXMLController implements Initializable {
     @FXML
     private void btnLogOn_OnClick(ActionEvent event) {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         login();
     }
 
@@ -74,38 +68,36 @@ public class LogOnFXMLController implements Initializable {
     @FXML
     private void btnRegister_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
-        stage = (Stage) btnRegister.getScene().getWindow();
-        root = FXMLLoader.load(getClass().getResource("RegisterFXML.fxml"));
-        Client.Run.MightyDuelsClient.navigate(stage, root, title);
+        String root = "RegisterFXML.fxml";
+        sc.navigate(root, title);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        tfUserName.setOnAction((evt)->{login();});
-        tfPassWord.setOnAction((evt)->{login();});
+        tfUserName.setOnAction((evt) -> {
+            login();
+        });
+        tfPassWord.setOnAction((evt) -> {
+            login();
+        });
     }
-    
-    private void login(){
+
+    private void login() {
         if (tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Fill both fields.", "Error", JOptionPane.INFORMATION_MESSAGE);
+            sc.popup("Error", false, "Fill both fields.");
         } else {
             Player player = PlayerIconController.logInPlayer(tfUserName.getText(), tfPassWord.getText());
             if (player == null) {
-                JOptionPane.showMessageDialog(null, "Username & Password do not match.", "Error", JOptionPane.INFORMATION_MESSAGE);
+                sc.popup("Error", false, "Username & Password do not match.");
                 tfPassWord.setText("");
             } else {
-                try {
-                    Client.Run.MightyDuelsClient.loggedInPlayer = player;
-                    //Give the player to the next page;
-                    String title = "Mighty Duels Welcome: " + player.getUsername();
-                    stage = (Stage) btnLogOn.getScene().getWindow();
-                    root = FXMLLoader.load(getClass().getResource("MainScreenFXML.fxml"));
-                    Client.Run.MightyDuelsClient.navigate(stage, root, title);
-                } catch (IOException ex) {
-                    Logger.getLogger(LogOnFXMLController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Client.Run.MightyDuelsClient.loggedInPlayer = player;
+                //Give the player to the next page;
+                String title = "Mighty Duels Welcome: " + player.getUsername();
+                String root = "MainScreenFXML.fxml";
+                sc.navigate(root, title);
             }
         }
     }
