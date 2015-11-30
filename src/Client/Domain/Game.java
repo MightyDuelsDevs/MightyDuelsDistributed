@@ -1,7 +1,8 @@
 package Client.Domain;
 
 import java.util.ArrayList;
-
+import Shared.Domain.Icon;
+import Shared.Domain.Card;
 /**
  * An class for storing info about the current game instance
  */

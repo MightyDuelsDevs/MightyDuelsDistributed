@@ -1,7 +1,7 @@
 package Client.Domain;
 
 import java.util.ArrayList;
-
+import Shared.Domain.Card;
 /**
  * An container for Cards methods to pull cards
  */
