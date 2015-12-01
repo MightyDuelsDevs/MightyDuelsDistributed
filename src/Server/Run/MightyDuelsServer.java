@@ -62,7 +62,7 @@ public class MightyDuelsServer {
         
         try {
             LoginProvider loginProvider = new LoginProvider();
-            MainScreenProvider mainScreenProvider = new MainScreenProvider();
+            MainScreenProvider mainScreenProvider = new MainScreenProvider(loginProvider);
         } catch (RemoteException ex) {
             Logger.getLogger(MightyDuelsServer.class.getName()).log(Level.SEVERE, null, ex);
         }

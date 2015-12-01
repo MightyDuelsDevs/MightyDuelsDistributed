@@ -114,7 +114,7 @@ public class PlayerIconController {
      */
     public static int signUpPlayer(String email, String displayname, String password, String passcheck) {
         String statement = "INSERT INTO PLAYER(ID, ICONID, EMAIL, DISPLAYNAME, PASSWORD, RATING, MATCHES, WINS, LOSSES) VALUES (null, 1, '"
-                + email + "','" + displayname.toUpperCase() + "','" + passwordHash(password) + "',1200,0,0,0)";
+                + email + "','" + displayname.toUpperCase() + "','" + hashGenerator(password) + "',1200,0,0,0)";
         try {
             if (Database.checkConnection()) {
                 if (!password.equals(passcheck)) {
@@ -149,7 +149,7 @@ public class PlayerIconController {
      */
     public static Player logInPlayer(String displayname, String password) {
         Player player = null;
-        String statement = "SELECT * FROM PLAYER WHERE DISPLAYNAME = '" + displayname.toUpperCase() + "' AND PASSWORD = '" + passwordHash(password) + "'";
+        String statement = "SELECT * FROM PLAYER WHERE DISPLAYNAME = '" + displayname.toUpperCase() + "' AND PASSWORD = '" + hashGenerator(password) + "'";
         try {
             if (Database.checkConnection()) {
                 ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
@@ -228,14 +228,14 @@ public class PlayerIconController {
         return unlockedIcons;
     }
     
-    private static String passwordHash(String password){
+    public static String hashGenerator(String hashableValue){
         //source:
         //http://stackoverflow.com/a/25243174/2675935
         try {
             StringBuilder sb = new StringBuilder();
             //digest the password with MDPass as salt so existing databases are useless for decryption
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(("MDPass" + password).getBytes("UTF-16"));
+            md.update(("MDPass" + hashableValue).getBytes("UTF-16"));
             byte[] data = md.digest();
             //convert to an hex string with leading zero's
             for(byte d : data){
