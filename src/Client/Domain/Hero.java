@@ -1,10 +1,11 @@
 package Client.Domain;
 
 import Shared.Domain.PlayerShared;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
+import java.util.ArrayList;
 
 /**
  * An class containin info about an Hero and metods what he can do
@@ -17,8 +18,8 @@ public class Hero {
     private Deck deck;
     private final PlayerShared player;
     
-    private ArrayList<Minion> minions;
-    private ArrayList<Card> cardsInHand;
+    private List<Minion> minions;
+    private List<Card> cardsInHand;
     private Card cardPlayed;
     private final Random randomCard = new Random();
 
@@ -52,7 +53,7 @@ public class Hero {
      *
      * @param minions
      */
-    public void setMinions(ArrayList<Minion> minions) {
+    public void setMinions(List<Minion> minions) {
         this.minions = minions;
     }
 
@@ -61,7 +62,7 @@ public class Hero {
      *
      * @param inHand
      */
-    public void setNewHand(ArrayList<Card> inHand) {
+    public void setNewHand(List<Card> inHand) {
         this.cardsInHand = inHand;
     }
 
@@ -95,7 +96,7 @@ public class Hero {
     }
 
     /**
-     * removes the minions from the ArrayList of minions
+     * removes the minions from the List of minions
      *
      * @param minion
      */

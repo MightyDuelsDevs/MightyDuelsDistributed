@@ -1,6 +1,6 @@
 package Server.Domain;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.logging.Logger;
 
@@ -72,8 +72,8 @@ public class Match {
             
             //log.info("Processing minion attacks. Obtaining minions");
             //get all active minions
-            ArrayList<Minion> p1min = hero1.getMinions();
-            ArrayList<Minion> p2min = hero2.getMinions();
+            List<Minion> p1min = hero1.getMinions();
+            List<Minion> p2min = hero2.getMinions();
             
             //log.info("Filter non hero attack, attack minions");
             //all not player attacks            

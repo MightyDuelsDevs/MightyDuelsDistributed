@@ -1,15 +1,15 @@
 package Client.Domain;
 
+import java.util.List;
 import Shared.Domain.Card;
 import java.util.ArrayList;
-import Shared.Domain.Card;
 /**
  * An container for Cards methods to pull cards
  */
 public class Deck {
 
     private String name;
-    private final ArrayList<Card> cards;
+    private final List<Card> cards;
 
     private int first;
     private int last;
@@ -76,7 +76,7 @@ public class Deck {
      *
      * @return the arraylist with the cards
      */
-    public ArrayList<Card> getCards() {
+    public List<Card> getCards() {
         return this.cards;
     }
 

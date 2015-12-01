@@ -16,6 +16,7 @@ import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -59,8 +60,8 @@ public class GUIMatchController implements Initializable {
     private StageController sc;
     private PlayerShared loggedInPlayer = Game.getInstance().getPlayer();
 
-    private ArrayList<HeroCard> cards;
-    private ArrayList<HeroCardControl> heroCardControls;
+    private List<HeroCard> cards;
+    private List<HeroCardControl> heroCardControls;
     private boolean yourCardPlayed = false;
     private HeroControl yourHero;
     private HeroControl opponentsHero;

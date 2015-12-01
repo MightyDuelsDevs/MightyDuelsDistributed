@@ -5,7 +5,7 @@ import Shared.Domain.PlayerShared;
 import Shared.Domain.PlayerShared;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
-import java.util.ArrayList;
+import java.util.List;
 import Shared.Domain.Icon;
 import Shared.Domain.Card;
 import java.util.List;
@@ -16,8 +16,8 @@ import java.util.List;
 public class Game {
 
     private static Game instance;
-    private ArrayList<Icon> icons;
-    private ArrayList<Card> cards;
+    private List<Icon> icons;
+    private List<Card> cards;
     private PlayerShared player;
     private Match match;
     private RMIClient client;
@@ -41,7 +41,7 @@ public class Game {
      * @return the list of icons
      * @deprecated moved to Controller.PlayerIconController
      */
-    public ArrayList<Icon> getIcon() {
+    public List<Icon> getIcon() {
         return this.icons;
     }
 

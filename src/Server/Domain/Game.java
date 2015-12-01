@@ -1,6 +1,6 @@
 package Server.Domain;
 
-import java.util.ArrayList;
+import java.util.List;
 import Shared.Domain.Icon;
 import Shared.Domain.Card;
 /**
@@ -9,8 +9,8 @@ import Shared.Domain.Card;
 public class Game {
 
     private static Game instance;
-    private ArrayList<Icon> icons;
-    private ArrayList<Card> cards;
+    private List<Icon> icons;
+    private List<Card> cards;
     private Player player;
     private Match match;
 
@@ -26,7 +26,7 @@ public class Game {
      * @return the list of icons
      * @deprecated moved to Controller.PlayerIconController
      */
-    public ArrayList<Icon> getIcon() {
+    public List<Icon> getIcon() {
         return this.icons;
     }
 
@@ -58,7 +58,7 @@ public class Game {
      * @return the list of 30 cards
      * @deprecated moved to Controller.CardDeckController
      */
-    public ArrayList<Card> getCards() {
+    public List<Card> getCards() {
         return this.cards;
     }
 

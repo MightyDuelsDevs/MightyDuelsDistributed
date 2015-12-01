@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class CardDeckController {
 
-    private static ArrayList<Card> allCards;
+    private static List<Card> allCards;
 
     /**
      * Initialize the CardDeckController
@@ -31,7 +31,7 @@ public class CardDeckController {
         allCards = getAllCardsFromDB();
     }
 
-    public static ArrayList<Card> getAllCards() {
+    public static List<Card> getAllCards() {
         return allCards;
     }
 
@@ -41,19 +41,19 @@ public class CardDeckController {
      *
      * @return Returns all the cards that are used in the game.
      */
-    private static ArrayList<Card> getAllCardsFromDB() {
+    private static List<Card> getAllCardsFromDB() {
         if (allCards != null) {
             return allCards;
         }
 
         String statement = "SELECT * FROM CARD";
-        ArrayList<Card> cards = new ArrayList<>();
+        List<Card> cards = new ArrayList<>();
 
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
 
-                for (ArrayList<String> column : resultSet) {
+                for (List<String> column : resultSet) {
                     if ("HEROCARD".equals(column.get(4))) {
 
                         int id = Integer.parseInt(column.get(0));
@@ -105,8 +105,8 @@ public class CardDeckController {
 
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
-                ArrayList<String> column = resultSet.get(0);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+                List<String> column = resultSet.get(0);
 
                 for (int i = 3; i < column.size(); i++) {
                     deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
@@ -130,15 +130,15 @@ public class CardDeckController {
      * @return Returns all the decks of the player corresponding with the
      * "playerID".
      */
-    public static ArrayList<Deck> getDecksFromPlayer(int playerID) {
+    public static List<Deck> getDecksFromPlayer(int playerID) {
         String statement = String.format("SELECT * FROM DECK WHERE PLAYERID = %1$s", playerID);
-        ArrayList<Deck> decks = new ArrayList<>();
+        List<Deck> decks = new ArrayList<>();
 
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
 
-                for (ArrayList<String> column : resultSet) {
+                for (List<String> column : resultSet) {
                     Deck deck = new Deck();
 
                     for (int i = 3; i < column.size(); i++) {
