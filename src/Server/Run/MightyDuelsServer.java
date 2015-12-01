@@ -64,7 +64,7 @@ public class MightyDuelsServer {
         
         try {
             LoginProvider loginProvider = new LoginProvider();
-            MainScreenProvider mainScreenProvider = new MainScreenProvider();
+            MainScreenProvider mainScreenProvider = new MainScreenProvider(loginProvider);
             boolean running = true;
             Scanner s = new Scanner(System.in);
             
