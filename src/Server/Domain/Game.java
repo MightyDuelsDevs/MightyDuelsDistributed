@@ -1,33 +1,21 @@
 package Server.Domain;
 
 import java.util.List;
-import Shared.Domain.Icon;
-import Shared.Domain.Card;
+
 /**
  * An class for storing info about the current game instance
  */
 public class Game {
 
     private static Game instance;
-    private List<Icon> icons;
-    private List<Card> cards;
-    private Player player;
-    private Match match;
+    private List<Player> players;
+    private List<Match> matches;
 
     /**
      * Initialise the game instace
      */
     public Game() {
         // Exists only to defeat instantiation.        
-    }
-
-    /**
-     * get the icons the game knows of
-     * @return the list of icons
-     * @deprecated moved to Controller.PlayerIconController
-     */
-    public List<Icon> getIcon() {
-        return this.icons;
     }
 
     /**
@@ -42,49 +30,16 @@ public class Game {
         return instance;
     }
 
-    /**
-     *
-     * @param username the player username
-     * @param password the player password
-     * @return player returns the player that gets logged in
-     */
-    public Player login(String username, String password) {
-        this.player = new Player(0, username, 0, 0, 0, 0, 0); //TODO!!!
-        return this.player;
-    }
-
-    /**
-     * Get all the cards the game knows off
-     * @return the list of 30 cards
-     * @deprecated moved to Controller.CardDeckController
-     */
-    public List<Card> getCards() {
-        return this.cards;
-    }
-
-    /**
-     *
-     * @param username the player username
-     * @param password the player password
-     * @return boolean returns true when the register has succeeded and false
-     * when the username already exist
-     */
-    public boolean register(String username, String password) {
-        if (username.isEmpty() || password.isEmpty()) {
-            return false;
+    public void findMatch(Player player) {
+        players.remove(player);
+        Player closestPlayer = null;
+        for (Player p : players) {
+            if (closestPlayer == null){
+                closestPlayer = p;
+            }
+            else if(closestPlayer == null){//TODO
+            }
         }
-        Player newplayer = new Player(0, username, 0, 0, 0, 0, 0); //TODO!!!
-        return true;
-    }
-
-    /**
-     *
-     * @param player
-     * @return match creates a match with the param player
-     */
-    public Match startMatch(Player player) {
-        this.match = new Match(player);
-        return this.match;
     }
 
 }

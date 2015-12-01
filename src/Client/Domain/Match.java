@@ -1,5 +1,7 @@
 package Client.Domain;
 
+import Client.RMI.RMIClient;
+import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.PlayerShared;
 import java.util.Timer;
 //import java.util.TimerTask;
@@ -67,9 +69,7 @@ public class Match {
      * @param hero The hero that concedes
      */
     public void concede(Hero hero) {
-        //gameState = GameState.Defined;
-        hero.setHitPoints(0);
-        determineGameState();
+        SocketManager.getInsance().concede();
     }
 
     public void setITarget(int source, int target, ITarget iTarget) {

@@ -11,6 +11,7 @@ import Shared.Domain.Card;
 import Client.Domain.GameState;
 import Shared.Domain.HeroCard;
 import Client.Domain.Match;
+import Client.RMI.RMIClient;
 import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.PlayerShared;
 import java.io.IOException;
@@ -79,8 +80,8 @@ public class GUIMatchController implements Initializable {
         match = new Match(player_1);
         match.addPlayer2(player_2);
 
-        CardDeckController cdc = new CardDeckController();
-        for (Card card : CardDeckController.getAllCards()) {
+        
+        for (Card card : RMIClient.getInstance().getCards()) {
             if (card instanceof HeroCard) {
                 cards.add((HeroCard) card);
             }
