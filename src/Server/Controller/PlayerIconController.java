@@ -64,17 +64,20 @@ public class PlayerIconController {
      * @param playerID the id of the player
      * @param iconID the id of the icon the player wants
      */
-    public static void changePlayerIcon(int playerID, int iconID) {
+    public static boolean changePlayerIcon(int playerID, int iconID) {
         String statement = "UPDATE PLAYER SET ICONID = " + iconID + " WHERE ID = " + playerID;
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);
             } else {
                 System.out.println("Database connection is lost.");
+                return false;
             }
         } catch (SQLException ex) {
             Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
+        return true;
     }
 
     /**

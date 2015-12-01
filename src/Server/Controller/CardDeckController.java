@@ -12,6 +12,7 @@ import Shared.Domain.HeroCard;
 import Shared.Domain.MinionCard;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -157,7 +158,7 @@ public class CardDeckController {
         return decks;
     }
 
-    public boolean removeDeck(int playerID, String deckName) {
+    public static boolean removeDeck(int playerID, String deckName) {
         String statement = String.format("DELETE FROM DECK WHERE PLAYER ID = %1$s AND NAME = '%2$s'", playerID, deckName);
         try {
             if (Database.checkConnection()) {
@@ -173,15 +174,15 @@ public class CardDeckController {
         return true;
     }
     
-    public boolean addDeck(int playerID, ArrayList<Card> cards, String deckName){
+    public static boolean addDeck(int playerID, List<Card> cards, String deckName){
         String cardString = "";
         
         for(Card card : cards)
         {
-            cardString += card.getID() + ", ";
+            cardString += card.getId()+ ", ";
         }
         
-        String statement = String.format("INSERT INTO DECK VALUES(null, %1$s, %2$s %3$s)", playerID, deckName);
+        String statement = String.format("INSERT INTO DECK VALUES(null, %1$s, %2$s %3$s)", playerID, deckName, cardString);
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);
