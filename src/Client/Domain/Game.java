@@ -75,6 +75,9 @@ public class Game {
      */
     public PlayerShared loginPlayer(String Displayname, String Password) {
         token = client.loginPlayer(Displayname, Password);
+        if (token.isEmpty()){
+            return null;
+        }
         return getPlayer(token);
     }
 
