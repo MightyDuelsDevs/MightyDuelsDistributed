@@ -8,8 +8,6 @@ package Client.Controller;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -45,7 +43,6 @@ public class StageController {
      *
      */
     public void start() {
-        Platform.runLater(() -> {
         try {
             this.setStage(new Stage());
             Parent root = FXMLLoader.load(getClass().getResource("../GUI/LogOnFXML.fxml"));
@@ -60,7 +57,6 @@ public class StageController {
         } catch (IOException ex) {
             Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        });
     }
 
     /**
@@ -70,11 +66,11 @@ public class StageController {
      * @param title the window title
      */
     public void navigate(String root, String title) {
-        Platform.runLater(() -> {
         try {
             Scene scene = new Scene(FXMLLoader.load(getClass().getResource("../GUI/" + root)));
             this.stage.setScene(scene);
-
+            title = title == null ? "Mighty Duels" : title;
+            this.stage.setTitle(title);
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             this.stage.setX((primScreenBounds.getWidth() - this.stage.getWidth()) / 2);
             this.stage.setY((primScreenBounds.getHeight() - this.stage.getHeight()) / 2);
@@ -82,9 +78,6 @@ public class StageController {
         } catch (IOException ex) {
             Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        });
-        title = title == null ? "Mighty Duels" : title;
-        this.stage.setTitle(title);
     }
 
     /**
@@ -94,13 +87,13 @@ public class StageController {
      * @param text
      */
     public void popup(String title, boolean yesNo, String text) {
-        Stage popUpStage = new Stage();
-        Platform.runLater(() -> {
         try {
+            Stage popUpStage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
             Scene scene = new Scene(root);
             popUpStage.setScene(scene);
-            
+            title = title == null ? "Mighty Duels" : title;
+            popUpStage.setTitle(title);
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
             popUpStage.setX((primScreenBounds.getWidth() - popUpStage.getWidth()) / 2);
             popUpStage.setY((primScreenBounds.getHeight() - popUpStage.getHeight()) / 2);
@@ -108,8 +101,5 @@ public class StageController {
         } catch (IOException ex) {
             Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        });
-        title = title == null ? "Mighty Duels" : title;
-        popUpStage.setTitle(title);
     }
 }
