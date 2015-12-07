@@ -32,6 +32,7 @@ public class SocketManager {
 
     private Socket socket;
     private Thread inputReaderThread;
+    private boolean lastAccepted = false;
     
     public SocketManager() {
         socket = new Socket();
@@ -64,13 +65,21 @@ public class SocketManager {
                     //todo to GUI?
                     break;
                 case 0x01://CONN_ACCEPTED
-                    //todo send login info
+                    synchronized(this){
+                        notify();
+                    }
                     break;
                 case 0x02://LOGIN ACCEPTED
-                    //wait for match
+                    lastAccepted = true;
+                    synchronized(this){
+                        notify();
+                    }
                     break;
                 case 0x03://LOGIN_DENIED
-                    //todo notify user
+                    lastAccepted = false;
+                    synchronized(this){
+                        notify();
+                    }
                     break;
                 case 0x04://new match with user
                     ByteBuffer buf = ByteBuffer.allocate(1024);
@@ -91,11 +100,13 @@ public class SocketManager {
                             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    String username;
                     try {
-                        String username = new String(buf.array(),"UTF-8");
+                        username = new String(buf.array(),"UTF-8");
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         //todo fatal
+                        return;
                     }
                     int iconId = -1;
                     try {
@@ -103,7 +114,10 @@ public class SocketManager {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    //tod check -1
+                    if(iconId < 0 || username.length()<1){
+                        //todo throw error;
+                        return;
+                    }
                     //todo return iconId and username to GUI for new match
                     //todo return ACCEPTED
                     break;
@@ -143,13 +157,13 @@ public class SocketManager {
                     if(character<1||value<1){
                         //todo throw error
                     }
+                    boolean self = character<4;
+                    boolean minion = self ? character > 1 : character > 4;
+                    int minionId = self ? (character == 2 ? 1 : 2) : (character == 5 ? 1 : 2);
+                    //self your side or other side
+                    //minion if it is an minion
+                    //minionId 1 or 2 for minion id
                     //todo update GUI set health
-                    /* 1=self
-                       2=self_minion1
-                       3=self_minion2
-                       4=opponend
-                       5=opponend_minion1
-                       6=opponend_minion2*/
                     break;
                 case 0x08://NEW_TURN
                     int card1 = -1,card2 = -1,card3 = -1;
@@ -214,21 +228,27 @@ public class SocketManager {
                     //todo send message to GUI
                     break;
                 case (byte)0xE0://PING
-                    //todo respond with PONG
+                    pong();
                     break;
                 case (byte)0xE1://PONG
-                    //todo finish last PING request
+                    synchronized(this){ notify();}
                     break;
                 case (byte)0xF0://ACCEPTD
-                    //todo accept last request
+                    lastAccepted = true;
+                    synchronized(this){ notify();}
                     break;
                 case (byte)0xF1://ILLEGAL_ACTION
-                    //todo fail last command
+                    lastAccepted = false;
+                    synchronized(this){ notify();}
                     break;
                 case (byte)0xFA:
+                    lastAccepted = false;
+                    synchronized(this){ notifyAll();};
                     //todo notify fatal disconnection
                     break;
                 case (byte)0xFB:
+                    lastAccepted = false;
+                    synchronized(this){ notifyAll();}
                     //todo notify non fatal disconnection
                     break;
                     
@@ -247,8 +267,10 @@ public class SocketManager {
         if(socket.isConnected()){
             try {
                 sendData(data);
-                //todo wait accepted
-            } catch (IOException ex) {
+                synchronized(this){
+                    wait();
+                }
+            } catch (IOException | InterruptedException ex) {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo throw error
             }
@@ -257,25 +279,76 @@ public class SocketManager {
         }
     }
     
-    public void login(byte[] loginHash){
+    public boolean login(byte[] loginHash){
         if(!socket.isConnected())
             //todo throw error
-            return;
+            return false;
         byte[] data = new byte[loginHash.length+1];
         data[0]=0x01;
         System.arraycopy(loginHash, 0, data, 1, loginHash.length);
         try {
             sendData(data);
-            //todo wait accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+            return lastAccepted;
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //todo error
         }
+        return false;
     }
     
-    public void setCard(int cardId){
+    public void accepted(){
+        byte[] data = new byte[]{(byte)0xF0};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo to GUI?
+        }
+    }
+    
+    public void illegalAction(){
+        byte[] data = new byte[]{(byte)0xF1};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo to GUI?
+        }
+    }
+
+    public void ping(){
+        byte[] data = new byte[]{(byte)0xE0};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo to GUI?
+        }
+        try {
+            synchronized(this){
+                wait();//wait for pong response
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void pong(){
+        byte[] data = new byte[]{(byte)0xE1};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo to GUI?
+        }
+    }
+    
+    public void setCard(int cardId) throws Exception{
         if(cardId>0xFFFF){
-            //throw error bigger then 16bit uint
+            throw new Exception("CardId out of range");
         }
         if(!socket.isConnected()){
             //throw error not connected
@@ -286,13 +359,15 @@ public class SocketManager {
             lb=(byte)cardId;
         }else{
             lb=(byte)(cardId % 0x100);
-            hb=(byte)((cardId-lb)/0x100);
+            hb=(byte)((cardId - cardId % 0x100)/0x100); // replaced lb with cardId % 0x100 because of java singned byte
         }
         byte[] data = new byte[]{0x02,lb,hb};
         try {
             sendData(data);
-            //todo wait accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //todo fatal exception
         }
@@ -307,8 +382,10 @@ public class SocketManager {
         byte[] data = new byte[]{0x03,(byte)source,(byte)target};
         try {
             sendData(data);
-            //todo await accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //todo throw error
         }
@@ -322,8 +399,10 @@ public class SocketManager {
         byte[] data = new byte[]{0x04,finished?(byte)0x01:(byte)0x00};
         try {
             sendData(data);
-            //todo wait accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //todo throw error
         }
@@ -337,8 +416,10 @@ public class SocketManager {
         byte[] data = new byte[]{0x05};
         try {
             sendData(data);
-            //todo wait accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //todo throw error
         }
@@ -360,8 +441,10 @@ public class SocketManager {
         data[data.length-1]=0x00;
         try {
             sendData(data);
-            //todo await accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //todo throw fatal
         }
