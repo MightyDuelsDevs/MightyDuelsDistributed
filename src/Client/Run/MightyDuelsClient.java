@@ -10,6 +10,8 @@ import java.awt.SplashScreen;
 import java.util.logging.Logger;
 import Client.Controller.StageController;
 import Client.RMI.RMIClient;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 
 
 /**
@@ -32,6 +34,7 @@ public class MightyDuelsClient {
             splash.close();
         }
         StageController sc = new StageController();
-        sc.start();
+        JFXPanel jfxp = new JFXPanel();
+        Platform.runLater(() -> { sc.start(); });
     }
 }
