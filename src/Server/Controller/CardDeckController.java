@@ -31,6 +31,10 @@ public class CardDeckController {
         allCards = getAllCardsFromDB();
     }
 
+    public static Card getCard(int index){
+        return allCards.get(index);
+    }
+    
     public static List<Card> getAllCards() {
         return allCards;
     }
