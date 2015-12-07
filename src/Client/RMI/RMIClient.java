@@ -6,9 +6,9 @@
 package Client.RMI;
 
 import Shared.Domain.Deck;
-import Server.Domain.Player;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
+import Shared.Domain.PlayerShared;
 import Shared.Interfaces.ILoginProvider;
 import Shared.Interfaces.IMainScreenProvider;
 import java.rmi.NotBoundException;
@@ -108,7 +108,7 @@ public class RMIClient {
         return mainScreenProvider.removeDeck(token, name);
     }
     
-    public Player getPlayer(String token) throws RemoteException {
+    public PlayerShared getPlayer(String token) throws RemoteException {
         return mainScreenProvider.getPlayer(token);
     }
 }

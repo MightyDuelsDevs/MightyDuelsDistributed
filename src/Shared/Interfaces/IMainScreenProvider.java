@@ -37,6 +37,12 @@ public interface IMainScreenProvider extends Remote {
      */
     public Deck getDeck(String token) throws RemoteException;
     
+     /**
+     * Method to request all decks from a player.
+     * @param token Your token to know that the decks you get are yours
+     * @return returns the Decks of a player.
+     */
+    public List<Deck> getDecks(String token) throws RemoteException;
     /**
      * Method to return all icons that are available to you 
      * @param token Your token to know that the icons that are returned are available to you

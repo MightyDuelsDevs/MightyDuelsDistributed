@@ -37,6 +37,14 @@ public class PlayerShared {
     }
 
     /**
+     * Returns the IconID of the player
+     * @return get the icon id
+     */
+    public int getId() {
+        return this.id;
+    }
+    
+    /**
      * Returns the username of the player
      * @return the username
      */
