@@ -12,6 +12,7 @@ import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -28,7 +29,6 @@ public class LogOnFXMLController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    private StageController sc;
     private Game game = Game.getInstance();
     private PlayerShared loggedInPlayer = game.getPlayer();
 
@@ -74,7 +74,9 @@ public class LogOnFXMLController implements Initializable {
 
         String title = "Mighty Duels";
         String root = "RegisterFXML.fxml";
-        sc.navigate(root, title);
+        
+            StageController.getInstance().navigate(root, title);
+        
     }
 
     @Override
@@ -89,18 +91,18 @@ public class LogOnFXMLController implements Initializable {
 
     private void login() {
         if (tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty()) {
-            sc.popup("Error", false, "Fill both fields.");
+            StageController.getInstance().popup("Error", false, "Fill both fields.");
         } else {
             PlayerShared player = game.loginPlayer(tfUserName.getText(), tfPassWord.getText());
             if (player == null) {
-                sc.popup("Error", false, "Username & Password do not match.");
+                StageController.getInstance().popup("Error", false, "Username & Password do not match.");
                 tfPassWord.setText("");
             } else {
                 loggedInPlayer = player;
                 //Give the player to the next page;
                 String title = "Mighty Duels Welcome: " + player.getUsername();
                 String root = "MainScreenFXML.fxml";
-                sc.navigate(root, title);
+                StageController.getInstance().navigate(root, title);
             }
         }
     }

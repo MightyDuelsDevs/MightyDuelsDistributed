@@ -33,8 +33,7 @@ public class MightyDuelsClient {
         if (splash != null) {
             splash.close();
         }
-        StageController sc = new StageController();
         JFXPanel jfxp = new JFXPanel();
-        Platform.runLater(() -> { sc.start(); });
+        StageController.getInstance().start();
     }
 }

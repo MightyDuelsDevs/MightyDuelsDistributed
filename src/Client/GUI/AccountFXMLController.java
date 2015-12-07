@@ -33,7 +33,6 @@ import javafx.scene.layout.GridPane;
  */
 public class AccountFXMLController implements Initializable {
 
-    private StageController sc;
     private Game game = Game.getInstance();
     private PlayerShared loggedInPlayer;
     private static int selectedIcon = 1;
@@ -86,7 +85,7 @@ public class AccountFXMLController implements Initializable {
 
         String title = "Mighty Duels";
         String root = "MainScreenFXML.fxml";
-        sc.navigate(root, title);
+        StageController.getInstance().navigate(root, title);
     }
 
     @Override

@@ -25,8 +25,6 @@ public class MainScreenFXMLController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    private StageController sc;
-
     @FXML
     private Button btnDuel;
 
@@ -45,7 +43,7 @@ public class MainScreenFXMLController implements Initializable {
         
         String title = "Let the Duel begin!!!";
         String root = "GUIMatch.fxml";
-        sc.navigate(root, title);
+        StageController.getInstance().navigate(root, title);
     }
 
     @FXML
@@ -54,7 +52,7 @@ public class MainScreenFXMLController implements Initializable {
         
         String title = "Mighty Duels";
         String root = "DeckFXML.fxml";
-        sc.navigate(root, title);
+        StageController.getInstance().navigate(root, title);
     }
 
     @FXML
@@ -63,7 +61,7 @@ public class MainScreenFXMLController implements Initializable {
         
         String title = "Mighty Duels";
         String root = "LogOnFXML.fxml";
-        sc.navigate(root, title);
+        StageController.getInstance().navigate(root, title);
     }
 
     @FXML
@@ -72,7 +70,7 @@ public class MainScreenFXMLController implements Initializable {
         
         String title = "Mighty Duels";
         String root = "AccountFXML.fxml";
-        sc.navigate(root, title);
+        StageController.getInstance().navigate(root, title);
     }
 
     @Override
