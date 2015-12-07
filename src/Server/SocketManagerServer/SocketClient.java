@@ -106,7 +106,7 @@ public class SocketClient {
                         if(hex.length() == 1) sb.append('0');
                         sb.append(hex);
                     }
-                    player = MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
+                    player = (Player) MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
                     if(player == null){
                         loginDenied();
                         closed=true;

@@ -9,7 +9,6 @@ import Shared.Domain.*;
 import java.rmi.Remote;
 import java.util.List;
 import Shared.Domain.Deck;
-import Server.Domain.Player;
 import java.rmi.RemoteException;
 
 /**
@@ -84,6 +83,6 @@ public interface IMainScreenProvider extends Remote {
      * @return a player if a player is active with that token.
      * Else return null.
      */
-    public Player getPlayer(String token) throws RemoteException;
+    public PlayerShared getPlayer(String token) throws RemoteException;
 
 }

@@ -50,7 +50,7 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
         return PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
     }
     
-    public Player getPlayerFromToken(String token) {
+    public PlayerShared getPlayerFromToken(String token) {
         return mapTokenPlayer.get(token);
     }
 }

@@ -5,13 +5,13 @@ package Shared.Domain;
  */
 public class PlayerShared {
 
-    private int id;
-    private final String username;
-    private int iconId;
-    private int rating;
-    private int matches;
-    private int wins;
-    private int losses;
+    protected int id;
+    protected final String username;
+    protected int iconId;
+    protected int rating;
+    protected int matches;
+    protected int wins;
+    protected int losses;
 /*
      Moet er een methode komen die het wachtwoord wegschrijft naar de database? 
      Of willen we het wachtwoord opslaan op de player?

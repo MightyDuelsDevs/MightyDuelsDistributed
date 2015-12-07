@@ -11,6 +11,7 @@ import Shared.Domain.Deck;
 import Server.Domain.Player;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
+import Shared.Domain.PlayerShared;
 import java.rmi.server.UnicastRemoteObject;
 import Shared.Interfaces.IMainScreenProvider;
 import java.rmi.RemoteException;
@@ -38,7 +39,7 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
 
     @Override
     public String getNewMatch(String token) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return PlayerIconController.hashGenerator(token + System.currentTimeMillis()); // TODO
     }
 
@@ -49,42 +50,42 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
 
     @Override
     public Deck getDeck(String token) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.getDeckFromPlayer(player.getId());
     }
     
     @Override
     public List<Deck> getDecks(String token) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.getDecksFromPlayer(player.getId());
     }
 
     @Override
     public List<Icon> getIcons(String token) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return PlayerIconController.getIcons(player.getRating());
     }
 
     @Override
     public boolean setIcons(String token, int iconID) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return PlayerIconController.changePlayerIcon(player.getId(), iconID);
     }
 
     @Override
     public boolean addDeck(String token, List<Card> cards, String name) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.addDeck(player.getId(), cards, name);
     }
 
     @Override
     public boolean removeDeck(String token, String name) {
-        Player player = loginProvider.getPlayerFromToken(token);
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.removeDeck(player.getId(), name);
     }
 
     @Override
-    public Player getPlayer(String token) {
+    public PlayerShared getPlayer(String token) {
         return loginProvider.getPlayerFromToken(token);
     }
 
