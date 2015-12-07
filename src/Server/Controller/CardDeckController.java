@@ -7,7 +7,7 @@ package Server.Controller;
 
 import Server.Database.Database;
 import Shared.Domain.Card;
-import Server.Domain.Deck;
+import Shared.Domain.Deck;
 import Shared.Domain.HeroCard;
 import Shared.Domain.MinionCard;
 import java.sql.SQLException;
@@ -101,6 +101,36 @@ public class CardDeckController {
      */
     public static Deck getDeck(int deckID) {
         String statement = String.format("SELECT * FROM DECK WHERE ID = %1$s", deckID);
+        Deck deck = new Deck();
+
+        try {
+            if (Database.checkConnection()) {
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+                List<String> column = resultSet.get(0);
+
+                for (int i = 3; i < column.size(); i++) {
+                    deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
+                }
+
+            } else {
+                System.out.println("Database connection is lost.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return deck;
+    }
+    
+        /**
+     * Function that returns a complete deck. It uses the local variable that
+     * contains all the cards.
+     *
+     * @param playerID, ID of the player in the database.
+     * @return Returns the deck corresponding with the selected deck of the player with the corresponding playerID.
+     */
+    public static Deck getDeckFromPlayer(int playerID) {
+        String statement = String.format("SELECT * FROM DECK WHERE ID = (SELECT SELDECKID FROM PLAYER WHERE ID = 1%1$s)", playerID);
         Deck deck = new Deck();
 
         try {

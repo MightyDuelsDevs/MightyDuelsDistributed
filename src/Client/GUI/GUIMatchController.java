@@ -77,8 +77,7 @@ public class GUIMatchController implements Initializable {
         heroCardControls = new ArrayList<>();
         cards = new ArrayList<>();
         InitialiseHeroes();
-        match = new Match(player_1);
-        match.addPlayer2(player_2);
+        match = new Match(player_1, player_2.);
 
         
         for (Card card : RMIClient.getInstance().getCards()) {

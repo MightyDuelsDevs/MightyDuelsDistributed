@@ -5,7 +5,7 @@
  */
 package Client.RMI;
 
-import Server.Domain.Deck;
+import Shared.Domain.Deck;
 import Server.Domain.Player;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
@@ -88,7 +88,7 @@ public class RMIClient {
         return mainScreenProvider.getCards();
     }
     
-    public List<Deck> getDeck(String token) {
+    public Deck getDeck(String token) {
         return mainScreenProvider.getDeck(token);
     }
     

@@ -1,4 +1,4 @@
-package Client.Domain;
+package Shared.Domain;
 
 import java.util.List;
 import Shared.Domain.Card;

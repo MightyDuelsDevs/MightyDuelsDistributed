@@ -117,8 +117,8 @@ public class PlayerIconController {
      * use. 3 = successfully created a new player!
      */
     public static int signUpPlayer(String email, String displayname, String password, String passcheck) {
-        String statement = "INSERT INTO PLAYER(ID, ICONID, EMAIL, DISPLAYNAME, PASSWORD, RATING, MATCHES, WINS, LOSSES) VALUES (null, 1, '"
-                + email + "','" + displayname.toUpperCase() + "','" + hashGenerator(password) + "',1200,0,0,0)";
+        String statement = "INSERT INTO PLAYER(ID, ICONID, EMAIL, DISPLAYNAME, PASSWORD, RATING, MATCHES, WINS, LOSSES, SELDECKID) VALUES (null, 1, '"
+                + email + "','" + displayname.toUpperCase() + "','" + hashGenerator(password) + "',1200,0,0,0,1)";
         try {
             if (Database.checkConnection()) {
                 if (!password.equals(passcheck)) {
