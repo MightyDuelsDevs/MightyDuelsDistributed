@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class SocketManager {
     private static SocketManager instance;
     
-    public static SocketManager getInsance(){
+    public static SocketManager getInstance(){
         if(instance == null){
             instance = new SocketManager();
         }

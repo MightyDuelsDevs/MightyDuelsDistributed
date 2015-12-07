@@ -7,7 +7,7 @@ package Server.RMI;
 
 import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
-import Server.Domain.Deck;
+import Shared.Domain.Deck;
 import Server.Domain.Player;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
@@ -48,9 +48,9 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
     }
 
     @Override
-    public List<Deck> getDeck(String token) {
+    public Deck getDeck(String token) {
         Player player = loginProvider.getPlayerFromToken(token);
-        return CardDeckController.getDecksFromPlayer(player.getId());
+        return CardDeckController.getDeckFromPlayer(player.getId());
     }
 
     @Override

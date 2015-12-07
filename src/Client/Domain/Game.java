@@ -5,6 +5,7 @@ import Shared.Domain.PlayerShared;
 import Shared.Domain.PlayerShared;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
+import Shared.Domain.Deck;
 import java.util.List;
 import Shared.Domain.Icon;
 import Shared.Domain.Card;
@@ -63,7 +64,7 @@ public class Game {
      * @return match creates a match with the param player
      */
     public Match startMatch() {//TODO
-        this.match = new Match("token");
+        this.match = new Match("token1", "token2");
         return this.match;
     }
 
@@ -107,7 +108,7 @@ public class Game {
         return client.getCards();
     }
 
-    public List<Server.Domain.Deck> getDeck(String token) {
+    public Deck getDeck(String token) {
         return client.getDeck(token);
     }
 

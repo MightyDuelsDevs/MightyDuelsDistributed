@@ -1,5 +1,6 @@
 package Client.Domain;
 
+import Shared.Domain.Deck;
 import Shared.Domain.PlayerShared;
 import java.util.List;
 import java.util.Random;
@@ -82,7 +83,7 @@ public class Hero {
      * @return boolean if the method succeeded
      */
     public boolean playCard(Card card) {
-        if (this.getMinions().size() >= 2) {
+        if (this.minions.size() >= 2) {
             if (card instanceof MinionCard) {
                 return false;
             } else{

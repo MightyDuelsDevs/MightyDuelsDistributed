@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
+import Shared.Domain.Deck;
 import java.util.ArrayList;
 
 /**

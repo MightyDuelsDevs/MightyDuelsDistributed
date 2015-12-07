@@ -15,17 +15,24 @@ import java.util.TimerTask;
 public class WaitingPlayer {
     private final Player player;
     private final Timer timer;
+    private Game game;
     
     public WaitingPlayer(Player player){
+        this.game = Game.getInstance();
         this.player = player;
         this.timer = new Timer();
+        
+        game.addWaitingPlayer(player);
+        
         timer.schedule(new TimerTask() {
 
             @Override
             public void run() {
-                Game.getInstance().findMatch(player);
+                if(game.findMatch(player)){
+                    this.cancel();
+                }
             }
-        }, 10*1000);
+        }, 10*1000, 10*1000);
     }
     
 }
