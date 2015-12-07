@@ -8,7 +8,7 @@ package Shared.Interfaces;
 import Shared.Domain.*;
 import java.rmi.Remote;
 import java.util.List;
-import Server.Domain.Deck;
+import Shared.Domain.Deck;
 import Server.Domain.Player;
 
 /**
