@@ -33,7 +33,7 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
     }
     
     @Override
-    public String loginPlayer(String Displayname, String Password) {
+    public String loginPlayer(String Displayname, String Password) throws RemoteException {
         Player player = PlayerIconController.logInPlayer(Displayname, Password);
         String token = "";
         if (player != null){
@@ -44,7 +44,7 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
     }
 
     @Override
-    public int signUpPlayer(String email, String displayname, String password, String passcheck) {
+    public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException {
         return PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
     }
     

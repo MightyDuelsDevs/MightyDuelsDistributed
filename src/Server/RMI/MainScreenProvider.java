@@ -37,48 +37,48 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
     }
 
     @Override
-    public String getNewMatch(String token) {
+    public String getNewMatch(String token) throws RemoteException {
         Player player = loginProvider.getPlayerFromToken(token);
         return PlayerIconController.hashGenerator(token + System.currentTimeMillis()); // TODO
     }
 
     @Override
-    public List<Card> getCards() {
+    public List<Card> getCards() throws RemoteException {
         return CardDeckController.getAllCards();
     }
 
     @Override
-    public Deck getDeck(String token) {
+    public Deck getDeck(String token) throws RemoteException {
         Player player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.getDeckFromPlayer(player.getId());
     }
 
     @Override
-    public List<Icon> getIcons(String token) {
+    public List<Icon> getIcons(String token) throws RemoteException {
         Player player = loginProvider.getPlayerFromToken(token);
         return PlayerIconController.getIcons(player.getRating());
     }
 
     @Override
-    public boolean setIcons(String token, int iconID) {
+    public boolean setIcons(String token, int iconID) throws RemoteException {
         Player player = loginProvider.getPlayerFromToken(token);
         return PlayerIconController.changePlayerIcon(player.getId(), iconID);
     }
 
     @Override
-    public boolean addDeck(String token, List<Card> cards, String name) {
+    public boolean addDeck(String token, List<Card> cards, String name) throws RemoteException {
         Player player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.addDeck(player.getId(), cards, name);
     }
 
     @Override
-    public boolean removeDeck(String token, String name) {
+    public boolean removeDeck(String token, String name) throws RemoteException {
         Player player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.removeDeck(player.getId(), name);
     }
 
     @Override
-    public Player getPlayer(String token) {
+    public Player getPlayer(String token) throws RemoteException {
         return loginProvider.getPlayerFromToken(token);
     }
 

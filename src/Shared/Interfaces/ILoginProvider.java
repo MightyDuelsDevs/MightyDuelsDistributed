@@ -6,6 +6,7 @@
 package Shared.Interfaces;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * Interface that shows how to log in and sign up
@@ -20,7 +21,7 @@ public interface ILoginProvider extends Remote {
      * @param Password The password that was used to log in
      * @return Token that describes the current session
      */
-    public String loginPlayer(String Displayname, String Password);
+    public String loginPlayer(String Displayname, String Password) throws RemoteException;
     
     /**
      * Method to sign up
@@ -34,5 +35,5 @@ public interface ILoginProvider extends Remote {
      * 2 = username already in use. 
      * 3 = successfully created a new player!
      */
-    public int signUpPlayer(String email, String displayname, String password, String passcheck);
+    public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException;
 }
