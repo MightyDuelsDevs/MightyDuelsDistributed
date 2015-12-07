@@ -14,19 +14,21 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
 import Shared.Domain.PlayerShared;
+import java.util.HashMap;
 
 /**
  *
  * @author Martijn
  */
 public class LoginProvider extends UnicastRemoteObject implements ILoginProvider {
-    private Map<String, Player> mapTokenPlayer;
+    private final Map<String, Player> mapTokenPlayer;
 
     private Registry providerRegistry = null;
     private static final int portNumber = 421;
     private static final String bindingName = "loginProvider";
     
     public LoginProvider() throws RemoteException{
+        this.mapTokenPlayer = new HashMap<>();
         providerRegistry = LocateRegistry.createRegistry(portNumber);
         //TODO
         providerRegistry.rebind(bindingName, this);
