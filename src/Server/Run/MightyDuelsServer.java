@@ -30,6 +30,7 @@ public class MightyDuelsServer {
 
     public static Player loggedInPlayer = null; //TODO <- not this
     public static Game game;//TODO <- not this
+    public static LoginProvider loginProvider;
 
     /**
      * @param args the command line arguments
@@ -63,7 +64,7 @@ public class MightyDuelsServer {
 //        }
         
         try {
-            LoginProvider loginProvider = new LoginProvider();
+            loginProvider = new LoginProvider();
             MainScreenProvider mainScreenProvider = new MainScreenProvider(loginProvider);
             boolean running = true;
             Scanner s = new Scanner(System.in);

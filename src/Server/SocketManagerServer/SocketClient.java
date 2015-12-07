@@ -5,9 +5,12 @@
  */
 package Server.SocketManagerServer;
 
+import Server.Controller.CardDeckController;
+import Server.Domain.Game;
 import Server.Domain.Hero;
 import Server.Domain.Match;
 import Server.Domain.Player;
+import Server.Run.MightyDuelsServer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +33,7 @@ public class SocketClient {
     
     private Thread inputThread;
     private boolean closed = false;
+    private boolean lastAccepted = false;
     
     public SocketClient(Socket socket) {
         this.socket = socket;
@@ -52,12 +56,15 @@ public class SocketClient {
                 Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             }
             closed=true;
+            return;
         }
+        //todo send connection accepted
         InputStream in;
         try {
             in = socket.getInputStream();
         } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            closed = true;
             //todo throw error
             return;
         }
@@ -67,6 +74,12 @@ public class SocketClient {
                 input = in.read();
             } catch (IOException ex) {
                 Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                closed = true;
+                try {
+                    socket.close();
+                } catch (IOException ex1) {
+                    Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex1);
+                }
                 //todo throw error
                 continue;
             }
@@ -76,7 +89,7 @@ public class SocketClient {
                     //todo read error
                     break;
                 case 0x01:
-                    int hashlength = 256;//todo tbd
+                    int hashlength = 0x100;//todo tbd
                     byte[] hash = new byte[hashlength];
             
                     try {
@@ -84,21 +97,40 @@ public class SocketClient {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
-                    //todo get player and queue for match
-                    //todo send login accepted
+                    StringBuilder sb = new StringBuilder();
+                    for(byte d : hash){
+                        String hex = Integer.toHexString(0xff & d);
+                        if(hex.length() == 1) sb.append('0');
+                        sb.append(hex);
+                    }
+                    player = MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
+                    if(player == null){
+                        loginDenied();
+                        closed=true;
+                        try {
+                            socket.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    Game.getInstance().addWaitingPlayer(player);
+                    loginAccepted();
                     break;
                 case 0x02://set_card
-            
+                    int cardId;
                     try {
-                        int cardId = readInt16(in);
+                        cardId = readInt16(in);
                     } catch (IOException ex) {
                         Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                        illegalAction();
+                        return;
                     }
                     
-                    //todo add getCard(int) method to CardDeckController
-                    //hero.playCard(CardDeckController.getCard(cardId));     
-                    //todo return accepted
+                    if(hero.playCard(CardDeckController.getCard(cardId))){
+                        accepted();
+                    }else{
+                        illegalAction();
+                    }
                     break;
                 
                 case 0x03://set_target
@@ -113,7 +145,8 @@ public class SocketClient {
                     }
                     
                     if(source<0||target<0){
-                        //error
+                        illegalAction();
+                        return;
                     }
                     //todo determine source/target efficienly
                     //0=face 1=min1 2-min2
@@ -130,11 +163,11 @@ public class SocketClient {
                         continue;
                     }
                     hero.setFinished(finished==0x01);
-                    //todo return accepted
+                    accepted();
                     break;
                 case 0x05:
                     match.concede(hero);
-                    //todo return accepted
+                    accepted();
                     break;
                 case (byte)0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
@@ -165,16 +198,24 @@ public class SocketClient {
                     //todo send message to other client
                     break;
                     case (byte)0xE0://PING
-                    //todo respond with PONG
+                    pong();
                     break;
                 case (byte)0xE1://PONG
-                    //todo finish last PING request
+                    synchronized(this){
+                        notify();
+                    }
                     break;
                 case 0xF0://ACCEPTD
-                    //todo accept last request
+                    lastAccepted = true;
+                    synchronized(this){
+                        notify();
+                    }
                     break;
                 case 0xF1://ILLEGAL_ACTION
-                    //todo fail last command
+                    lastAccepted = false;
+                    synchronized(this){
+                        notify();
+                    }
                     break;
                 case 0xFA:
                     //todo notify fatal disconnection
@@ -196,6 +237,87 @@ public class SocketClient {
         
     }
     
+    public void connAccepted(){
+        byte[] data = new byte[]{(byte)0x01};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo end connection?
+        }
+    }
+    
+    public void loginAccepted(){
+        byte[] data = new byte[]{(byte)0x02};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo end connection?
+        }
+    }
+    
+    public void loginDenied(){
+        byte[] data = new byte[]{(byte)0x03};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        closed = true;
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void accepted(){
+        byte[] data = new byte[]{(byte)0xF0};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo end connection?
+        }
+    }
+    
+    public void illegalAction(){
+        byte[] data = new byte[]{(byte)0xF1};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo end connection?
+        }
+    }
+
+    public void ping(){
+        byte[] data = new byte[]{(byte)0xE0};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo end connection?
+        }
+        try {
+            synchronized(this){
+                wait();
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void pong(){
+        byte[] data = new byte[]{(byte)0xE1};
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void newMatch(Match match,String username, int id){
         byte[] usernameEncoded;
         try {
@@ -213,8 +335,13 @@ public class SocketClient {
         System.arraycopy(int16Id, 0, data, usernameEncoded.length+1, 2);
         try {
             sendData(data);
-            //todo wait for accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+            if(lastAccepted){
+                //todo check lastaccepted
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -228,8 +355,10 @@ public class SocketClient {
         data[2]=int16[1];
         try {
             sendData(data);
-            //todo wait for accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -246,8 +375,10 @@ public class SocketClient {
         data[3]=int16Card[1];
         try {
             sendData(data);
-            //todo wait for accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -261,8 +392,10 @@ public class SocketClient {
         data[2]=(byte)value;
         try {
             sendData(data);
-            //todo wait for accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -278,8 +411,11 @@ public class SocketClient {
         }
         try {
             sendData(data);
-            //todo wait for accepted
-        } catch (IOException ex) {
+            
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -292,8 +428,10 @@ public class SocketClient {
         data[1] = (byte)win;
         try {
             sendData(data);
-            //todo wait for accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -314,8 +452,10 @@ public class SocketClient {
         data[data.length-1]=0x00;
         try {
             sendData(data);
-            //todo await accepted
-        } catch (IOException ex) {
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //todo throw fatal
         }
