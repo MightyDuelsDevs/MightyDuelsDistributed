@@ -72,7 +72,7 @@ public class Match {
      * @param hero The hero that concedes
      */
     public void concede(Hero hero) {
-        SocketManager.getInstance().concede();
+//        SocketManager.getInstance().concede();
     }
 
     public void setITarget(int source, int target) {
