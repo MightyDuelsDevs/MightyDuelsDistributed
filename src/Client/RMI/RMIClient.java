@@ -71,44 +71,44 @@ public class RMIClient {
     }
 
     //Methods from LoginProvider
-    public String loginPlayer(String Displayname, String Password) {
+    public String loginPlayer(String Displayname, String Password) throws RemoteException {
         return loginProvider.loginPlayer(Displayname, Password);
     }
     
-    public int signUpPlayer(String email, String displayname, String password, String passcheck) {
+    public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException {
         return loginProvider.signUpPlayer(email, displayname, password, passcheck);
     }
 
     //Methods from MainScreenProvider
-    public String getNewMatch(String token) {
+    public String getNewMatch(String token) throws RemoteException {
         return mainScreenProvider.getNewMatch(token);
     }
     
-    public List<Card> getCards() {
+    public List<Card> getCards() throws RemoteException {
         return mainScreenProvider.getCards();
     }
     
-    public Deck getDeck(String token) {
+    public Deck getDeck(String token) throws RemoteException {
         return mainScreenProvider.getDeck(token);
     }
     
-    public List<Icon> getIcons(String token) {
+    public List<Icon> getIcons(String token) throws RemoteException {
         return mainScreenProvider.getIcons(token);
     }
     
-    public boolean setIcons(String token, int iconID) {
+    public boolean setIcons(String token, int iconID) throws RemoteException {
         return mainScreenProvider.setIcons(token, iconID);
     }
     
-    public boolean addDeck(String token, List<Card> cards, String name) {
+    public boolean addDeck(String token, List<Card> cards, String name) throws RemoteException {
         return mainScreenProvider.addDeck(token, cards, name);
     }
     
-    public boolean removeDeck(String token, String name) {
+    public boolean removeDeck(String token, String name) throws RemoteException {
         return mainScreenProvider.removeDeck(token, name);
     }
     
-    public Player getPlayer(String token) {
+    public Player getPlayer(String token) throws RemoteException {
         return mainScreenProvider.getPlayer(token);
     }
 }

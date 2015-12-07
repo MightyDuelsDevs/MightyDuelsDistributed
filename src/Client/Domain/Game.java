@@ -2,14 +2,13 @@ package Client.Domain;
 
 import Client.RMI.RMIClient;
 import Shared.Domain.PlayerShared;
-import Shared.Domain.PlayerShared;
-import Shared.Domain.Card;
-import Shared.Domain.Icon;
 import Shared.Domain.Deck;
-import java.util.List;
 import Shared.Domain.Icon;
 import Shared.Domain.Card;
+import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An class for storing info about the current game instance
@@ -75,8 +74,12 @@ public class Game {
      * @return player returns the player that gets logged in
      */
     public PlayerShared loginPlayer(String Displayname, String Password) {
-        token = client.loginPlayer(Displayname, Password);
-        if (token.isEmpty()){
+        try {
+            token = client.loginPlayer(Displayname, Password);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (token.isEmpty()) {
             return null;
         }
         return getPlayer(token);
@@ -90,12 +93,22 @@ public class Game {
      * the username already exist
      */
     public int signUpPlayer(String email, String displayname, String password, String passcheck) {
-        return client.signUpPlayer(email, displayname, password, passcheck);
+        try {
+            return client.signUpPlayer(email, displayname, password, passcheck);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
     //Methods from MainScreenProvider
     public String getNewMatch(String token) {
-        return client.getNewMatch(token);
+        try {
+            return client.getNewMatch(token);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     /**
@@ -105,34 +118,69 @@ public class Game {
      * @deprecated moved to Controller.CardDeckController
      */
     public List<Card> getCards() {
-        return client.getCards();
+        try {
+            return client.getCards();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     public Deck getDeck(String token) {
-        return client.getDeck(token);
+        try {
+            return client.getDeck(token);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     public List<Icon> getIcons(String token) {
-        return client.getIcons(token);
+        try {
+            return client.getIcons(token);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     public boolean setIcon(String token, int iconID) {
-        return client.setIcons(token, iconID);
+        try {
+            return client.setIcons(token, iconID);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
     public boolean addDeck(String token, List<Card> cards, String name) {
-        return client.addDeck(token, cards, name);
+        try {
+            return client.addDeck(token, cards, name);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
     public boolean removeDeck(String token, String name) {
-        return client.removeDeck(token, name);
+        try {
+            return client.removeDeck(token, name);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
     public PlayerShared getPlayer(String token) {
-        return client.getPlayer(token);
+        try {
+            return client.getPlayer(token);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
-    
-    public String getToken(){
+
+    public String getToken() {
         return token;
     }
 }
