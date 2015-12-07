@@ -106,6 +106,7 @@ public class StageController {
             try {
                 Stage popUpStage = new Stage();
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
+                //Parent root = FXMLLoader.load(getClass().getResource("../GUI/RegisterFXML.fxml"));
                 Scene scene = new Scene(root);
                 popUpStage.setScene(scene);
                 Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();

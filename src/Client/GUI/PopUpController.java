@@ -5,8 +5,10 @@
  */
 package Client.GUI;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -38,5 +40,19 @@ public class PopUpController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         
     }
+    
+    @FXML
+    private void btnOk_OnClick(ActionEvent event) throws IOException {
 
+    }
+    
+    @FXML
+    private void btnYes_OnClick(ActionEvent event) throws IOException {
+
+    }
+    
+    @FXML
+    private void btnNo_OnClick(ActionEvent event) throws IOException {
+
+    }
 }
