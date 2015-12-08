@@ -7,11 +7,12 @@ package Server.Controller;
 
 import Server.Database.Database;
 import Shared.Domain.Card;
-import Server.Domain.Deck;
+import Shared.Domain.Deck;
 import Shared.Domain.HeroCard;
 import Shared.Domain.MinionCard;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class CardDeckController {
 
-    private static ArrayList<Card> allCards;
+    private static List<Card> allCards;
 
     /**
      * Initialize the CardDeckController
@@ -30,27 +31,36 @@ public class CardDeckController {
         allCards = getAllCardsFromDB();
     }
 
-    public static ArrayList<Card> getAllCards() {
-        return allCards;
+    public static Card getCard(int index){
+        return allCards.get(index);
     }
     
+    public static List<Card> getAllCards() {
+        return allCards;
+    }
+
     /**
-     * Method to get all the cards from the database and save them in a local variable.
+     * Method to get all the cards from the database and save them in a local
+     * variable.
+     *
      * @return Returns all the cards that are used in the game.
      */
-    public static ArrayList<Card> getAllCardsFromDB() {
-        if(allCards != null) return allCards;
-        
+    private static List<Card> getAllCardsFromDB() {
+        if (allCards != null) {
+            return allCards;
+        }
+
         String statement = "SELECT * FROM CARD";
-        ArrayList<Card> cards = new ArrayList<>();
-        
+        List<Card> cards = new ArrayList<>();
+
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
-                
-                for(ArrayList<String> column : resultSet){
-                    if("HEROCARD".equals(column.get(4))){   
-                        
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+
+                for (List<String> column : resultSet) {
+                    if ("HEROCARD".equals(column.get(4))) {
+
+                        int id = Integer.parseInt(column.get(0));
                         String cardName = column.get(1);
                         String fileName = column.get(2);
                         String description = column.get(3);
@@ -59,18 +69,21 @@ public class CardDeckController {
                         int physicalBlock = Integer.parseInt(column.get(7));
                         int magicalBlock = Integer.parseInt(column.get(8));
                         int healValue = Integer.parseInt(column.get(9));
-                        
-                        cards.add(new HeroCard(cardName, fileName, description, physicalDamage, magicalDamage, physicalBlock, magicalBlock, healValue) {});
+
+                        cards.add(new HeroCard(id, cardName, fileName, description, physicalDamage, magicalDamage, physicalBlock, magicalBlock, healValue) {
+                        });
                     } else {
-                        
+
+                        int id = Integer.parseInt(column.get(0));
                         String cardName = column.get(1);
                         String fileName = column.get(2);
                         String description = column.get(3);
                         int physicalDamage = Integer.parseInt(column.get(5));
                         int magicalDamage = Integer.parseInt(column.get(6));
                         int physicalBlock = Integer.parseInt(column.get(7));
-                        
-                        cards.add(new MinionCard(cardName, fileName, description, physicalDamage, magicalDamage, physicalBlock) {});
+
+                        cards.add(new MinionCard(id, cardName, fileName, description, physicalDamage, magicalDamage, physicalBlock) {
+                        });
                     }
                 }
             } else {
@@ -79,63 +92,96 @@ public class CardDeckController {
         } catch (SQLException ex) {
             Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        allCards=cards;
+        allCards = cards;
         return allCards;
     }
-    
+
     /**
-     * Function that returns a complete deck.
-     * It uses the local variable that contains all the cards.
+     * Function that returns a complete deck. It uses the local variable that
+     * contains all the cards.
+     *
      * @param deckID, ID of the deck in the database.
      * @return Returns the deck corresponding with the "deckID".
      */
-    public static Deck getDeck(int deckID){
+    public static Deck getDeck(int deckID) {
         String statement = String.format("SELECT * FROM DECK WHERE ID = %1$s", deckID);
         Deck deck = new Deck();
 
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
-                ArrayList<String> column = resultSet.get(0);
-                
-                for(int i = 3; i < column.size(); i++){
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+                List<String> column = resultSet.get(0);
+
+                for (int i = 3; i < column.size(); i++) {
                     deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                 }
-                
+
             } else {
                 System.out.println("Database connection is lost.");
             }
         } catch (SQLException ex) {
             Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return deck;
     }
     
-    /**
-     * Function that returns all the decks of a single player.
-     * It uses the local variable that contains all the cards.
+        /**
+     * Function that returns a complete deck. It uses the local variable that
+     * contains all the cards.
+     *
      * @param playerID, ID of the player in the database.
-     * @return Returns all the decks of the player corresponding with the "playerID".
+     * @return Returns the deck corresponding with the selected deck of the player with the corresponding playerID.
      */
-    public static ArrayList<Deck> getDecksFromPlayer(int playerID) {
-        String statement = String.format("SELECT * FROM DECK WHERE PLAYERID = %1$s", playerID);
-        ArrayList<Deck> decks = new ArrayList<>();
+    public static Deck getDeckFromPlayer(int playerID) {
+        String statement = String.format("SELECT * FROM DECK WHERE ID = (SELECT SELDECKID FROM PLAYER WHERE ID = 1%1$s)", playerID);
+        Deck deck = new Deck();
 
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+                List<String> column = resultSet.get(0);
 
-                for (ArrayList<String> column : resultSet) {
+                for (int i = 3; i < column.size(); i++) {
+                    deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
+                }
+
+            } else {
+                System.out.println("Database connection is lost.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return deck;
+    }
+
+    /**
+     * Function that returns all the decks of a single player. It uses the local
+     * variable that contains all the cards.
+     *
+     * @param playerID, ID of the player in the database.
+     * @return Returns all the decks of the player corresponding with the
+     * "playerID".
+     */
+    public static List<Deck> getDecksFromPlayer(int playerID) {
+        String statement = String.format("SELECT * FROM DECK WHERE PLAYERID = %1$s", playerID);
+        List<Deck> decks = new ArrayList<>();
+
+        try {
+            if (Database.checkConnection()) {
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+
+                for (List<String> column : resultSet) {
                     Deck deck = new Deck();
-                    
+
                     for (int i = 3; i < column.size(); i++) {
                         deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                     }
-                    
+
                     decks.add(deck);
                 }
-                
+
             } else {
                 System.out.println("Database connection is lost.");
             }
@@ -144,5 +190,44 @@ public class CardDeckController {
         }
 
         return decks;
+    }
+
+    public static boolean removeDeck(int playerID, String deckName) {
+        String statement = String.format("DELETE FROM DECK WHERE PLAYER ID = %1$s AND NAME = '%2$s'", playerID, deckName);
+        try {
+            if (Database.checkConnection()) {
+                Database.DMLRecordIntoTable(statement);
+            } else {
+                System.out.println("Database connection is lost.");
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean addDeck(int playerID, List<Card> cards, String deckName){
+        String cardString = "";
+        
+        for(Card card : cards)
+        {
+            cardString += card.getId()+ ", ";
+        }
+        
+        String statement = String.format("INSERT INTO DECK VALUES(null, %1$s, %2$s %3$s)", playerID, deckName, cardString);
+        try {
+            if (Database.checkConnection()) {
+                Database.DMLRecordIntoTable(statement);
+            } else {
+                System.out.println("Database connection is lost.");
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
     }
 }

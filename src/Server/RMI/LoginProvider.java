@@ -5,30 +5,52 @@
  */
 package Server.RMI;
 
+import Server.Controller.PlayerIconController;
 import java.rmi.server.UnicastRemoteObject;
 import Shared.Interfaces.ILoginProvider;
 import Server.Domain.Player;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Map;
+import Shared.Domain.PlayerShared;
+import java.util.HashMap;
 
 /**
  *
  * @author Martijn
  */
 public class LoginProvider extends UnicastRemoteObject implements ILoginProvider {
-    Map<String, Player> mapTokenPlayer;
+    private final Map<String, Player> mapTokenPlayer;
 
+    private Registry providerRegistry = null;
+    private static final int portNumber = 421;
+    private static final String bindingName = "loginProvider";
+    
     public LoginProvider() throws RemoteException{
-        
+        this.mapTokenPlayer = new HashMap<>();
+        providerRegistry = LocateRegistry.createRegistry(portNumber);
+        //TODO
+        providerRegistry.rebind(bindingName, this);
     }
     
     @Override
-    public String loginPlayer(String Displayname, String Password) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String loginPlayer(String Displayname, String Password) throws RemoteException {
+        Player player = PlayerIconController.logInPlayer(Displayname, Password);
+        String token = "";
+        if (player != null){
+            token = PlayerIconController.hashGenerator(Displayname + System.currentTimeMillis());
+            mapTokenPlayer.put(token, player);
+        }
+        return token;
     }
 
     @Override
-    public int signUpPlayer(String email, String displayname, String password, String passcheck) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException {
+        return PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
+    }
+    
+    public PlayerShared getPlayerFromToken(String token) {
+        return mapTokenPlayer.get(token);
     }
 }

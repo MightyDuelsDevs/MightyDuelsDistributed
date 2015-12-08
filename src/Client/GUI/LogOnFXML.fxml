@@ -12,7 +12,7 @@
     <children>
       <ImageView fitHeight="451.0" fitWidth="362.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/Login%20screen%20MightyDuels.png" />
+            <Image url="@../Resources/Images/Login%20screen%20MightyDuels.png" />
          </image>
       </ImageView>
         <GridPane layoutX="22.0" layoutY="105.0" prefHeight="268.0" prefWidth="317.0">

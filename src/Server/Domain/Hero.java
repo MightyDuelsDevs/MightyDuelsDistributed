@@ -1,9 +1,11 @@
 package Server.Domain;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
+import Shared.Domain.Deck;
+import java.util.ArrayList;
 
 /**
  * An class containin info about an Hero and metods what he can do
@@ -16,8 +18,8 @@ public class Hero implements ITarget {
     private Deck deck;
     private final Player player;
     
-    private ArrayList<Minion> minions;
-    private ArrayList<Card> cardsInHand;
+    private List<Minion> minions;
+    private List<Card> cardsInHand;
     private Card cardPlayed;
     private final Random randomCard = new Random();
 
@@ -76,9 +78,9 @@ public class Hero implements ITarget {
     /**
      * returns the minions of the player
      *
-     * @return the minions of the Hero in an ArrayList&lt;Minion&gt;
+     * @return the minions of the Hero in an List&lt;Minion&gt;
      */
-    public ArrayList<Minion> getMinions() {
+    public List<Minion> getMinions() {
         return minions;
     }
 
@@ -87,16 +89,16 @@ public class Hero implements ITarget {
      *
      * @param minions
      */
-    public void setMinions(ArrayList<Minion> minions) {
+    public void setMinions(List<Minion> minions) {
         this.minions = minions;
     }
 
     /**
      * returns the cards of the player
      *
-     * @return the cards of the Hero in an ArrayList&lt;Card&gt;
+     * @return the cards of the Hero in an List&lt;Card&gt;
      */
-    public ArrayList<Card> getInHand() {
+    public List<Card> getInHand() {
         return cardsInHand;
     }
 
@@ -105,7 +107,7 @@ public class Hero implements ITarget {
      *
      * @param inHand
      */
-    public void setNewHand(ArrayList<Card> inHand) {
+    public void setNewHand(List<Card> inHand) {
         this.cardsInHand = inHand;
     }
 
@@ -132,8 +134,8 @@ public class Hero implements ITarget {
      * it uses the setNewHand method
      */
     public void pullCards() {
-        ArrayList<Card> cards = deck.getCards();
-        ArrayList<Card> cardsInHand = new ArrayList<>();
+        List<Card> cards = deck.getCards();
+        List<Card> cardsInHand = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
             int cardPosition = randomCard.nextInt(29);
@@ -165,7 +167,7 @@ public class Hero implements ITarget {
     }
 
     /**
-     * removes the minions from the ArrayList of minions
+     * removes the minions from the List of minions
      *
      * @param minion
      */

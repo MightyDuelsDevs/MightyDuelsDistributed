@@ -13,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class PlayerIconController {
 
-    static private ArrayList<Icon> icons;
+    static private List<Icon> icons;
 
     /**
      * Initialise the PlayerIcon Controller
@@ -35,16 +36,16 @@ public class PlayerIconController {
 
     /**
      * Function that gets all existing icons from the database This function
-     * fills the ArrayList of Icon 'icons'
+     * fills the List of Icon 'icons'
      */
     private static void createIcons() {
         String statement = "SELECT * FROM ICON";
 
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
 
-                for (ArrayList<String> column : resultSet) {
+                for (List<String> column : resultSet) {
                     int id = Integer.parseInt(column.get(0));
                     int ratingLock = Integer.parseInt(column.get(1));
                     String fileName = column.get(2);
@@ -64,17 +65,20 @@ public class PlayerIconController {
      * @param playerID the id of the player
      * @param iconID the id of the icon the player wants
      */
-    public static void changePlayerIcon(int playerID, int iconID) {
+    public static boolean changePlayerIcon(int playerID, int iconID) {
         String statement = "UPDATE PLAYER SET ICONID = " + iconID + " WHERE ID = " + playerID;
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);
             } else {
                 System.out.println("Database connection is lost.");
+                return false;
             }
         } catch (SQLException ex) {
             Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -88,7 +92,7 @@ public class PlayerIconController {
         String statement = "SELECT * FROM PLAYER WHERE DISPLAYNAME = '" + displayname.toUpperCase() + "'";
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
                 if (resultSet.isEmpty()) {
                     return true;
                 }
@@ -113,8 +117,8 @@ public class PlayerIconController {
      * use. 3 = successfully created a new player!
      */
     public static int signUpPlayer(String email, String displayname, String password, String passcheck) {
-        String statement = "INSERT INTO PLAYER(ID, ICONID, EMAIL, DISPLAYNAME, PASSWORD, RATING, MATCHES, WINS, LOSSES) VALUES (null, 1, '"
-                + email + "','" + displayname.toUpperCase() + "','" + passwordHash(password) + "',1200,0,0,0)";
+        String statement = "INSERT INTO PLAYER(ID, ICONID, EMAIL, DISPLAYNAME, PASSWORD, RATING, MATCHES, WINS, LOSSES, SELDECKID) VALUES (null, 1, '"
+                + email + "','" + displayname.toUpperCase() + "','" + hashGenerator(password) + "',1200,0,0,0,1)";
         try {
             if (Database.checkConnection()) {
                 if (!password.equals(passcheck)) {
@@ -149,12 +153,12 @@ public class PlayerIconController {
      */
     public static Player logInPlayer(String displayname, String password) {
         Player player = null;
-        String statement = "SELECT * FROM PLAYER WHERE DISPLAYNAME = '" + displayname.toUpperCase() + "' AND PASSWORD = '" + passwordHash(password) + "'";
+        String statement = "SELECT * FROM PLAYER WHERE DISPLAYNAME = '" + displayname.toUpperCase() + "' AND PASSWORD = '" + hashGenerator(password) + "'";
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
                 if (!resultSet.isEmpty()) {
-                    ArrayList<String> column = resultSet.get(0);
+                    List<String> column = resultSet.get(0);
 
                     String username = column.get(3);
                     int id = Integer.parseInt(column.get(0));
@@ -188,9 +192,9 @@ public class PlayerIconController {
         String statement = "SELECT * FROM PLAYER WHERE DISPLAYNAME = '" + displayname.toUpperCase() + "'";
         try {
             if (Database.checkConnection()) {
-                ArrayList<ArrayList> resultSet = Database.selectRecordFromTable(statement);
+                List<List> resultSet = Database.selectRecordFromTable(statement);
 
-                ArrayList<String> column = resultSet.get(0);
+                List<String> column = resultSet.get(0);
 
                 String username = column.get(3);
                 int id = Integer.parseInt(column.get(0));
@@ -217,8 +221,8 @@ public class PlayerIconController {
      * @param rating Current rating of the player
      * @return Returns all unlocked icons according to rating
      */
-    public static ArrayList<Icon> getIcons(int rating) {
-        ArrayList<Icon> unlockedIcons = new ArrayList<>();
+    public static List<Icon> getIcons(int rating) {
+        List<Icon> unlockedIcons = new ArrayList<>();
         unlockedIcons.addAll(icons.stream().filter((i)->i.getRatingLock()<= rating).collect(Collectors.toList()));
 //        for (Icon icon : icons) {
 //            if (icon.getRatingLock() <= rating) {
@@ -228,14 +232,14 @@ public class PlayerIconController {
         return unlockedIcons;
     }
     
-    private static String passwordHash(String password){
+    public static String hashGenerator(String hashableValue){
         //source:
         //http://stackoverflow.com/a/25243174/2675935
         try {
             StringBuilder sb = new StringBuilder();
             //digest the password with MDPass as salt so existing databases are useless for decryption
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(("MDPass" + password).getBytes("UTF-16"));
+            md.update(("MDPass" + hashableValue).getBytes("UTF-16"));
             byte[] data = md.digest();
             //convert to an hex string with leading zero's
             for(byte d : data){

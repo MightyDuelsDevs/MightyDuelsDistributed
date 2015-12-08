@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -96,9 +97,9 @@ public class Database {
      * @return
      * @throws SQLException
      */
-    public static ArrayList<ArrayList> selectRecordFromTable(String statement) throws SQLException {
+    public static List<List> selectRecordFromTable(String statement) throws SQLException {
         Statement selectStatement = null;
-        ArrayList<ArrayList> dataSet = new ArrayList<>();
+        List<List> dataSet = new ArrayList<>();
         
         ResultSet resultSet = null;
         
@@ -108,7 +109,7 @@ public class Database {
             
             ResultSetMetaData data = resultSet.getMetaData();
             while (resultSet.next()) {
-                ArrayList<String> columnData = new ArrayList<>();
+                List<String> columnData = new ArrayList<>();
                 
                 for(int i = 1; i <= data.getColumnCount(); i++){
                     columnData.add(resultSet.getString(i));

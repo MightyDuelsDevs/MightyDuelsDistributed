@@ -1,5 +1,7 @@
 package Client.Domain;
 
+import Client.RMI.RMIClient;
+import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.PlayerShared;
 import java.util.Timer;
 //import java.util.TimerTask;
@@ -11,9 +13,10 @@ import java.util.logging.Logger;
 public class Match {
 
     private static final Logger log = Logger.getLogger(Match.class.getName());
-    ;
-    
-	private int turns;
+
+    private Game game;
+
+    private int turns;
     private GameState gameState;
 
     private final PlayerShared player1;
@@ -29,11 +32,13 @@ public class Match {
      *
      * @param P1 The first player
      */
-    public Match(String token1) {
-        player1 = P1;
-        hero1 = new Hero(this, player1, new Deck());//todo deck
-        determineGameState();
-            //gameState = GameState.Waiting;
+    public Match(String token1, String token2) {
+        game = Game.getInstance();
+        player1 = game.getPlayer(token1);
+        player2 = game.getPlayer(token2);
+
+        hero1 = new Hero(this, player1, game.getDeck(token1));//todo deck
+        //gameState = GameState.Waiting;
         //Matthijs
 //            timer = new Timer();
 //            timer.schedule(new TimerTask(){
@@ -67,12 +72,10 @@ public class Match {
      * @param hero The hero that concedes
      */
     public void concede(Hero hero) {
-        //gameState = GameState.Defined;
-        hero.setHitPoints(0);
-        determineGameState();
+//        SocketManager.getInstance().concede();
     }
 
-    public void setITarget(int source, int target, ITarget iTarget) {
-
+    public void setITarget(int source, int target) {
+//TODO
     }
 }

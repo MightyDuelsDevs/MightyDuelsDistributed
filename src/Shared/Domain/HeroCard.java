@@ -21,6 +21,7 @@ public class HeroCard extends Card {
      * Constructor Check if any number that is given as a parameter is a
      * negative value. If so throw an illegalArgumentException
      *
+     * @param id of the card
      * @param name the name of the card
      * @param filename the file containing the image
      * @param description the description of the card [UNUSED]
@@ -30,8 +31,8 @@ public class HeroCard extends Card {
      * @param magicalBlock The magical armor that a card gives
      * @param healValue The amount that a card heals
      */
-    public HeroCard(String name, String filename, String description, int physicalDamage, int magicalDamage, int physicalBlock, int magicalBlock, int healValue) {
-        super(name, filename, description);
+    public HeroCard(int id, String name, String filename, String description, int physicalDamage, int magicalDamage, int physicalBlock, int magicalBlock, int healValue) {
+        super(id, name, filename, description);
 //                testForNegativeValue(physicalDamage);
 //                testForNegativeValue(magicalDamage);
 //                testForNegativeValue(physicalBlock);

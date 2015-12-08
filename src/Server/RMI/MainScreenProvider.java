@@ -5,13 +5,18 @@
  */
 package Server.RMI;
 
-import Server.Domain.Deck;
+import Server.Controller.CardDeckController;
+import Server.Controller.PlayerIconController;
+import Shared.Domain.Deck;
 import Server.Domain.Player;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
+import Shared.Domain.PlayerShared;
 import java.rmi.server.UnicastRemoteObject;
 import Shared.Interfaces.IMainScreenProvider;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.List;
 
 /**
@@ -20,48 +25,68 @@ import java.util.List;
  */
 public class MainScreenProvider extends UnicastRemoteObject implements IMainScreenProvider {
 
-    public MainScreenProvider() throws RemoteException{
-        
+    private Registry providerRegistry = null;
+    private static final int portNumber = 422;
+    private static final String bindingName = "mainScreenProvider";
+    private final LoginProvider loginProvider;
+
+    public MainScreenProvider(LoginProvider loginProvider) throws RemoteException {
+        this.loginProvider = loginProvider;
+        providerRegistry = LocateRegistry.createRegistry(portNumber);
+        //TODO
+        providerRegistry.rebind(bindingName, this);
     }
-    
+
     @Override
     public String getNewMatch(String token) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return PlayerIconController.hashGenerator(token + System.currentTimeMillis()); // TODO
     }
 
     @Override
     public List<Card> getCards() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return CardDeckController.getAllCards();
     }
 
     @Override
-    public List<Deck> getDeck(String token) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Deck getDeck(String token) {
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return CardDeckController.getDeckFromPlayer(player.getId());
+    }
+    
+    @Override
+    public List<Deck> getDecks(String token) {
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return CardDeckController.getDecksFromPlayer(player.getId());
     }
 
     @Override
     public List<Icon> getIcons(String token) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return PlayerIconController.getIcons(player.getRating());
     }
 
     @Override
     public boolean setIcons(String token, int iconID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return PlayerIconController.changePlayerIcon(player.getId(), iconID);
     }
 
     @Override
     public boolean addDeck(String token, List<Card> cards, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return CardDeckController.addDeck(player.getId(), cards, name);
     }
 
     @Override
     public boolean removeDeck(String token, String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return CardDeckController.removeDeck(player.getId(), name);
     }
 
     @Override
-    public Player getPlayer(String token) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public PlayerShared getPlayer(String token) {
+        return loginProvider.getPlayerFromToken(token);
     }
-    
+
 }

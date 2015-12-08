@@ -11,8 +11,9 @@ import java.io.Serializable;
  *
  * @author Loek
  */
-public abstract class Card implements Serializable{
+public abstract class Card implements Serializable {
 
+    private final int id;
     private final String name;
     private final String filename;
     private final String description;
@@ -20,14 +21,25 @@ public abstract class Card implements Serializable{
     /**
      * Constructor
      *
+     * @param id of the card
      * @param name The name of the card
      * @param filename The path to the image that represents the card
      * @param description The description of the card
      */
-    public Card(String name, String filename, String description) {
+    public Card(int id, String name, String filename, String description) {
+        this.id = id;
         this.name = name;
         this.filename = filename;
         this.description = description;
+    }
+
+    /**
+     * Get the id of the card
+     * 
+     * @return the id of the card
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**

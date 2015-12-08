@@ -8,8 +8,8 @@ package Shared.Interfaces;
 import Shared.Domain.*;
 import java.rmi.Remote;
 import java.util.List;
-import Server.Domain.Deck;
-import Server.Domain.Player;
+import Shared.Domain.Deck;
+import java.rmi.RemoteException;
 
 /**
  *Interface that shows how to load and save everything in the main menu 
@@ -21,27 +21,33 @@ public interface IMainScreenProvider extends Remote {
      * @param token Your token to inform the server which user is connected
      * @return Match token to know what match you are connected to
      */
-    public String getNewMatch(String token);
+    public String getNewMatch(String token) throws RemoteException;
     
     /**
      * Method to get all cards from the database
      * @return A list of all the cards in the database
      */
-    public List<Card> getCards();
+    public List<Card> getCards() throws RemoteException;
     
     /**
      * Method to request a specific deck
      * @param token Your token to know that the decks you get are yours
-     * @return All your decks
+     * @return returns the selected Deck of a player.
      */
-    public List<Deck> getDeck(String token);
+    public Deck getDeck(String token) throws RemoteException;
     
+     /**
+     * Method to request all decks from a player.
+     * @param token Your token to know that the decks you get are yours
+     * @return returns the Decks of a player.
+     */
+    public List<Deck> getDecks(String token) throws RemoteException;
     /**
      * Method to return all icons that are available to you 
      * @param token Your token to know that the icons that are returned are available to you
      * @return All your icons
      */
-    public List<Icon> getIcons(String token);
+    public List<Icon> getIcons(String token) throws RemoteException;
 
     /**
      * Method to save an icon as your in-game icon
@@ -50,7 +56,7 @@ public interface IMainScreenProvider extends Remote {
      * @return true if successful
      * false if something went wrong
      */
-    public boolean setIcons(String token, int iconID);
+    public boolean setIcons(String token, int iconID) throws RemoteException;
 
     /**
      * Save a deck on your profile so you can use it later
@@ -60,7 +66,7 @@ public interface IMainScreenProvider extends Remote {
      * @return true if successful
      * false if something went wrong
      */
-    public boolean addDeck(String token, List<Card> cards, String name);
+    public boolean addDeck(String token, List<Card> cards, String name) throws RemoteException;
 
     /**
      * Remove a deck so that is will not show anymore
@@ -69,7 +75,7 @@ public interface IMainScreenProvider extends Remote {
      * @return  true if successful
      * false if something went wrong
      */
-    public boolean removeDeck(String token, String name);
+    public boolean removeDeck(String token, String name) throws RemoteException;
 
     /**
      * Get a player by their token
@@ -77,6 +83,6 @@ public interface IMainScreenProvider extends Remote {
      * @return a player if a player is active with that token.
      * Else return null.
      */
-    public Player getPlayer(String token);
+    public PlayerShared getPlayer(String token) throws RemoteException;
 
 }
