@@ -11,6 +11,7 @@ import Client.Domain.GameState;
 import Shared.Domain.HeroCard;
 import Client.Domain.Match;
 import Shared.Domain.PlayerShared;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
