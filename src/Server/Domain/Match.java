@@ -222,6 +222,8 @@ public class Match {
             player2.getSocket().setHealth(true, i+1, hero2.getMinions().get(i).getHitPoints());
         }
         
+        //todo dead minions
+        
         //Matthijs
         turns++;
     }
