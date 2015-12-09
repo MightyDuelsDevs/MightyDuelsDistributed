@@ -1,5 +1,6 @@
 package Server.Domain;
 
+import Server.SocketManagerServer.SocketClient;
 import Shared.Domain.Icon;
 import java.io.Serializable;
 import Shared.Domain.PlayerShared;
@@ -8,10 +9,20 @@ import Shared.Domain.PlayerShared;
  */
 public class Player extends PlayerShared implements Serializable {
 
+    private SocketClient socket;
+    
     public Player(int id, String username, int iconId, int rating, int wins, int losses, int matches) {
         super(id, username, iconId, rating, wins, losses, matches);
     }
 
+    public void setSocket(SocketClient socket){
+        this.socket = socket;
+    }
+    
+    public SocketClient getSocket(){
+        return socket;
+    }
+    
     /**
      * Sets the IconID of the player
      * @param iconId Sets the parameter icon id.

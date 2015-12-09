@@ -9,6 +9,8 @@ import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
 import Shared.Domain.HeroCard;
 import Shared.Domain.Deck;
+import java.util.TimerTask;
+import java.util.logging.Level;
 
 /**
  * Controller for an match between two players
@@ -26,6 +28,8 @@ public class Match {
 
     private final Hero hero1;
     private Hero hero2;
+    
+    private boolean pingP1 = true;
 
     Timer timer;
 
@@ -47,6 +51,19 @@ public class Match {
             return;
         }
         gameState = GameState.Tie;
+        
+        if (gameState == GameState.Defined || gameState == GameState.Tie) {
+            if(hero1.getHitPoints()>0){
+                player1.getSocket().matchEnd(2);
+                player2.getSocket().matchEnd(0);
+            }else if(hero2.getHitPoints()>0){
+                player1.getSocket().matchEnd(0);
+                player2.getSocket().matchEnd(2);
+            }else{
+                player1.getSocket().matchEnd(1);
+                player2.getSocket().matchEnd(1);
+            }
+        }
     }
 
     /**
@@ -62,14 +79,39 @@ public class Match {
         if (p1 instanceof MinionCard) {
             //log.info(String.format("Adding minion %s to %s",p1.getName(),player1.getUsername()));
             Minion m = new Minion((MinionCard) p1);
-            hero1.getMinions().add(m);
+            List<Minion> min1 = hero1.getMinions();
+            if(min1.size()>=2){
+                //todo not possible
+            }else{
+                min1.add(m);
+                if(min1.size()==1){
+                    player1.getSocket().addMinion(true, 1, p1.getId());
+                    player2.getSocket().addMinion(false, 1, p1.getId());
+                }else{
+                    player1.getSocket().addMinion(true, 2, p1.getId());
+                    player2.getSocket().addMinion(false, 2, p1.getId());
+                }
+            }
                 //hero1.addMinion(m);
+            
             //todo set target somhow?
         }
         if (p2 instanceof MinionCard) {
             //log.info(String.format("Adding minion %s to %s",p2.getName(),player2.getUsername()));
             Minion m = new Minion((MinionCard) p2);
-            hero2.getMinions().add(m);
+            List<Minion> min2 = hero2.getMinions();
+            if(min2.size()>=2){
+                //todo not possible
+            }else{
+                min2.add(m);
+                if(min2.size()==1){
+                    player2.getSocket().addMinion(true, 1, p1.getId());
+                    player1.getSocket().addMinion(false, 1, p1.getId());
+                }else{
+                    player2.getSocket().addMinion(true, 2, p1.getId());
+                    player1.getSocket().addMinion(false, 2, p1.getId());
+                }
+            }
                 //hero2.addMinion(m);
             //todo set target somhow?
         }
@@ -165,6 +207,21 @@ public class Match {
         //Matthijs
         hero1.setFinished(false);
         hero2.setFinished(false);
+        
+        player1.getSocket().setHealth(true, 1, hero1.getHitPoints());
+        player1.getSocket().setHealth(false, 1, hero2.getHitPoints());
+        player2.getSocket().setHealth(true, 1, hero2.getHitPoints());
+        player2.getSocket().setHealth(false, 1, hero1.getHitPoints());
+        
+        for (int i = 0; i < Math.min(hero1.getMinions().size(),2); i++) {
+            player1.getSocket().setHealth(true, i+1, hero1.getMinions().get(i).getHitPoints());
+            player2.getSocket().setHealth(false, i+1, hero1.getMinions().get(i).getHitPoints());
+        }
+        for (int i = 0; i < Math.min(hero2.getMinions().size(),2); i++) {
+            player1.getSocket().setHealth(false, i+1, hero2.getMinions().get(i).getHitPoints());
+            player2.getSocket().setHealth(true, i+1, hero2.getMinions().get(i).getHitPoints());
+        }
+        
         //Matthijs
         turns++;
     }
@@ -180,7 +237,34 @@ public class Match {
         player2 = P2;
         hero1 = new Hero(this, player1, CardDeckController.getDeckFromPlayer(player1.getId()));
         hero2 = new Hero(this, player2, CardDeckController.getDeckFromPlayer(player2.getId()));
+        player1.getSocket().setHero(hero1);
+        player2.getSocket().setHero(hero2);
+        player1.getSocket().newMatch(this, player2.getUsername(), player2.getIconId());
+        player2.getSocket().newMatch(this, player1.getUsername(), player1.getIconId());
         determineGameState();
+        timer = new Timer();
+        timer.schedule(new TimerTask(){
+
+            @Override
+            public void run() {
+                //ping one or the other to detect a dead connection
+                (pingP1 ? player1 : player2).getSocket().ping();
+                
+                pingP1 = !pingP1;
+                
+                if (hero1.getFinished() && hero2.getFinished()) {
+                    player1.getSocket().turnEnd(hero2.getCardPlayed().getId());
+                    player2.getSocket().turnEnd(hero1.getCardPlayed().getId());
+                    processTurn();
+                    try {
+                        Thread.sleep(1000);//wait a second before showing new cards
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Match.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    startTurn();
+                }
+            }
+        }, 0,100);
     }
 
     /**
@@ -235,13 +319,11 @@ public class Match {
      */
     public void startTurn() {
         determineGameState();
-        if (gameState != GameState.Active) {
-            if (gameState == GameState.Defined || gameState == GameState.Tie) {
-                // TODO
-            }
-        }
-        if (hero1.getFinished() && hero2.getFinished()) {
-            processTurn();
-        }
+        hero1.pullCards();
+        hero2.pullCards();
+        //send all card ids
+        player1.getSocket().newTurn(hero1.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
+        player2.getSocket().newTurn(hero2.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
+        
     }
 }
