@@ -24,20 +24,20 @@ import java.util.logging.Logger;
  * @author Martijn
  */
 public class RMIClient {
-    
+
     private static final String bindingNameLogin = "loginProvider";
     private static final String bindingNameMainScreen = "mainScreenProvider";
-    
+
     private ILoginProvider loginProvider = null;
     private IMainScreenProvider mainScreenProvider = null;
-    
+
     private Registry loginRegistry = null;
     private Registry mainScreenRegistry = null;
-    
+
     private static final String ipAdress = "127.0.0.1";
-    
+
     private static RMIClient instance;
-    
+
     public RMIClient() {
         try {
             loginRegistry = LocateRegistry.getRegistry(ipAdress, 421);
@@ -45,7 +45,7 @@ public class RMIClient {
         } catch (RemoteException ex) {
             Logger.getLogger(RMIClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         if (loginRegistry != null) {
             try {
                 loginProvider = (ILoginProvider) loginRegistry.lookup("loginProvider");
@@ -61,12 +61,12 @@ public class RMIClient {
             }
         }
     }
-    
+
     public synchronized static RMIClient getInstance() {
         if (instance == null) {
             instance = new RMIClient();
         }
-        
+
         return instance;
     }
 
@@ -74,7 +74,7 @@ public class RMIClient {
     public String loginPlayer(String Displayname, String Password) throws RemoteException {
         return loginProvider.loginPlayer(Displayname, Password);
     }
-    
+
     public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException {
         return loginProvider.signUpPlayer(email, displayname, password, passcheck);
     }
@@ -83,31 +83,35 @@ public class RMIClient {
     public String getNewMatch(String token) throws RemoteException {
         return mainScreenProvider.getNewMatch(token);
     }
-    
+
     public List<Card> getCards() throws RemoteException {
         return mainScreenProvider.getCards();
     }
-    
+
+    public List<Deck> getDecks(String token) throws RemoteException {
+        return mainScreenProvider.getDecks(token);
+    }
+
     public Deck getDeck(String token) throws RemoteException {
         return mainScreenProvider.getDeck(token);
     }
-    
+
     public List<Icon> getIcons(String token) throws RemoteException {
         return mainScreenProvider.getIcons(token);
     }
-    
+
     public boolean setIcons(String token, int iconID) throws RemoteException {
         return mainScreenProvider.setIcons(token, iconID);
     }
-    
+
     public boolean addDeck(String token, List<Card> cards, String name) throws RemoteException {
         return mainScreenProvider.addDeck(token, cards, name);
     }
-    
+
     public boolean removeDeck(String token, String name) throws RemoteException {
         return mainScreenProvider.removeDeck(token, name);
     }
-    
+
     public PlayerShared getPlayer(String token) throws RemoteException {
         return mainScreenProvider.getPlayer(token);
     }

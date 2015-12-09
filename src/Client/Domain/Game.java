@@ -127,6 +127,15 @@ public class Game {
         }
     }
 
+    public List<Deck> getDecks(String token) {
+        try {
+            return client.getDecks(token);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
     public Deck getDeck(String token) {
         try {
             return client.getDeck(token);

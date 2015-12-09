@@ -2,14 +2,15 @@ package Shared.Domain;
 
 import java.util.List;
 import Shared.Domain.Card;
+import java.io.Serializable;
 import java.util.ArrayList;
 /**
  * An container for Cards methods to pull cards
  */
-public class Deck {
+public class Deck implements Serializable{
 
     private String name;
-    private final List<Card> cards;
+    private final ArrayList<Card> cards;
 
     private int first;
     private int last;
@@ -76,7 +77,7 @@ public class Deck {
      *
      * @return the arraylist with the cards
      */
-    public List<Card> getCards() {
+    public ArrayList<Card> getCards() {
         return this.cards;
     }
 
