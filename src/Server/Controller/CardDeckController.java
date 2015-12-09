@@ -113,6 +113,7 @@ public class CardDeckController {
                 List<String> column = resultSet.get(0);
 
                 for (int i = 3; i < column.size(); i++) {
+                    deck.setName(column.get(2));
                     deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                 }
 
@@ -143,6 +144,7 @@ public class CardDeckController {
                 List<String> column = resultSet.get(0);
 
                 for (int i = 3; i < column.size(); i++) {
+                    deck.setName(column.get(2));
                     deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                 }
 
@@ -174,7 +176,8 @@ public class CardDeckController {
 
                 for (List<String> column : resultSet) {
                     Deck deck = new Deck();
-
+                    deck.setName(column.get(2));
+                    
                     for (int i = 3; i < column.size(); i++) {
                         deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                     }

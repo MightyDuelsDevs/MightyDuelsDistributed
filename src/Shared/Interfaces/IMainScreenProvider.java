@@ -9,7 +9,6 @@ import Shared.Domain.*;
 import java.rmi.Remote;
 import java.util.List;
 import Shared.Domain.Deck;
-import Server.Domain.Player;
 import java.rmi.RemoteException;
 
 /**
@@ -37,6 +36,12 @@ public interface IMainScreenProvider extends Remote {
      */
     public Deck getDeck(String token) throws RemoteException;
     
+     /**
+     * Method to request all decks from a player.
+     * @param token Your token to know that the decks you get are yours
+     * @return returns the Decks of a player.
+     */
+    public List<Deck> getDecks(String token) throws RemoteException;
     /**
      * Method to return all icons that are available to you 
      * @param token Your token to know that the icons that are returned are available to you
@@ -78,6 +83,6 @@ public interface IMainScreenProvider extends Remote {
      * @return a player if a player is active with that token.
      * Else return null.
      */
-    public Player getPlayer(String token) throws RemoteException;
+    public PlayerShared getPlayer(String token) throws RemoteException;
 
 }

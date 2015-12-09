@@ -21,7 +21,7 @@ import java.util.HashMap;
  * @author Martijn
  */
 public class LoginProvider extends UnicastRemoteObject implements ILoginProvider {
-    private final Map<String, Player> mapTokenPlayer;
+    private final Map<String, PlayerShared> mapTokenPlayer;
 
     private Registry providerRegistry = null;
     private static final int portNumber = 421;
@@ -40,7 +40,7 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
         String token = "";
         if (player != null){
             token = PlayerIconController.hashGenerator(Displayname + System.currentTimeMillis());
-            mapTokenPlayer.put(token, player);
+            mapTokenPlayer.put(token, (PlayerShared)player);
         }
         return token;
     }
@@ -50,7 +50,7 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
         return PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
     }
     
-    public Player getPlayerFromToken(String token) {
+    public PlayerShared getPlayerFromToken(String token) {
         return mapTokenPlayer.get(token);
     }
 }

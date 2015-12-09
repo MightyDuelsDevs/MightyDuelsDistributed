@@ -7,8 +7,12 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
+import Shared.Domain.Deck;
+import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +26,9 @@ import javafx.scene.control.Button;
  */
 public class DeckFXMLController implements Initializable {
 
+    private Game game;
+    private List<Deck> decks;
+    
     /**
      * Initializes the controller class.
      */
@@ -56,6 +63,11 @@ public class DeckFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        game = Game.getInstance();
+        decks = game.getDecks(game.getToken());
+        for(Deck deck : decks){
+            System.out.println(deck.getName());
+        }
     }
 
 }

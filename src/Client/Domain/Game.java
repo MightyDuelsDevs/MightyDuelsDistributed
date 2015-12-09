@@ -76,6 +76,7 @@ public class Game {
     public PlayerShared loginPlayer(String Displayname, String Password) {
         try {
             token = client.loginPlayer(Displayname, Password);
+            player = client.getPlayer(token);
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,6 +121,15 @@ public class Game {
     public List<Card> getCards() {
         try {
             return client.getCards();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public List<Deck> getDecks(String token) {
+        try {
+            return client.getDecks(token);
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return null;

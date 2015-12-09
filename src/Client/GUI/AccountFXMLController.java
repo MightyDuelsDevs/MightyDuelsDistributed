@@ -33,7 +33,7 @@ import javafx.scene.layout.GridPane;
  */
 public class AccountFXMLController implements Initializable {
 
-    private Game game = Game.getInstance();
+    private Game game;
     private PlayerShared loggedInPlayer;
     private static int selectedIcon = 1;
 
@@ -72,7 +72,7 @@ public class AccountFXMLController implements Initializable {
 
         //TODO update player everytime player updates
         // Set the selected icon into the database.
-        Image image = new Image("/Client/Images/I" + selectedIcon + ".png", 120, 120, false, false);
+        Image image = new Image("/Client/Resources/Images/I" + selectedIcon + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(image);
         
         game.setIcon(game.getToken(), selectedIcon);
@@ -90,14 +90,16 @@ public class AccountFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        game = Game.getInstance();
         this.loggedInPlayer = game.getPlayer();
+
         lblAccountName.setText(" " + loggedInPlayer.getUsername());
         lblTheRating.setText(" " + loggedInPlayer.getRating());
         lblAmountOfGames.setText(" " + loggedInPlayer.getMatches());
         lblAmountOfWins.setText(" " + loggedInPlayer.getWins());
         lblAmountOfLosses.setText(" " + loggedInPlayer.getLosses());
 
-        Image imageSI = new Image("/Client/Images/I" + loggedInPlayer.getIconId() + ".png", 120, 120, false, false);
+        Image imageSI = new Image("/Client/Resources/Images/I" + loggedInPlayer.getIconId() + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(imageSI);
 
         // Load all the Icons from the Database. Set them into a list.
@@ -109,7 +111,7 @@ public class AccountFXMLController implements Initializable {
         int j = 0; // Row
         for (Icon icon : icons) {
             // Icon Image
-            Image image = new Image(icon.getFileName() + ".png", 180, 180, false, false);
+            Image image = new Image("/Client/Resources" + icon.getFileName() + ".png", 180, 180, false, false);
             ImageView ivIcon = new ImageView(image);
             ivIcon.setId("" + l);
             ivIcon.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
