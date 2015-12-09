@@ -1,9 +1,11 @@
 package Shared.Domain;
 
+import java.io.Serializable;
+
 /**
  * An class containing attributes of an player
  */
-public class PlayerShared {
+public class PlayerShared implements Serializable {
 
     protected int id;
     protected final String username;

@@ -30,7 +30,7 @@ public class LogOnFXMLController implements Initializable {
      * Initializes the controller class.
      */
     private Game game = Game.getInstance();
-    private PlayerShared loggedInPlayer = game.getPlayer();
+    private PlayerShared loggedInPlayer;
 
     @FXML
     private TextField tfUserName;

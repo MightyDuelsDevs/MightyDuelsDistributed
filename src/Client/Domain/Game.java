@@ -76,6 +76,7 @@ public class Game {
     public PlayerShared loginPlayer(String Displayname, String Password) {
         try {
             token = client.loginPlayer(Displayname, Password);
+            player = client.getPlayer(token);
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
