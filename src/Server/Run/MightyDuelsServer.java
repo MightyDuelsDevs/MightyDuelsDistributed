@@ -12,6 +12,7 @@ import Server.Domain.Game;
 import Server.Domain.Player;
 import Server.RMI.LoginProvider;
 import Server.RMI.MainScreenProvider;
+import Server.SocketManagerServer.SocketManager;
 import java.awt.SplashScreen;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -57,11 +58,9 @@ public class MightyDuelsServer {
         CardDeckController.cardDeckControllerInit();
         log.info("Creating PlayerIconController");
         PlayerIconController.playerIconControllerInit();
+        log.info("Starting Socket Server");
+        SocketManager.getInstance().open();
         log.info("Starting main application");
-//        SplashScreen splash = SplashScreen.getSplashScreen();
-//        if (splash != null) {
-//            splash.close();
-//        }
         
         try {
             loginProvider = new LoginProvider();
@@ -76,7 +75,7 @@ public class MightyDuelsServer {
                 String input = s.nextLine();
                 if(input.startsWith("help")){
                     if(input.equals("help")){
-                        //print generic help
+                        //todo print generic help
                     }else{
                         if(input.contains("stats")){
                             System.out.println("This application print's the system statistics and the some player sttistics.");
@@ -106,6 +105,7 @@ public class MightyDuelsServer {
                     System.out.println();
                     
                     System.out.println("Players online: " + "N/A");
+                    System.out.println("Active Connections: " + SocketManager.getInstance().activeConnections());
                 }
                 if(input.startsWith("quit")){
                     System.out.print("Are you sure?[Y/N] ");
