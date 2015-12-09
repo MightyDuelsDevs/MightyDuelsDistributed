@@ -111,7 +111,7 @@ public class AccountFXMLController implements Initializable {
         int j = 0; // Row
         for (Icon icon : icons) {
             // Icon Image
-            Image image = new Image(icon.getFileName() + ".png", 180, 180, false, false);
+            Image image = new Image("/Client/Resources" + icon.getFileName() + ".png", 180, 180, false, false);
             ImageView ivIcon = new ImageView(image);
             ivIcon.setId("" + l);
             ivIcon.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
