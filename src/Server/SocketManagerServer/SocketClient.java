@@ -61,7 +61,7 @@ public class SocketClient {
             closed=true;
             return;
         }
-        //todo send connection accepted
+        connAccepted();
         InputStream in;
         try {
             in = socket.getInputStream();
@@ -100,13 +100,13 @@ public class SocketClient {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    StringBuilder sb = new StringBuilder();
-                    for(byte d : hash){
-                        String hex = Integer.toHexString(0xff & d);
-                        if(hex.length() == 1) sb.append('0');
-                        sb.append(hex);
-                    }
-                    player = (Player) MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
+//                    StringBuilder sb = new StringBuilder();
+//                    for(byte d : hash){
+//                        String hex = Integer.toHexString(0xff & d);
+//                        if(hex.length() == 1) sb.append('0');
+//                        sb.append(hex);
+//                    }
+                    player = SocketManager.getInstance().getPlayer(hash);
                     if(player == null){
                         loginDenied();
                         closed=true;

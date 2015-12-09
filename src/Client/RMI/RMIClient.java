@@ -80,7 +80,7 @@ public class RMIClient {
     }
 
     //Methods from MainScreenProvider
-    public String getNewMatch(String token) throws RemoteException {
+    public byte[] getNewMatch(String token) throws RemoteException {
         return mainScreenProvider.getNewMatch(token);
     }
 
