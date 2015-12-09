@@ -31,10 +31,10 @@ public class CardDeckController {
         allCards = getAllCardsFromDB();
     }
 
-    public static Card getCard(int index){
+    public static Card getCard(int index) {
         return allCards.get(index);
     }
-    
+
     public static List<Card> getAllCards() {
         return allCards;
     }
@@ -105,15 +105,16 @@ public class CardDeckController {
      */
     public static Deck getDeck(int deckID) {
         String statement = String.format("SELECT * FROM DECK WHERE ID = %1$s", deckID);
-        Deck deck = new Deck();
+        Deck deck = null;
 
         try {
             if (Database.checkConnection()) {
                 List<List> resultSet = Database.selectRecordFromTable(statement);
                 List<String> column = resultSet.get(0);
 
+                deck = new Deck(Integer.parseInt(column.get(0)), column.get(2));
+
                 for (int i = 3; i < column.size(); i++) {
-                    deck.setName(column.get(2));
                     deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                 }
 
@@ -126,25 +127,27 @@ public class CardDeckController {
 
         return deck;
     }
-    
-        /**
+
+    /**
      * Function that returns a complete deck. It uses the local variable that
      * contains all the cards.
      *
      * @param playerID, ID of the player in the database.
-     * @return Returns the deck corresponding with the selected deck of the player with the corresponding playerID.
+     * @return Returns the deck corresponding with the selected deck of the
+     * player with the corresponding playerID.
      */
     public static Deck getDeckFromPlayer(int playerID) {
         String statement = String.format("SELECT * FROM DECK WHERE ID = (SELECT SELDECKID FROM PLAYER WHERE ID = 1%1$s)", playerID);
-        Deck deck = new Deck();
-
+        Deck deck = null;
+        
         try {
             if (Database.checkConnection()) {
                 List<List> resultSet = Database.selectRecordFromTable(statement);
                 List<String> column = resultSet.get(0);
 
+                deck = new Deck(Integer.parseInt(column.get(0)), column.get(2));
+
                 for (int i = 3; i < column.size(); i++) {
-                    deck.setName(column.get(2));
                     deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                 }
 
@@ -175,9 +178,8 @@ public class CardDeckController {
                 List<List> resultSet = Database.selectRecordFromTable(statement);
 
                 for (List<String> column : resultSet) {
-                    Deck deck = new Deck();
-                    deck.setName(column.get(2));
-                    
+                    Deck deck = new Deck(Integer.parseInt(column.get(0)), column.get(2));
+
                     for (int i = 3; i < column.size(); i++) {
                         deck.addCard(allCards.get(Integer.parseInt(column.get(i)) - 1));
                     }
@@ -195,8 +197,8 @@ public class CardDeckController {
         return decks;
     }
 
-    public static boolean removeDeck(int playerID, String deckName) {
-        String statement = String.format("DELETE FROM DECK WHERE PLAYER ID = %1$s AND NAME = '%2$s'", playerID, deckName);
+    public static boolean removeDeck(int playerID, int deckId) {
+        String statement = String.format("DELETE FROM DECK WHERE PLAYERID = %1$s AND ID = %2$s", playerID, deckId);
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);
@@ -210,15 +212,14 @@ public class CardDeckController {
         }
         return true;
     }
-    
-    public static boolean addDeck(int playerID, List<Card> cards, String deckName){
+
+    public static boolean addDeck(int playerID, List<Card> cards, String deckName) {
         String cardString = "";
-        
-        for(Card card : cards)
-        {
-            cardString += card.getId()+ ", ";
+
+        for (Card card : cards) {
+            cardString += card.getId() + ", ";
         }
-        
+
         String statement = String.format("INSERT INTO DECK VALUES(null, %1$s, %2$s %3$s)", playerID, deckName, cardString);
         try {
             if (Database.checkConnection()) {

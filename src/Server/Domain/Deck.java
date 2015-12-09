@@ -3,6 +3,7 @@ package Server.Domain;
 import java.util.List;
 import Shared.Domain.Card;
 import java.util.ArrayList;
+
 /**
  * An container for Cards methods to pull cards
  */
@@ -13,6 +14,7 @@ public class Deck {
 
     private int first;
     private int last;
+    private int id;
 
     /**
      * Create a new instance of Deck with no cards
@@ -26,7 +28,8 @@ public class Deck {
      *
      * @param name the name of the deck
      */
-    public Deck(String name) {
+    public Deck(int id, String name) {
+        this.id = id;
         this.name = name;
         cards = new ArrayList<>();
     }

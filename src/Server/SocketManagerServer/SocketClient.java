@@ -12,7 +12,6 @@ import Server.Domain.ITarget;
 import Server.Domain.Match;
 import Server.Domain.Minion;
 import Server.Domain.Player;
-import Server.Run.MightyDuelsServer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -61,7 +60,7 @@ public class SocketClient {
             closed=true;
             return;
         }
-        //todo send connection accepted
+        connAccepted();
         InputStream in;
         try {
             in = socket.getInputStream();
@@ -100,13 +99,13 @@ public class SocketClient {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    StringBuilder sb = new StringBuilder();
-                    for(byte d : hash){
-                        String hex = Integer.toHexString(0xff & d);
-                        if(hex.length() == 1) sb.append('0');
-                        sb.append(hex);
-                    }
-                    player = (Player) MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
+//                    StringBuilder sb = new StringBuilder();
+//                    for(byte d : hash){
+//                        String hex = Integer.toHexString(0xff & d);
+//                        if(hex.length() == 1) sb.append('0');
+//                        sb.append(hex);
+//                    }
+                    player = SocketManager.getInstance().getPlayer(hash);
                     if(player == null){
                         loginDenied();
                         closed=true;
@@ -116,8 +115,8 @@ public class SocketClient {
                             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                    Game.getInstance().addWaitingPlayer(player);
                     loginAccepted();
+                    Game.getInstance().addWaitingPlayer(player);
                     break;
                 case 0x02://set_card
                     int cardId;
@@ -237,7 +236,7 @@ public class SocketClient {
                     }
                     //todo send message to other client
                     break;
-                    case (byte)0xE0://PING
+                case (byte)0xE0://PING
                     pong();
                     break;
                 case (byte)0xE1://PONG
@@ -441,7 +440,7 @@ public class SocketClient {
         }
     }
     
-    public void newTurn(int[] cards){
+    public void newTurn(Integer[] cards){
         byte[] data = new byte[7];
         data[0]=0x08;
         for(int i = 0;i<3;i++){
@@ -552,5 +551,9 @@ public class SocketClient {
     
     private synchronized void sendData(byte[] data) throws IOException{
         socket.getOutputStream().write(data);
+    }
+
+    public void setHero(Hero hero) {
+        this.hero = hero;
     }
 }

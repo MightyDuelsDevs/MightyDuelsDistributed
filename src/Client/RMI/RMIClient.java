@@ -84,7 +84,7 @@ public class RMIClient {
     }
 
     //Methods from MainScreenProvider
-    public String getNewMatch(String token) throws RemoteException {
+    public byte[] getNewMatch(String token) throws RemoteException {
         return mainScreenProvider.getNewMatch(token);
     }
 
@@ -112,8 +112,8 @@ public class RMIClient {
         return mainScreenProvider.addDeck(token, cards, name);
     }
 
-    public boolean removeDeck(String token, String name) throws RemoteException {
-        return mainScreenProvider.removeDeck(token, name);
+    public boolean removeDeck(String token, int id) throws RemoteException {
+        return mainScreenProvider.removeDeck(token, id);
     }
 
     public PlayerShared getPlayer(String token) throws RemoteException {

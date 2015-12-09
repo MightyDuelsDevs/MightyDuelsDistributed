@@ -233,21 +233,27 @@ public class PlayerIconController {
     }
     
     public static String hashGenerator(String hashableValue){
+        StringBuilder sb = new StringBuilder();
+        byte[] data = hashByteGenerator(hashableValue);
+        //convert to an hex string with leading zero's
+        for(byte d : data){
+            String hex = Integer.toHexString(0xff & d);
+            if(hex.length() == 1) sb.append('0');
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+    
+    public static byte[] hashByteGenerator(String hashableValue){
         //source:
         //http://stackoverflow.com/a/25243174/2675935
         try {
-            StringBuilder sb = new StringBuilder();
             //digest the password with MDPass as salt so existing databases are useless for decryption
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(("MDPass" + hashableValue).getBytes("UTF-16"));
             byte[] data = md.digest();
-            //convert to an hex string with leading zero's
-            for(byte d : data){
-                String hex = Integer.toHexString(0xff & d);
-                if(hex.length() == 1) sb.append('0');
-                sb.append(hex);
-            }
-            return sb.toString();
+            
+            return data;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             //schould never occure, if so the application runs in an unsupported Java VM or Operating system
             Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, "The algorithm or charset is not found!", ex);

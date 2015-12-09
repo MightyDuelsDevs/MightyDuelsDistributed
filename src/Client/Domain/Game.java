@@ -103,7 +103,7 @@ public class Game {
     }
 
     //Methods from MainScreenProvider
-    public String getNewMatch(String token) {
+    public byte[] getNewMatch(String token) {
         try {
             return client.getNewMatch(token);
         } catch (RemoteException ex) {
@@ -172,9 +172,9 @@ public class Game {
         }
     }
 
-    public boolean removeDeck(String token, String name) {
+    public boolean removeDeck(String token, int id) {
         try {
-            return client.removeDeck(token, name);
+            return client.removeDeck(token, id);
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return false;

@@ -9,6 +9,7 @@ import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
 import Shared.Domain.Deck;
 import Server.Domain.Player;
+import Server.SocketManagerServer.SocketManager;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
 import Shared.Domain.PlayerShared;
@@ -38,9 +39,11 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
     }
 
     @Override
-    public String getNewMatch(String token) {
+    public byte[] getNewMatch(String token) {
         PlayerShared player = loginProvider.getPlayerFromToken(token);
-        return PlayerIconController.hashGenerator(token + System.currentTimeMillis()); // TODO
+        byte[] connToken =  PlayerIconController.hashByteGenerator(token + System.currentTimeMillis());
+        SocketManager.getInstance().addPlayer(connToken, (Player)player);
+        return connToken;
     }
 
     @Override
@@ -79,9 +82,9 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
     }
 
     @Override
-    public boolean removeDeck(String token, String name) {
+    public boolean removeDeck(String token, int id) {
         PlayerShared player = loginProvider.getPlayerFromToken(token);
-        return CardDeckController.removeDeck(player.getId(), name);
+        return CardDeckController.removeDeck(player.getId(), id);
     }
 
     @Override

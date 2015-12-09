@@ -5,11 +5,16 @@
  */
 package Server.SocketManagerServer;
 
+import Server.Domain.Player;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +25,7 @@ import java.util.logging.Logger;
 public class SocketManager {
     
     private static SocketManager instance = null;
+    private Map<byte[],Player> playerMap;
     
     public static SocketManager getInstance(){
         if(instance == null){
@@ -31,6 +37,7 @@ public class SocketManager {
     
     private ServerSocket ss;
     private Thread clientManagerThread;
+    private Timer t;
     private List<SocketClient> clients;
     
     public void open(){
@@ -43,6 +50,7 @@ public class SocketManager {
             }
         }
         clients = new LinkedList<>();
+        playerMap = new HashMap<>();
         try {
             ss = new ServerSocket(420);
         } catch (IOException ex) {
@@ -50,6 +58,14 @@ public class SocketManager {
         }
         clientManagerThread = new Thread(()->clientManager());
         clientManagerThread.start();
+        t = new Timer();
+        t.schedule(new TimerTask(){
+
+            @Override
+            public void run() {
+                clients.removeIf((c)->!c.isClosed());
+            }
+        }, 0,10000);
     }
     
     private void clientManager(){
@@ -68,10 +84,24 @@ public class SocketManager {
     
     public void stop(){
         clients.stream().forEach((c)->c.stop());
+        t.cancel();
+        clients.clear();
         try {
             ss.close();
         } catch (IOException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void addPlayer(byte[] token, Player player){
+        playerMap.put(token,player);
+    }
+    
+    public Player getPlayer(byte[] token){
+        return playerMap.get(token);
+    }
+    
+    public int activeConnections(){
+        return clients.size();
     }
 }
