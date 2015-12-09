@@ -5,11 +5,14 @@
  */
 package Server.SocketManagerServer;
 
+import Server.Domain.Player;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -22,6 +25,7 @@ import java.util.logging.Logger;
 public class SocketManager {
     
     private static SocketManager instance = null;
+    private Map<byte[],Player> playerMap;
     
     public static SocketManager getInstance(){
         if(instance == null){
@@ -46,6 +50,7 @@ public class SocketManager {
             }
         }
         clients = new LinkedList<>();
+        playerMap = new HashMap<>();
         try {
             ss = new ServerSocket(420);
         } catch (IOException ex) {
@@ -86,6 +91,14 @@ public class SocketManager {
         } catch (IOException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void addPlayer(byte[] token, Player player){
+        playerMap.put(token,player);
+    }
+    
+    public Player getPlayer(byte[] token){
+        return playerMap.get(token);
     }
     
     public int activeConnections(){

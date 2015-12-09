@@ -103,7 +103,7 @@ public class Game {
     }
 
     //Methods from MainScreenProvider
-    public String getNewMatch(String token) {
+    public byte[] getNewMatch(String token) {
         try {
             return client.getNewMatch(token);
         } catch (RemoteException ex) {

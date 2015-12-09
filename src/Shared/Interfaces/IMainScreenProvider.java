@@ -21,7 +21,7 @@ public interface IMainScreenProvider extends Remote {
      * @param token Your token to inform the server which user is connected
      * @return Match token to know what match you are connected to
      */
-    public String getNewMatch(String token) throws RemoteException;
+    public byte[] getNewMatch(String token) throws RemoteException;
     
     /**
      * Method to get all cards from the database
