@@ -91,11 +91,11 @@ public class LogOnFXMLController implements Initializable {
 
     private void login() {
         if (tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty()) {
-            StageController.getInstance().popup("Error", false, "Fill both fields.");
+            StageController.getInstance().popup("You forgot something", false, "Fill both fields.");
         } else {
             PlayerShared player = game.loginPlayer(tfUserName.getText(), tfPassWord.getText());
             if (player == null) {
-                StageController.getInstance().popup("Error", false, "Username & Password do not match.");
+                StageController.getInstance().popup("Wrong credentials", false, "Your username & Password do not match.");
                 tfPassWord.setText("");
             } else {
                 loggedInPlayer = player;

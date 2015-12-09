@@ -5,6 +5,7 @@
  */
 package Client.RMI;
 
+import Client.Controller.StageController;
 import Shared.Domain.Deck;
 import Shared.Domain.Card;
 import Shared.Domain.Icon;
@@ -43,6 +44,7 @@ public class RMIClient {
             loginRegistry = LocateRegistry.getRegistry(ipAdress, 421);
             mainScreenRegistry = LocateRegistry.getRegistry(ipAdress, 422);
         } catch (RemoteException ex) {
+            StageController.getInstance().popup("Server connection", false, "server connection failed.");
             Logger.getLogger(RMIClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -50,6 +52,7 @@ public class RMIClient {
             try {
                 loginProvider = (ILoginProvider) loginRegistry.lookup("loginProvider");
             } catch (RemoteException | NotBoundException ex) {
+                StageController.getInstance().popup("Server connection", false, "server connection failed.");
                 Logger.getLogger(RMIClient.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -57,6 +60,7 @@ public class RMIClient {
             try {
                 mainScreenProvider = (IMainScreenProvider) mainScreenRegistry.lookup("mainScreenProvider");
             } catch (RemoteException | NotBoundException ex) {
+                StageController.getInstance().popup("Server connection", false, "server connection failed.");
                 Logger.getLogger(RMIClient.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

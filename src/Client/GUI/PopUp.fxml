@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,8 +10,13 @@
 
 <AnchorPane id="AnchorPane" prefHeight="120.0" prefWidth="270.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.GUI.PopUpController">
    <children>
-      <Text fx:id="tfTitel" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Titel" />
-      <Text fx:id="tfText" layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+       <ImageView fitHeight="120.0" fitWidth="270.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Resources/Images/popup%20box.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="tfTitel" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Titel" fill="WHITE" />
+      <Text fx:id="tfText" layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" fill="WHITE"/>
       <Button fx:id="btnOk" layoutX="118.0" layoutY="81.0" mnemonicParsing="false" onAction="#btnOk_OnClick" text="Ok!" />
       <Button fx:id="btnNo" layoutX="148.0" layoutY="81.0" mnemonicParsing="false" onAction="#btnNo_OnClick" text="No" visible="false" />
       <Button fx:id="btnYes" layoutX="90.0" layoutY="81.0" mnemonicParsing="false" onAction="#btnYes_OnClick" text="Yes" visible="false" />

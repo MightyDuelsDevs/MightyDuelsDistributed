@@ -117,7 +117,7 @@ public class AccountFXMLController implements Initializable {
             ivIcon.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
                 ImageView iv = (ImageView) event.getSource();
                 if (AccountFXMLController.selectedIcon != Integer.parseInt(iv.getId())) {
-                    //TODO sc.popup("Error", false, "You have selected Icon number: " + iv.getId() + ".", "Icon selected");
+                    StageController.getInstance().popup("Icon selected", false, "You have selected Icon number: " + iv.getId() + ".");
                 }
                 AccountFXMLController.setSelectedIcon(Integer.parseInt(iv.getId()));
             });

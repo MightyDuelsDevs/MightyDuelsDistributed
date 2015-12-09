@@ -5,6 +5,7 @@
  */
 package Client.GUI;
 
+import Client.Controller.StageController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -26,46 +28,45 @@ public class PopUpController implements Initializable {
     @FXML
     private Text tfText;
     @FXML
-    private Button btOk;
+    private Button btnOk;
     @FXML
-    private Button btYes;
+    private Button btnYes;
     @FXML
-    private Button btNo;
+    private Button btnNo;
 
     /**
      * Initializes the controller class.
+     *
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.tfTitel.setText(StageController.title);
+        this.tfText.setText(StageController.text);
 
-    }
-
-    public void setContent(String title, boolean yesNo, String text) {
-       // tfTitel.setText(title);
-        //tfText.setText(text);
-        if (yesNo) {
-            btYes.setVisible(true);
-            btNo.setVisible(true);
-            btOk.setVisible(false);
-        } else {
-            btYes.setVisible(false);
-            btNo.setVisible(false);
-            btOk.setVisible(true);
-        }
+        btnOk.setVisible(!StageController.yesNo);
+        btnYes.setVisible(StageController.yesNo);
+        btnNo.setVisible(StageController.yesNo);
     }
 
     @FXML
     private void btnOk_OnClick(ActionEvent event) throws IOException {
-
+        Stage stage = (Stage) btnOk.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
     private void btnYes_OnClick(ActionEvent event) throws IOException {
-
+        StageController.choosen = true;
+        Stage stage = (Stage) btnYes.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
     private void btnNo_OnClick(ActionEvent event) throws IOException {
-
+        StageController.choosen = false;
+        Stage stage = (Stage) btnNo.getScene().getWindow();
+        stage.close();
     }
 }

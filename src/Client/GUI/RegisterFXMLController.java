@@ -72,7 +72,7 @@ public class RegisterFXMLController implements Initializable {
         //Check  if  the UserName already exists
         //If not, Check if the 2 inserted passwords match. If they do, Make the Account.
         if (tfEmail.getText().isEmpty() || tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty() || tfPassWordRe.getText().isEmpty()) {
-            StageController.getInstance().popup("Error", false, "Fill all the fields.");
+            StageController.getInstance().popup("You forgot something", false, "Fill all the fields.");
         } else {
             int result = game.signUpPlayer(tfEmail.getText(), tfUserName.getText(), tfPassWord.getText(), tfPassWordRe.getText());
             switch (result) {
@@ -80,14 +80,14 @@ public class RegisterFXMLController implements Initializable {
                     StageController.getInstance().popup("Error", false, "An unexpected error occurred.");
                     break;
                 case 1:
-                    StageController.getInstance().popup("Error", false, "The two inserted passwords do NOT match.");
+                    StageController.getInstance().popup("Wrong credentials", false, "The two inserted passwords do NOT match.");
                     break;
                 case 2:
-                    StageController.getInstance().popup("Error", false, "Account already exists.");
+                    StageController.getInstance().popup("Sorry", false, "Account already exists.");
                     break;
                 case 3:
                     //Add the PlayerShared to the database.
-                    StageController.getInstance().popup("Error", false, "Account succesfully registered.");     
+                    StageController.getInstance().popup("Succes!", false, "Account succesfully registered.");     
                     String title = "Mighty Duels";
                     String root = "LogOnFXML.fxml";
                     StageController.getInstance().navigate(root, title);

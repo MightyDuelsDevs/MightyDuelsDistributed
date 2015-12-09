@@ -14,8 +14,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -26,6 +28,9 @@ public class StageController {
     private Stage stage;
     private static StageController instance;
 
+    public static String title, text;
+    public static boolean yesNo, choosen;
+
     public static StageController getInstance() {
         if (instance == null) {
             instance = new StageController();
@@ -34,7 +39,7 @@ public class StageController {
     }
 
     /**
-     *
+     * Returns the main stage
      * @return
      */
     public Stage getStage() {
@@ -42,7 +47,7 @@ public class StageController {
     }
 
     /**
-     *
+     * Sets the main stage
      * @param stage
      */
     public void setStage(Stage stage) {
@@ -50,7 +55,7 @@ public class StageController {
     }
 
     /**
-     *
+     * Starts the main stage
      */
     public void start() {
         Platform.runLater(() -> {
@@ -95,27 +100,30 @@ public class StageController {
     }
 
     /**
-     *
-     * @param title
-     * @param yesNo
-     * @param text
+     * Create popup with the given valeus
+     * @param title title of the popup
+     * @param yesNo true = yes & no button, false = ok button
+     * @param text text of the popup
      */
     public void popup(String title, boolean yesNo, String text) {
+        title = title == null ? "Mighty Duels" : title;
+        StageController.title = title;
+        StageController.text = text;
+        StageController.yesNo = yesNo;
+
         Stage popUpStage = new Stage();
-        popUpStage.setTitle(title == null ? "Mighty Duels" : title); 
-        //this.stage.setTitle(title);
-        PopUpController popupu = new PopUpController();
+        popUpStage.setTitle(title);
 
         Platform.runLater(() -> {
-            try {        
+            try {
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
-                //Parent root = FXMLLoader.load(getClass().getResource("../GUI/RegisterFXML.fxml"));
                 Scene scene = new Scene(root);
+
+                popUpStage.initStyle(StageStyle.UNDECORATED);
+                popUpStage.initModality(Modality.WINDOW_MODAL);
+                popUpStage.initOwner(stage.getScene().getWindow());
                 popUpStage.setScene(scene);
-                Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-                popUpStage.setX((primScreenBounds.getWidth() - popUpStage.getWidth()) / 2);
-                popUpStage.setY((primScreenBounds.getHeight() - popUpStage.getHeight()) / 2);
-                popupu.setContent(title, yesNo, text);
+                popUpStage.centerOnScreen();
                 popUpStage.show();
             } catch (IOException ex) {
                 Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
