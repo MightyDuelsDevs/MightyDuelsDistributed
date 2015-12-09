@@ -8,7 +8,9 @@ package Server.SocketManagerServer;
 import Server.Controller.CardDeckController;
 import Server.Domain.Game;
 import Server.Domain.Hero;
+import Server.Domain.ITarget;
 import Server.Domain.Match;
+import Server.Domain.Minion;
 import Server.Domain.Player;
 import Server.Run.MightyDuelsServer;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,12 +86,12 @@ public class SocketClient {
                 //todo throw error
                 continue;
             }
-            //todo send login request
+            connAccepted();
             switch(input){
                 case -1:
                     //todo read error
                     break;
-                case 0x01:
+                case 0x01://login
                     int hashlength = 0x100;//todo tbd
                     byte[] hash = new byte[hashlength];
             
@@ -103,7 +106,7 @@ public class SocketClient {
                         if(hex.length() == 1) sb.append('0');
                         sb.append(hex);
                     }
-                    player = MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
+                    player = (Player) MightyDuelsServer.loginProvider.getPlayerFromToken(sb.toString());
                     if(player == null){
                         loginDenied();
                         closed=true;
@@ -148,9 +151,46 @@ public class SocketClient {
                         illegalAction();
                         return;
                     }
-                    //todo determine source/target efficienly
+                    ITarget itarget;
+                    Hero opponend = match.getHero1() == hero? match.getHero2() : match.getHero1();
+                    if(target == 0){
+                        itarget = opponend;
+                    }else if(target==1){
+                        List<Minion> om = opponend.getMinions();
+                        if(om.size()>=1){
+                            itarget = om.get(0);
+                        }else{
+                            illegalAction();
+                            continue;
+                        }
+                    }else{
+                        List<Minion> om = opponend.getMinions();
+                        if(om.size()>=2){
+                            itarget = om.get(1);
+                        }else{
+                            illegalAction();
+                            continue;
+                        }
+                    }
+                    if(source == 0){
+                        if(target != 0){
+                            illegalAction();//player can't attack minion
+                            continue;
+                        }
+                        //todo? hero.setTarget(itarget);
+                    }else{
+                        List<Minion> mm = hero.getMinions();
+                        if(source == 1 && mm.size()>=1){
+                            mm.get(1).setITarget(itarget);
+                        }else if(source == 2 && mm.size()>=2){
+                            mm.get(2).setITarget(itarget);
+                        }else{
+                            illegalAction();
+                            continue;
+                        }
+                    }
+                    accepted();
                     //0=face 1=min1 2-min2
-                    //todo return accepted
                     break;
                     
                 case 0x04://set finished
@@ -165,7 +205,7 @@ public class SocketClient {
                     hero.setFinished(finished==0x01);
                     accepted();
                     break;
-                case 0x05:
+                case 0x05://Consede
                     match.concede(hero);
                     accepted();
                     break;

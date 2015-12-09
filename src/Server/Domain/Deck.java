@@ -1,16 +1,15 @@
-package Shared.Domain;
+package Server.Domain;
 
 import java.util.List;
 import Shared.Domain.Card;
-import java.io.Serializable;
 import java.util.ArrayList;
 /**
  * An container for Cards methods to pull cards
  */
-public class Deck implements Serializable{
+public class Deck {
 
     private String name;
-    private final ArrayList<Card> cards;
+    private final List<Card> cards;
 
     private int first;
     private int last;
@@ -77,7 +76,7 @@ public class Deck implements Serializable{
      *
      * @return the arraylist with the cards
      */
-    public ArrayList<Card> getCards() {
+    public List<Card> getCards() {
         return this.cards;
     }
 
