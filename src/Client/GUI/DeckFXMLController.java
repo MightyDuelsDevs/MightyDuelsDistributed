@@ -24,6 +24,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -84,6 +85,7 @@ public class DeckFXMLController implements Initializable {
             Image image = new Image("/Client/Resources/Images/card stack.png", 160, 230, false, false);
             ImageView ivDeck = new ImageView(image);
             Label deckNameLabel = new Label(deck.getName());
+            deckNameLabel.setTextFill(Color.web("#FFFFFF"));
             ivDeck.setId("" + deck.getName());
             ivDeck.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
                 ImageView iv = (ImageView) event.getSource();
