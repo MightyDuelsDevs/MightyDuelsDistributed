@@ -91,7 +91,7 @@ public class SocketClient {
                 case -1:
                     //todo read error
                     break;
-                case 0x01:
+                case 0x01://login
                     int hashlength = 0x100;//todo tbd
                     byte[] hash = new byte[hashlength];
             
@@ -177,7 +177,7 @@ public class SocketClient {
                             illegalAction();//player can't attack minion
                             continue;
                         }
-                        //todo hero.setTarget(itarget);
+                        //todo? hero.setTarget(itarget);
                     }else{
                         List<Minion> mm = hero.getMinions();
                         if(source == 1 && mm.size()>=1){
@@ -205,7 +205,7 @@ public class SocketClient {
                     hero.setFinished(finished==0x01);
                     accepted();
                     break;
-                case 0x05:
+                case 0x05://Consede
                     match.concede(hero);
                     accepted();
                     break;
