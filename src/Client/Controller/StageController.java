@@ -5,6 +5,7 @@
  */
 package Client.Controller;
 
+import Client.GUI.PopUpController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,11 +101,13 @@ public class StageController {
      * @param text
      */
     public void popup(String title, boolean yesNo, String text) {
-        title = title == null ? "Mighty Duels" : title;
-        this.stage.setTitle(title);
+        Stage popUpStage = new Stage();
+        popUpStage.setTitle(title == null ? "Mighty Duels" : title); 
+        //this.stage.setTitle(title);
+        PopUpController popupu = new PopUpController();
+
         Platform.runLater(() -> {
-            try {
-                Stage popUpStage = new Stage();
+            try {        
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
                 //Parent root = FXMLLoader.load(getClass().getResource("../GUI/RegisterFXML.fxml"));
                 Scene scene = new Scene(root);
@@ -112,6 +115,7 @@ public class StageController {
                 Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
                 popUpStage.setX((primScreenBounds.getWidth() - popUpStage.getWidth()) / 2);
                 popUpStage.setY((primScreenBounds.getHeight() - popUpStage.getHeight()) / 2);
+                popupu.setContent(title, yesNo, text);
                 popUpStage.show();
             } catch (IOException ex) {
                 Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
