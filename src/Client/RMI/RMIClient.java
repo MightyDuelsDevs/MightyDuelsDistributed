@@ -108,8 +108,8 @@ public class RMIClient {
         return mainScreenProvider.addDeck(token, cards, name);
     }
 
-    public boolean removeDeck(String token, String name) throws RemoteException {
-        return mainScreenProvider.removeDeck(token, name);
+    public boolean removeDeck(String token, int id) throws RemoteException {
+        return mainScreenProvider.removeDeck(token, id);
     }
 
     public PlayerShared getPlayer(String token) throws RemoteException {

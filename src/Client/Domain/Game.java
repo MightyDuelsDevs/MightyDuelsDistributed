@@ -172,9 +172,9 @@ public class Game {
         }
     }
 
-    public boolean removeDeck(String token, String name) {
+    public boolean removeDeck(String token, int id) {
         try {
-            return client.removeDeck(token, name);
+            return client.removeDeck(token, id);
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return false;

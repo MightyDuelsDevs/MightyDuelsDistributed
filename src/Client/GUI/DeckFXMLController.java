@@ -20,6 +20,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,13 +35,12 @@ import javafx.scene.paint.Color;
 public class DeckFXMLController implements Initializable {
 
     private Game game;
-    private List<Deck> decks;
-    private static String selectedDeck = "";
-    
+    private static List<Deck> decks;
+    private static Deck selectedDeck;
+
     /**
      * Initialises the controller class.
      */
-
     @FXML
     private Button btnBack;
 
@@ -49,8 +49,18 @@ public class DeckFXMLController implements Initializable {
 
     @FXML
     private GridPane gpDecks;
-    //Variables for playing sound.
-    private final String buttonPressFilePath = "src/Sound/buttonPress.wav";
+
+    @FXML
+    private Button btnCreateDeck;
+
+    @FXML
+    private Button btnRemoveDeck;
+
+    @FXML
+    private Label lblSelectedDeck;
+
+    @FXML
+    private TextField tfDeckName;
 
     //Set the right deck as 'selected' into the database when pressed on 'Play'.
     @FXML
@@ -71,15 +81,40 @@ public class DeckFXMLController implements Initializable {
         StageController.getInstance().navigate(root, title);
     }
 
+    @FXML
+    private void btnCreateDeck_OnClick(ActionEvent event) throws IOException {
+        SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+        String title = "Mighty Duels";
+        String root = "DeckFXML.fxml";
+        StageController.getInstance().navigate(root, title);
+    }
+
+    @FXML
+    private void btnRemoveDeck_OnClick(ActionEvent event) throws IOException {
+        SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+        System.out.println("tetetetetetetetet");
+        game.removeDeck(game.getToken(), selectedDeck.getId());
+
+        String title = "Mighty Duels";
+        String root = "DeckFXML.fxml";
+        StageController.getInstance().navigate(root, title);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         game = Game.getInstance();
         decks = game.getDecks(game.getToken());
-        
+
         final ToggleGroup tg = new ToggleGroup();
         int l = 1; // ID
         int i = 0; // Collomn
         int j = 0; // Row
+
+        selectedDeck = decks.get(0);
+        lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
+
         for (Deck deck : decks) {
             // Icon Image
             Image image = new Image("/Client/Resources/Images/card stack.png", 160, 230, false, false);
@@ -89,27 +124,37 @@ public class DeckFXMLController implements Initializable {
             ivDeck.setId("" + deck.getName());
             ivDeck.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
                 ImageView iv = (ImageView) event.getSource();
-                if (selectedDeck != iv.getId()) {
+                if (selectedDeck.getName() != iv.getId()) {
                     //TODO sc.popup("Error", false, "You have selected Icon number: " + iv.getId() + ".", "Icon selected");
                 }
-                selectedDeck = iv.getId();
-                System.out.println(selectedDeck);
+                DeckFXMLController.selectDeck(iv.getId());
+                lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
             });
             gpDecks.setHalignment(ivDeck, HPos.CENTER);
             gpDecks.add(ivDeck, i, j);
-            
+
             gpDecks.setHalignment(deckNameLabel, HPos.CENTER);
             gpDecks.setValignment(deckNameLabel, VPos.BOTTOM);
             gpDecks.add(deckNameLabel, i, j);
 
             i++;
             l++;
-            
-            if(i == 2){
+
+            if (i == 2) {
                 i = 0;
                 j = 1;
             }
         }
-        
+
+    }
+
+    static public void selectDeck(String name) {
+        for (Deck deck : decks) {
+            System.out.println(name);
+            System.out.println(deck.getName());
+            if (deck.getName() == null ? name == null : deck.getName().equals(name)) {
+                selectedDeck = deck;
+            }
+        }
     }
 }

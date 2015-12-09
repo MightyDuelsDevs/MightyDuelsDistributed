@@ -4,16 +4,18 @@ import java.util.List;
 import Shared.Domain.Card;
 import java.io.Serializable;
 import java.util.ArrayList;
+
 /**
  * An container for Cards methods to pull cards
  */
-public class Deck implements Serializable{
+public class Deck implements Serializable {
 
     private String name;
     private final ArrayList<Card> cards;
 
     private int first;
     private int last;
+    private int id;
 
     /**
      * Create a new instance of Deck with no cards
@@ -27,7 +29,8 @@ public class Deck implements Serializable{
      *
      * @param name the name of the deck
      */
-    public Deck(String name) {
+    public Deck(int id, String name) {
+        this.id = id;
         this.name = name;
         cards = new ArrayList<>();
     }
@@ -61,6 +64,15 @@ public class Deck implements Serializable{
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Get the id of the deck
+     *
+     * @return the id of the deck
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**

@@ -75,7 +75,7 @@ public interface IMainScreenProvider extends Remote {
      * @return  true if successful
      * false if something went wrong
      */
-    public boolean removeDeck(String token, String name) throws RemoteException;
+    public boolean removeDeck(String token, int id) throws RemoteException;
 
     /**
      * Get a player by their token
