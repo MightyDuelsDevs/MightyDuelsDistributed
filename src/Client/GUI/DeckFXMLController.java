@@ -9,7 +9,6 @@ import Client.Controller.SoundController;
 import Client.Controller.StageController;
 import Client.Domain.Game;
 import Shared.Domain.Deck;
-import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -17,7 +16,14 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
@@ -28,9 +34,10 @@ public class DeckFXMLController implements Initializable {
 
     private Game game;
     private List<Deck> decks;
+    private static String selectedDeck = "";
     
     /**
-     * Initializes the controller class.
+     * Initialises the controller class.
      */
 
     @FXML
@@ -39,6 +46,8 @@ public class DeckFXMLController implements Initializable {
     @FXML
     private Button btnPlay;
 
+    @FXML
+    private GridPane gpDecks;
     //Variables for playing sound.
     private final String buttonPressFilePath = "src/Sound/buttonPress.wav";
 
@@ -65,9 +74,40 @@ public class DeckFXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         game = Game.getInstance();
         decks = game.getDecks(game.getToken());
-        for(Deck deck : decks){
-            System.out.println(deck.getName());
-        }
-    }
+        
+        final ToggleGroup tg = new ToggleGroup();
+        int l = 1; // ID
+        int i = 0; // Collomn
+        int j = 0; // Row
+        for (Deck deck : decks) {
+            // Icon Image
+            Image image = new Image("/Client/Resources/Images/card stack.png", 160, 230, false, false);
+            ImageView ivDeck = new ImageView(image);
+            Label deckNameLabel = new Label(deck.getName());
+            ivDeck.setId("" + deck.getName());
+            ivDeck.setOnMouseClicked((javafx.scene.input.MouseEvent event) -> {
+                ImageView iv = (ImageView) event.getSource();
+                if (selectedDeck != iv.getId()) {
+                    //TODO sc.popup("Error", false, "You have selected Icon number: " + iv.getId() + ".", "Icon selected");
+                }
+                selectedDeck = iv.getId();
+                System.out.println(selectedDeck);
+            });
+            gpDecks.setHalignment(ivDeck, HPos.CENTER);
+            gpDecks.add(ivDeck, i, j);
+            
+            gpDecks.setHalignment(deckNameLabel, HPos.CENTER);
+            gpDecks.setValignment(deckNameLabel, VPos.BOTTOM);
+            gpDecks.add(deckNameLabel, i, j);
 
+            i++;
+            l++;
+            
+            if(i == 2){
+                i = 0;
+                j = 1;
+            }
+        }
+        
+    }
 }
