@@ -31,26 +31,39 @@ public class PopUpController implements Initializable {
     private Button btYes;
     @FXML
     private Button btNo;
-    
-    
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
     }
-    
+
+    public void setContent(String title, boolean yesNo, String text) {
+       // tfTitel.setText(title);
+        //tfText.setText(text);
+        if (yesNo) {
+            btYes.setVisible(true);
+            btNo.setVisible(true);
+            btOk.setVisible(false);
+        } else {
+            btYes.setVisible(false);
+            btNo.setVisible(false);
+            btOk.setVisible(true);
+        }
+    }
+
     @FXML
     private void btnOk_OnClick(ActionEvent event) throws IOException {
 
     }
-    
+
     @FXML
     private void btnYes_OnClick(ActionEvent event) throws IOException {
 
     }
-    
+
     @FXML
     private void btnNo_OnClick(ActionEvent event) throws IOException {
 
