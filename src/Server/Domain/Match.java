@@ -128,6 +128,18 @@ public class Match {
 
             //log.info("Remove dead minions");
         //remove dead minions
+        p1min.forEach((m)->{
+            if(m.getHitPoints()<=0){
+                player1.getSocket().setHealth(true, p1min.indexOf(m)==0?1:2, 0);
+                player2.getSocket().setHealth(false, p1min.indexOf(m)==0?1:2, 0);
+            }
+        });
+        p2min.forEach((m)->{
+            if(m.getHitPoints()<=0){
+                player1.getSocket().setHealth(false, p2min.indexOf(m)==0?1:2, 0);
+                player2.getSocket().setHealth(true, p2min.indexOf(m)==0?1:2, 0);
+            }
+        });
         p1min.removeIf((m) -> m.getHitPoints() <= 0);
         p2min.removeIf((m) -> m.getHitPoints() <= 0);
 
@@ -221,8 +233,6 @@ public class Match {
             player1.getSocket().setHealth(false, i+1, hero2.getMinions().get(i).getHitPoints());
             player2.getSocket().setHealth(true, i+1, hero2.getMinions().get(i).getHitPoints());
         }
-        
-        //todo dead minions
         
         //Matthijs
         turns++;
