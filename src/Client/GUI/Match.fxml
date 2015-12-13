@@ -70,5 +70,6 @@
         <RowConstraints maxHeight="336.0" minHeight="10.0" prefHeight="308.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
+      <Label fx:id="lblDamageVisualisation" layoutX="213.0" layoutY="708.0" text="Damage Visualisation" textFill="#faff05" />
   </children>
 </AnchorPane>

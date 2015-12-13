@@ -6,6 +6,7 @@
 package Client.GUI;
 
 import Client.Controller.SoundController;
+import Client.Controller.StageController;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
 import Shared.Domain.HeroCard;
@@ -17,6 +18,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -34,6 +36,7 @@ public class MatchController implements Initializable {
     @FXML private GridPane gridOpponentSide;
     @FXML private ImageView btnEndTurn;
     @FXML private ImageView btnConcede;
+    @FXML private Label lblDamageVisualisation;
     
     private MinionCard minion1;
     private MinionCard minion2;
@@ -151,6 +154,13 @@ public class MatchController implements Initializable {
             //Todo  implement concede button
             SoundController.play(SoundController.SoundFile.BUTTONPRESS);
             System.out.println("2");
+        });
+        
+        lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                StageController.getInstance().dmgPopup("Damage Visualisation", true, "-", "-");
+            }
         });
     }
 }

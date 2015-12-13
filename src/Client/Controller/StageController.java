@@ -130,4 +130,31 @@ public class StageController {
             }
         });
     }
+    
+    public void dmgPopup(String title, boolean show, String a, String b) {
+        title = title == null ? "Mighty Duels" : title;
+
+        Stage popUpStage = new Stage();
+        popUpStage.setTitle(title);
+        
+            Platform.runLater(() -> {
+                try {
+                    Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
+                    Scene scene = new Scene(root);
+
+                    //popUpStage.initStyle(StageStyle.UNDECORATED);
+                    //popUpStage.initModality(Modality.WINDOW_MODAL);
+                    popUpStage.initOwner(stage.getScene().getWindow());
+                    popUpStage.setScene(scene);
+                    popUpStage.centerOnScreen();
+                    if (show) {
+                    popUpStage.show();
+                    }else {
+                        popUpStage.close();
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+    }
 }
