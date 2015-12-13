@@ -163,9 +163,9 @@ public class Game {
         }
     }
 
-    public boolean addDeck(String token, List<Card> cards, String name) {
+    public boolean addDeck(String token, String name) {
         try {
-            return client.addDeck(token, cards, name);
+            return client.addDeck(token, name);
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return false;

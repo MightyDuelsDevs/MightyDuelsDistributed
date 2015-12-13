@@ -13,6 +13,7 @@ import Shared.Domain.MinionCard;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -213,14 +214,21 @@ public class CardDeckController {
         return true;
     }
 
-    public static boolean addDeck(int playerID, List<Card> cards, String deckName) {
+    public static boolean addDeck(int playerID, String deckName) {
         String cardString = "";
 
+        List<Card> cards = new ArrayList();
+        Random random = new Random();
+        
+        for(int i = 0; i < 30; i++){
+            cards.add(allCards.get(random.nextInt(allCards.size())));
+        }
+        
         for (Card card : cards) {
-            cardString += card.getId() + ", ";
+            cardString += ", " + card.getId();
         }
 
-        String statement = String.format("INSERT INTO DECK VALUES(null, %1$s, %2$s %3$s)", playerID, deckName, cardString);
+        String statement = String.format("INSERT INTO DECK VALUES(null, %1$s, '%2$s' %3$s)", playerID, deckName, cardString);
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);

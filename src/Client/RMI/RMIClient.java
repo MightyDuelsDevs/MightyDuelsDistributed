@@ -108,8 +108,8 @@ public class RMIClient {
         return mainScreenProvider.setIcons(token, iconID);
     }
 
-    public boolean addDeck(String token, List<Card> cards, String name) throws RemoteException {
-        return mainScreenProvider.addDeck(token, cards, name);
+    public boolean addDeck(String token, String name) throws RemoteException {
+        return mainScreenProvider.addDeck(token, name);
     }
 
     public boolean removeDeck(String token, int id) throws RemoteException {

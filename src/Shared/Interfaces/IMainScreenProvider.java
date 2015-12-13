@@ -66,7 +66,7 @@ public interface IMainScreenProvider extends Remote {
      * @return true if successful
      * false if something went wrong
      */
-    public boolean addDeck(String token, List<Card> cards, String name) throws RemoteException;
+    public boolean addDeck(String token, String name) throws RemoteException;
 
     /**
      * Remove a deck so that is will not show anymore

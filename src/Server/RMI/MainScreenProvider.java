@@ -76,9 +76,9 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
     }
 
     @Override
-    public boolean addDeck(String token, List<Card> cards, String name) {
+    public boolean addDeck(String token, String name) {
         PlayerShared player = loginProvider.getPlayerFromToken(token);
-        return CardDeckController.addDeck(player.getId(), cards, name);
+        return CardDeckController.addDeck(player.getId(), name);
     }
 
     @Override

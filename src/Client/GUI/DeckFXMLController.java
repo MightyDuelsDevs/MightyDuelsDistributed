@@ -85,6 +85,10 @@ public class DeckFXMLController implements Initializable {
     private void btnCreateDeck_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
+        if(decks.size() < 4){
+            game.addDeck(game.getToken(), tfDeckName.getText());
+        }
+        //TODO pop-up for to much decks.
         String title = "Mighty Duels";
         String root = "DeckFXML.fxml";
         StageController.getInstance().navigate(root, title);
@@ -94,7 +98,6 @@ public class DeckFXMLController implements Initializable {
     private void btnRemoveDeck_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
-        System.out.println("tetetetetetetetet");
         game.removeDeck(game.getToken(), selectedDeck.getId());
 
         String title = "Mighty Duels";
@@ -150,8 +153,6 @@ public class DeckFXMLController implements Initializable {
 
     static public void selectDeck(String name) {
         for (Deck deck : decks) {
-            System.out.println(name);
-            System.out.println(deck.getName());
             if (deck.getName() == null ? name == null : deck.getName().equals(name)) {
                 selectedDeck = deck;
             }
