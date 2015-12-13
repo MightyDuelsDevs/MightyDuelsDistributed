@@ -31,7 +31,7 @@ public class HeroControl {
     }
 
     public AnchorPane getHeroControl() {
-        ImageView img = new ImageView("/Client/Images/I" + player.getIconId() + ".png");
+        ImageView img = new ImageView("/Client/Resources/Images/I" + player.getIconId() + ".png");
 
         img.setFitWidth(225 - 80);
         img.setFitHeight(225 - 80);
