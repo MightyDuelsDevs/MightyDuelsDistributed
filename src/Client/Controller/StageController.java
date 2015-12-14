@@ -139,6 +139,10 @@ public class StageController {
         });
     }
 
+    public void closePopUp() {
+        popUpStage.close();
+    }
+
     public void dmgPopup(String physicalDamageYou, String physicalBlockYou, String magicalDamageYou, String magicalBlockYou, String healingYou, String resultYou, String physicalDamageEnemy, String physicalBlockEnemy, String magicalDamageEnemy, String magicalBlockEnemy, String healingEnemy, String resultEnemy) {
         Stage popUpStage = new Stage();
         StageController.physicalDamageYou = physicalDamageYou;
@@ -153,7 +157,7 @@ public class StageController {
         StageController.magicalBlockEnemy = magicalBlockEnemy;
         StageController.healingEnemy = healingEnemy;
         StageController.resultEnemy = resultEnemy;
-        
+
         Platform.runLater(() -> {
             try {
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
