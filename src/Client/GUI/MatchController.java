@@ -7,15 +7,20 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
 import Shared.Domain.HeroCard;
 import Shared.Domain.PlayerShared;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -33,6 +38,12 @@ import javafx.scene.layout.GridPane;
  */
 public class MatchController implements Initializable {
 
+    private static byte[] loginHash;
+
+    public static void setHash(byte[] hash) {
+        loginHash = hash;
+    }
+
     @FXML
     private GridPane gridPlayedCards;
     @FXML
@@ -48,10 +59,10 @@ public class MatchController implements Initializable {
     @FXML
     private Label lblDamageVisualisation;
 
-    private MinionCard minion1;
-    private MinionCard minion2;
-    private MinionCard minion3;
-    private MinionCard minion4;
+    private CardControl minion1;
+    private CardControl minion2;
+    private CardControl minion3;
+    private CardControl minion4;
     private HeroCard heroCard;
 
     private HeroControl hero1;
@@ -60,63 +71,168 @@ public class MatchController implements Initializable {
     private ArrayList<CardControl> cardChoice;
     private ArrayList<CardControl> yourMinions;
     private ArrayList<CardControl> opponentsMinions;
-    
+
+    private SocketManager client;
     private Timer timer;
-    
+    private int sec;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        client = new SocketManager(this);
         initializeButtons();
-        
-        this.timer = new Timer();
-        
-        timer.schedule(new TimerTask() {
 
-            @Override
-            public void run() {
-                //
-            }
-        }, 1*1000, 1*1000);
-        
+        System.out.println("Connecting to LocalHost");
+
+        try {
+            client.Connect("localhost");
+        } catch (IOException ex) {
+            Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
+
+            //todo back to main screen and error message
+        }
+
+        System.out.println("Identifying");
+
+        client.connect();
+
+        System.out.println("Sending Hash...");
+
+        if (!client.login(loginHash)) {
+            System.out.println("Error can't login!");
+            //todo error logging in, show and back to main
+        }
+        System.out.println("OK!");
         cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
-        hero1 = new HeroControl(50, new PlayerShared(1, "Loek", 1, 1, 1, 1, 1));
-        hero2 = new HeroControl(50, new PlayerShared(2, "Rick", 1, 1, 1, 1, 1));
+        hero1 = new HeroControl(50, new PlayerShared(1, "Loek", 1, 1, 1, 1, 1));//todo own settings
+
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
-        //gridOpponentSide.add(hero2.getHeroControl(), 5, 0);
 
-        minion1 = new MinionCard(1, "test1", "", "", 1, 0, 10);
-        minion2 = new MinionCard(2, "test2", "", "", 0, 1, 10);
-        minion3 = new MinionCard(3, "test3", "", "", 1, 0, 10);
-        minion4 = new MinionCard(4, "test4", "", "", 0, 1, 10);
-        heroCard = new HeroCard(1, "spell", "", "", 1, 1, 1, 1, 0);
-
-        cardChoice.add(new CardControl(minion1));
-        cardChoice.add(new CardControl(minion2));
-        cardChoice.add(new CardControl(minion3));
-        cardChoice.add(new CardControl(minion4));
-        cardChoice.add(new CardControl(heroCard));
-
-        cardChoice.get(0).setEventHandler(pickCard(cardChoice.get(0)));
-        cardChoice.get(1).setEventHandler(pickCard(cardChoice.get(1)));
-        cardChoice.get(2).setEventHandler(pickCard(cardChoice.get(2)));
-        cardChoice.get(3).setEventHandler(pickCard(cardChoice.get(3)));
-
-        yourMinions.add(cardChoice.get(0));
-        yourMinions.add(cardChoice.get(1));
-        opponentsMinions.add(cardChoice.get(2));
-        opponentsMinions.add(cardChoice.get(3));
-
-        placeMinionCards();
-
-        opponentsMinions.set(1, new CardControl(new MinionCard(3, "veranderd", "", "", 1, 1, 8)));
-        placeMinionCards();
+//        minion1 = new MinionCard(1, "test1", "", "", 1, 0, 10);
+//        minion2 = new MinionCard(2, "test2", "", "", 0, 1, 10);
+//        minion3 = new MinionCard(3, "test3", "", "", 1, 0, 10);
+//        minion4 = new MinionCard(4, "test4", "", "", 0, 1, 10);
+//        heroCard = new HeroCard(1, "spell", "", "", 1, 1, 1, 1, 0);
+//        cardChoice.add(new CardControl(minion1));
+//        cardChoice.add(new CardControl(minion2));
+//        cardChoice.add(new CardControl(minion3));
+//        cardChoice.add(new CardControl(minion4));
+//        cardChoice.add(new CardControl(heroCard));
+//        cardChoice.get(0).setEventHandler(pickCard(cardChoice.get(0)));
+//        cardChoice.get(1).setEventHandler(pickCard(cardChoice.get(1)));
+//        cardChoice.get(2).setEventHandler(pickCard(cardChoice.get(2)));
+//        cardChoice.get(3).setEventHandler(pickCard(cardChoice.get(3)));
+//        yourMinions.add(cardChoice.get(0));
+//        yourMinions.add(cardChoice.get(1));
+//        opponentsMinions.add(cardChoice.get(2));
+//        opponentsMinions.add(cardChoice.get(3));
+//        placeMinionCards();        
+//        opponentsMinions.set(1, new CardControl(new MinionCard(3, "veranderd", "", "", 1, 1, 8)));
+//        placeMinionCards();
         //drawCards();
     }
 
     ;
     
+    public void searchingMatch() {
+        this.timer = new Timer();
+        sec = 10;
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    StageController sc = StageController.getInstance();
+                    if (sec == 10) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec > 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec == 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
+                        sec--;
+                    } else if (sec == 0) {
+                        sc.popup("Searching for a match", false, " next try in: now");
+                        sec--;
+                    } else if (sec < 0) {
+                        sc.closePopUp();
+                        sec = 10;
+                        this.cancel();
+                    }
+                });
+            }
+        }, 0, 1 * 1000);
+    }
+
+    public void setOpponent(String name, int iconId) {
+        hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
+        gridOpponentSide.add(hero2.getHeroControl(), 5, 0);
+    }
+
+    public void turnEnd(int cardId) {
+        //getCard(cardId);
+    }
+
+    public void addMinion(int id, int boardId) {
+        CardControl card = null;// = new CardControl(getCard(CardId));
+        switch (boardId) {
+            case 1:
+                minion1 = card;
+                yourMinions.add(card);
+                break;
+            case 2:
+                minion2 = card;
+                yourMinions.add(card);
+                break;
+            case 3:
+                minion3 = card;
+                opponentsMinions.add(card);
+                break;
+            case 4:
+                minion4 = card;
+                opponentsMinions.add(card);
+                break;
+            default:
+                //todo error
+                break;
+        }
+    }
+
+    public void setHealth(boolean self, boolean hero, int id, int health) {
+        if (self) {
+            if (hero) {
+                hero1.setHealth(health);
+            } else {
+                if (id == 1) {
+                    minion1.setHealth(health);
+                } else {
+                    minion2.setHealth(health);
+                }
+            }
+        } else {
+            if (hero) {
+                hero2.setHealth(health);
+            } else {
+                if (id == 1) {
+                    minion3.setHealth(health);
+                } else {
+                    minion4.setHealth(health);
+                }
+            }
+        }
+    }
+
+    public void newTurn(int card1, int card2, int card3) {
+        cardChoice.clear();
+        //cardChoice.add(new CardControl(getCard(card1)));
+        //cardChoice.add(new CardControl(getCard(card2)));
+        //cardChoice.add(new CardControl(getCard(card3)));
+
+        drawCards();
+    }
+
     private void drawCards() {
 
         for (int i = 0; i < 3; i++) {
@@ -128,12 +244,33 @@ public class MatchController implements Initializable {
         }
     }
 
+    public void win() {
+        //todo
+        System.out.println("YAY");
+    }
+
+    public void lose() {
+        //todo
+        System.out.println("BOE!");
+    }
+
+    public void tie() {
+        //todo
+        System.out.println("Meh");
+    }
+
     private EventHandler pickCard(CardControl cardControl) {
         EventHandler handler = new EventHandler() {
 
             @Override
             public void handle(Event event) {
                 System.out.println(cardControl.getCard().getName());
+                try {
+                    client.setCard(cardControl.getCard().getId());
+                } catch (Exception ex) {
+                    Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
+                    //todo fatal?
+                }
                 if (cardControl.getCard() instanceof HeroCard) {
 
                     gridChooseCard.getChildren().clear();
@@ -142,7 +279,7 @@ public class MatchController implements Initializable {
                     if (yourMinions.size() < 2) {
 
                         gridChooseCard.getChildren().clear();
-                        yourMinions.add(cardControl);
+                        //yourMinions.add(cardControl);
                         placeMinionCards();
                     }
                 }
@@ -160,7 +297,6 @@ public class MatchController implements Initializable {
             gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
         }
 
-        gridOpponentSide.getChildren().clear();
         for (int i = 0; i < opponentsMinions.size(); i++) {
             gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
         }
@@ -169,15 +305,13 @@ public class MatchController implements Initializable {
     //TODO button functionality
     private void initializeButtons() {
         btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
-            //Todo  implement end turn button
+            client.setFinished(true);
             SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-            System.out.println("1");
         });
 
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
-            //Todo  implement concede button
+            client.concede();
             SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-            System.out.println("2");
         });
 
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {

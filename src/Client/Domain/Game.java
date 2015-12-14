@@ -67,9 +67,14 @@ public class Game {
      * @param player
      * @return match creates a match with the param player
      */
-    public Match startMatch() {//TODO
-        this.match = new Match("token1", "token2");
-        return this.match;
+    public byte[] startMatch() {
+        //TODO
+        try{
+            return client.getNewMatch(token);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**

@@ -69,4 +69,13 @@ public class PopUpController implements Initializable {
         Stage stage = (Stage) btnNo.getScene().getWindow();
         stage.close();
     }
+    
+    public void reload(){
+        this.tfTitel.setText(StageController.title);
+        this.tfText.setText(StageController.text);
+
+        btnOk.setVisible(!StageController.yesNo);
+        btnYes.setVisible(StageController.yesNo);
+        btnNo.setVisible(StageController.yesNo);
+    }
 }

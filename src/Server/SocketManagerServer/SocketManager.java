@@ -9,10 +9,12 @@ import Server.Domain.Player;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -23,6 +25,8 @@ import java.util.logging.Logger;
  * @author Rick Rongen, www.R-Ware.tk
  */
 public class SocketManager {
+    
+    private static final Logger LOG = Logger.getLogger(SocketManager.class.getName());
     
     private static SocketManager instance = null;
     private Map<byte[],Player> playerMap;
@@ -72,7 +76,9 @@ public class SocketManager {
         while(!ss.isClosed()){
             Socket newClient;
             try {
+                LOG.info("Waiting for connection");
                 newClient = ss.accept();
+                LOG.info("New Connection! " + newClient.toString());
             } catch (IOException ex) {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo check if need to quit
@@ -98,7 +104,9 @@ public class SocketManager {
     }
     
     public Player getPlayer(byte[] token){
-        return playerMap.get(token);
+        Optional<byte[]> t = playerMap.keySet().stream().filter(k->Arrays.equals(k, token)).findFirst();
+        if(!t.isPresent())return null;
+        return playerMap.get(t.get());
     }
     
     public int activeConnections(){

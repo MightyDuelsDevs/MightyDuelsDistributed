@@ -29,6 +29,7 @@ public class CardControl {
     private final HeroCard heroCard;
     private final int width = 180;
     private EventHandler handler;
+    private Label lHealth;
     
     public CardControl(Card card){
         if(card instanceof MinionCard){
@@ -106,7 +107,7 @@ public class CardControl {
             lMAttack.setTextFill(Color.web("#FFFFFF"));
 
             //Hart x=148, y=441
-            Label lHealth = new Label(minionCard.getHitPoints() + "");
+            lHealth = new Label(minionCard.getHitPoints() + "");
             lHealth.setFont(font);
             lHealth.setLayoutX(145);
             lHealth.setLayoutY(200);
@@ -168,5 +169,9 @@ public class CardControl {
         root.getChildren().add(grImg);
         root.getChildren().add(pane);
         return root;
+    }
+    
+    public void setHealth(int hp){
+        lHealth.setText(hp+"");
     }
 }

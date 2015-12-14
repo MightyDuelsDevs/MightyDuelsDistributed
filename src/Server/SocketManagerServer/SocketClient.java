@@ -12,6 +12,7 @@ import Server.Domain.ITarget;
 import Server.Domain.Match;
 import Server.Domain.Minion;
 import Server.Domain.Player;
+import Server.Domain.WaitingPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -26,7 +27,8 @@ import java.util.logging.Logger;
  * @author Rick Rongen, www.R-Ware.tk
  */
 public class SocketClient {
-
+    private static final Logger LOG = Logger.getLogger(SocketClient.class.getName());
+    
     private Socket socket;
     
     private Player player;
@@ -70,6 +72,7 @@ public class SocketClient {
             //todo throw error
             return;
         }
+        
         while(socket.isConnected()){
             int input;
             try {
@@ -85,13 +88,14 @@ public class SocketClient {
                 //todo throw error
                 continue;
             }
-            connAccepted();
+            LOG.info("Command: " + input);
             switch(input){
                 case -1:
                     //todo read error
                     break;
                 case 0x01://login
-                    int hashlength = 0x100;//todo tbd
+                    LOG.info("Reading hash");
+                    int hashlength = 32;//todo tbd
                     byte[] hash = new byte[hashlength];
             
                     try {
@@ -99,6 +103,7 @@ public class SocketClient {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    LOG.info("Hash done");
 //                    StringBuilder sb = new StringBuilder();
 //                    for(byte d : hash){
 //                        String hex = Integer.toHexString(0xff & d);
@@ -111,12 +116,14 @@ public class SocketClient {
                         closed=true;
                         try {
                             socket.close();
+                            
                         } catch (IOException ex) {
                             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        return;
                     }
                     loginAccepted();
-                    Game.getInstance().addWaitingPlayer(player);
+                    new WaitingPlayer(player);
                     break;
                 case 0x02://set_card
                     int cardId;
@@ -261,6 +268,9 @@ public class SocketClient {
                     break;
                 case 0xFB:
                     //todo notify non fatal disconnection
+                    break;
+                default:
+                    LOG.info("Unkown command: " + input);
                     break;
             }
             
