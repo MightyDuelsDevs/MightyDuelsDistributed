@@ -8,11 +8,11 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.GUI.MatchController">
-    <children>
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Client.GUI.MatchController">
+  <children>
     <ImageView fitHeight="768.0" fitWidth="1024.0">
       <image>
-        <Image backgroundLoading="false" url="@../Resources/Images/AwesomeMightyduelsBord.png" />
+        <Image url="@../Resources/Images/AwesomeMightyduelsBord.png" backgroundLoading="false" />
       </image>
     </ImageView>
     <GridPane fx:id="gridPlayedCards" layoutX="327.0" prefHeight="768.0" prefWidth="401.0">
@@ -25,6 +25,11 @@
       </rowConstraints>
     </GridPane>
     <GridPane fx:id="gridOpponentSide" layoutX="79.0" layoutY="71.0" prefHeight="281.0" prefWidth="903.0">
+      <children>
+        <Button id="btnYourSide1" fx:id="btnOpponentside2" mnemonicParsing="false" onAction="#attackTarget" opacity="0.0" prefHeight="281.0000999999975" prefWidth="174.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <Button id="btnYourSide1" fx:id="btnOpponentSide1" mnemonicParsing="false" onAction="#attackTarget" opacity="0.0" prefHeight="281.0000999999975" prefWidth="174.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <Button mnemonicParsing="false" prefHeight="281.0" prefWidth="312.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+      </children>
       <columnConstraints>
         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="185.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="71.0" />
@@ -38,6 +43,10 @@
       </rowConstraints>
     </GridPane>
     <GridPane fx:id="gridYourSide" layoutX="35.0" layoutY="418.0" prefHeight="281.0" prefWidth="910.0">
+      <children>
+        <Button fx:id="btnYourSide1" mnemonicParsing="false" onAction="#attackTarget" opacity="0.0" prefHeight="281.0000999999975" prefWidth="174.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+        <Button id="btnYourSide1" fx:id="btnYourSide2" mnemonicParsing="false" onAction="#attackTarget" opacity="0.0" prefHeight="281.0000999999975" prefWidth="174.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+      </children>
       <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="221.0" />
         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="205.0" />
@@ -70,6 +79,6 @@
         <RowConstraints maxHeight="336.0" minHeight="10.0" prefHeight="308.0" vgrow="SOMETIMES" />
       </rowConstraints>
     </GridPane>
-      <Label fx:id="lblDamageVisualisation" layoutX="213.0" layoutY="708.0" text="Damage Visualisation" textFill="#faff05" />
+    <Label fx:id="lblDamageVisualisation" layoutX="213.0" layoutY="708.0" text="Damage Visualisation" textFill="#faff05" />
   </children>
 </AnchorPane>
