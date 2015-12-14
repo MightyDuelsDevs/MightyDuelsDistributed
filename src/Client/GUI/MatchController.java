@@ -14,6 +14,8 @@ import Shared.Domain.PlayerShared;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -51,9 +53,21 @@ public class MatchController implements Initializable {
     private ArrayList<CardControl> yourMinions;
     private ArrayList<CardControl> opponentsMinions;
     
+    private Timer timer;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeButtons();
+        
+        this.timer = new Timer();
+        
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                //
+            }
+        }, 1*1000, 1*1000);
         
         cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();

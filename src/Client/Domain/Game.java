@@ -32,7 +32,12 @@ public class Game {
      */
     public Game() {
         client = RMIClient.getInstance();
-        // Exists only to defeat instantiation.        
+        try {
+            cards = client.getCards();
+            // Exists only to defeat instantiation.        
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -180,8 +185,7 @@ public class Game {
             return false;
         }
     }
-    
-    
+
     public boolean setSelectedDeck(String token, int deckId) {
         try {
             return client.setSelectedDeck(token, deckId);
