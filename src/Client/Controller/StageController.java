@@ -144,7 +144,7 @@ public class StageController {
     }
 
     public void dmgPopup(String physicalDamageYou, String physicalBlockYou, String magicalDamageYou, String magicalBlockYou, String healingYou, String resultYou, String physicalDamageEnemy, String physicalBlockEnemy, String magicalDamageEnemy, String magicalBlockEnemy, String healingEnemy, String resultEnemy) {
-        Stage popUpStage = new Stage();
+        popUpStage = new Stage();
         StageController.physicalDamageYou = physicalDamageYou;
         StageController.physicalBlockYou = physicalBlockYou;
         StageController.magicalDamageYou = magicalDamageYou;
@@ -164,7 +164,7 @@ public class StageController {
                 Scene scene = new Scene(root);
 
                 popUpStage.initStyle(StageStyle.UNDECORATED);
-                popUpStage.initModality(Modality.WINDOW_MODAL);
+                //popUpStage.initModality(Modality.WINDOW_MODAL);
                 popUpStage.initOwner(stage.getScene().getWindow());
                 popUpStage.setScene(scene);
                 popUpStage.centerOnScreen();

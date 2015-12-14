@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -28,7 +29,15 @@
             <Button fx:id="btnDuel" alignment="BASELINE_CENTER" contentDisplay="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#btnDuel_OnClick" opacity="0.0" prefHeight="294.0" prefWidth="306.0" text="Duel" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
             <Button fx:id="btnNewDeck" alignment="BASELINE_CENTER" contentDisplay="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#btnNewDeck_OnClick" opacity="0.0" prefHeight="104.0" prefWidth="802.0" text="Nieuw Deck" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
             <Button fx:id="btnAccount" alignment="BASELINE_CENTER" contentDisplay="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#btnAccount_OnClick" opacity="0.0" prefHeight="104.0" prefWidth="802.0" text="Account" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-            <Button fx:id="btnLogOut" alignment="BASELINE_CENTER" contentDisplay="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#btnLogOut_OnClick" opacity="0.0" prefHeight="119.0" prefWidth="581.0" text="LogOut" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+            <Button fx:id="btnLogOut" alignment="BASELINE_CENTER" contentDisplay="CENTER" minWidth="100.0" mnemonicParsing="false" onAction="#btnLogOut_OnClick" opacity="0.0" prefHeight="86.0" prefWidth="581.0" text="LogOut" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="25.0" />
+               </GridPane.margin></Button>
+            <Button fx:id="btnTutorial" mnemonicParsing="false" onAction="#btnTutorial_OnClick" opacity="0.0" prefHeight="87.0" prefWidth="583.0" text="Tutorial" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets bottom="30.0" />
+               </GridPane.margin>
+            </Button>
          </children>
       </GridPane>
    </children>

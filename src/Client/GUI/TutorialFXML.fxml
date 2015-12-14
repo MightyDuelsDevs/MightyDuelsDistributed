@@ -7,29 +7,11 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="769.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Client.GUI.TutorialFXMLController">
+<AnchorPane id="AnchorPane" prefHeight="769.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.GUI.TutorialFXMLController">
   <children>
-    <ImageView fx:id="Imv1" fitHeight="769.0" fitWidth="1024.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-        <Image url="@../Resources/Images/Tutorial%20Screen.png" />
-      </image>
+    <ImageView fx:id="ImageViewTutorial" fitHeight="769.0" fitWidth="1024.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
     </ImageView>
-    <ImageView fx:id="Imv3" fitHeight="769.0" fitWidth="1024.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-        <Image url="@../Resources/Images/Tutorial%20Screen3.png" />
-      </image>
-    </ImageView>
-    <ImageView fx:id="Imv4" fitHeight="769.0" fitWidth="1024.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-        <Image url="@../Resources/Images/Tutorial%20Screen4.png" />
-      </image>
-    </ImageView>
-    <ImageView fx:id="Imv2" fitHeight="769.0" fitWidth="1024.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
-      <image>
-        <Image url="@../Resources/Images/Tutorial%20Screen3.png" />
-      </image>
-    </ImageView>
-    <Button fx:id="btnnextpage" layoutX="58.0" layoutY="591.0" mnemonicParsing="false" onMouseClicked="#btnnextpage_OnClick" text="Next page" />
-    <Button id="btn" fx:id="btnmainmenu" layoutX="86.0" layoutY="287.0" mnemonicParsing="false" onMouseClicked="#btnmainmenu_OnClick" text="Main menu" />
+    <Button fx:id="btnNextPage" layoutX="58.0" layoutY="591.0" mnemonicParsing="false" onAction="#btnNextPage_OnClick" text="Next page" />
+    <Button id="btn" fx:id="btnMainMenu" layoutX="86.0" layoutY="287.0" mnemonicParsing="false" onAction="#btnMainMenu_OnClick" text="Main menu" />
   </children>
 </AnchorPane>
