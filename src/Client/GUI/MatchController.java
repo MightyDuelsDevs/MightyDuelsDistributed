@@ -7,6 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
@@ -15,6 +16,8 @@ import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +28,10 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -37,7 +44,10 @@ import javafx.scene.layout.GridPane;
  * @author Matthijs
  */
 public class MatchController implements Initializable {
-
+    private static final int JE_MOEDER = -1000000000;
+    
+    private static final Logger LOG = Logger.getLogger(MatchController.class.getName());
+    
     private static byte[] loginHash;
 
     public static void setHash(byte[] hash) {
@@ -75,9 +85,13 @@ public class MatchController implements Initializable {
     private SocketManager client;
     private Timer timer;
     private int sec;
+    
+    private List<Card> allCards;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        allCards = Game.getInstance().getCards();
+        
         client = new SocketManager(this);
         initializeButtons();
 
@@ -167,8 +181,9 @@ public class MatchController implements Initializable {
     }
 
     public void setOpponent(String name, int iconId) {
+        LOG.info("Start match: " + name + " icon: " + iconId);
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
-        gridOpponentSide.add(hero2.getHeroControl(), 5, 0);
+        Platform.runLater(()->gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
 
     public void turnEnd(int cardId) {
@@ -180,19 +195,19 @@ public class MatchController implements Initializable {
         switch (boardId) {
             case 1:
                 minion1 = card;
-                yourMinions.add(card);
+                Platform.runLater(()->yourMinions.add(card));
                 break;
             case 2:
                 minion2 = card;
-                yourMinions.add(card);
+                Platform.runLater(()->yourMinions.add(card));
                 break;
             case 3:
                 minion3 = card;
-                opponentsMinions.add(card);
+                Platform.runLater(()->opponentsMinions.add(card));
                 break;
             case 4:
                 minion4 = card;
-                opponentsMinions.add(card);
+                Platform.runLater(()->opponentsMinions.add(card));
                 break;
             default:
                 //todo error
@@ -203,34 +218,45 @@ public class MatchController implements Initializable {
     public void setHealth(boolean self, boolean hero, int id, int health) {
         if (self) {
             if (hero) {
-                hero1.setHealth(health);
+                Platform.runLater(()->hero1.setHealth(health));
             } else {
                 if (id == 1) {
-                    minion1.setHealth(health);
+                    Platform.runLater(()->minion1.setHealth(health));
                 } else {
-                    minion2.setHealth(health);
+                    Platform.runLater(()->minion2.setHealth(health));
                 }
             }
         } else {
             if (hero) {
-                hero2.setHealth(health);
+                Platform.runLater(()->hero2.setHealth(health));
             } else {
                 if (id == 1) {
-                    minion3.setHealth(health);
+                    Platform.runLater(()->minion3.setHealth(health));
                 } else {
-                    minion4.setHealth(health);
+                    Platform.runLater(()->minion4.setHealth(health));
                 }
             }
         }
     }
 
     public void newTurn(int card1, int card2, int card3) {
-        cardChoice.clear();
-        //cardChoice.add(new CardControl(getCard(card1)));
-        //cardChoice.add(new CardControl(getCard(card2)));
-        //cardChoice.add(new CardControl(getCard(card3)));
-
-        drawCards();
+        LOG.info("New cards " + card1 + " "+ card2 + " "+ card3 + " ");
+        Platform.runLater(()->cardChoice.clear());
+        Optional<Card> cardO1,cardO2,cardO3;
+        cardO1 = allCards.stream().filter((c)->c.getId()==card1).findFirst();
+        cardO2 = allCards.stream().filter((c)->c.getId()==card2).findFirst();
+        cardO3 = allCards.stream().filter((c)->c.getId()==card3).findFirst();
+        
+        if(!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()){
+            //groot probleem!
+            System.exit(JE_MOEDER);
+        }
+        
+        cardChoice.add(new CardControl(cardO1.get()));
+        cardChoice.add(new CardControl(cardO2.get()));
+        cardChoice.add(new CardControl(cardO3.get()));
+        
+        Platform.runLater(()->drawCards());
     }
 
     private void drawCards() {
@@ -302,6 +328,28 @@ public class MatchController implements Initializable {
         }
     }
 
+    private void Mbox(String title, String header, String content) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        ButtonType buttonTypeOne = new ButtonType("Yes");
+        ButtonType buttonTypeTwo = new ButtonType("No");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo,buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne) {
+           client.concede();
+        } else if (result.get() == buttonTypeTwo) {
+            alert.close();
+        } else {
+            alert.close();
+        }
+    }
+
     //TODO button functionality
     private void initializeButtons() {
         btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
@@ -310,8 +358,8 @@ public class MatchController implements Initializable {
         });
 
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
-            client.concede();
-            SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+           // LOG.info("test");
+           Mbox("Concede","Concede screen", "Are you sure you wish to concede?");
         });
 
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {

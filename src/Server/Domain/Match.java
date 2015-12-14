@@ -277,6 +277,13 @@ public class Match {
                 }
             }
         }, 0,100);
+        timer.schedule(new TimerTask(){
+
+            @Override
+            public void run() {
+                startTurn();
+            }
+        }, 3000);
     }
 
     /**
@@ -330,6 +337,7 @@ public class Match {
      * Checks the match state and both players states and processes the turn.
      */
     public void startTurn() {
+        log.info("New Turn! " + player1.getUsername() + " " + player2.getUsername());
         determineGameState();
         hero1.pullCards();
         hero2.pullCards();

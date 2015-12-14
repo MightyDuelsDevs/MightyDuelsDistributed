@@ -69,6 +69,8 @@ public class SocketManager {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo to GUI?
             }
+            if(val!=DIEN_MAM)
+                LOG.info("Command: " + val);
             switch(val){
                 case DIEN_MAM:
                     //todo to GUI?
@@ -100,7 +102,9 @@ public class SocketManager {
                     }      
                     while(opponendName!=0x00){
                         if(opponendName == -1){
+                            LOG.info("Received NULL while reading oppenendName");
                             //todo throw error
+                            continue;
                         }
                         buf.put((byte)opponendName);
                         try {
