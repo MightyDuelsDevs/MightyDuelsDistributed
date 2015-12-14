@@ -47,7 +47,7 @@ import javafx.scene.layout.GridPane;
  */
 public class MatchController implements Initializable {
 
-    private static final int JE_MOEDER = -1000000000;
+    private static final int error = -1000000000;
 
     private int ownMinion = -1;
     private int opponentMinion = -1;
@@ -87,8 +87,6 @@ public class MatchController implements Initializable {
     private ArrayList<CardControl> opponentsMinions;
 
     private SocketManager client;
-    private Timer timer;
-    private int sec;
 
     private int cardID;
     private HeroCard myHeroCard;
@@ -126,67 +124,11 @@ public class MatchController implements Initializable {
         cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
-        hero1 = new HeroControl(50, new PlayerShared(1, "Loek", 1, 1, 1, 1, 1));//todo own settings
+        hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
 
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
-
-//        minion1 = new MinionCard(1, "test1", "", "", 1, 0, 10);
-//        minion2 = new MinionCard(2, "test2", "", "", 0, 1, 10);
-//        minion3 = new MinionCard(3, "test3", "", "", 1, 0, 10);
-//        minion4 = new MinionCard(4, "test4", "", "", 0, 1, 10);
-//        heroCard = new HeroCard(1, "spell", "", "", 1, 1, 1, 1, 0);
-//        cardChoice.add(new CardControl(minion1));
-//        cardChoice.add(new CardControl(minion2));
-//        cardChoice.add(new CardControl(minion3));
-//        cardChoice.add(new CardControl(minion4));
-//        cardChoice.add(new CardControl(heroCard));
-//        cardChoice.get(0).setEventHandler(pickCard(cardChoice.get(0)));
-//        cardChoice.get(1).setEventHandler(pickCard(cardChoice.get(1)));
-//        cardChoice.get(2).setEventHandler(pickCard(cardChoice.get(2)));
-//        cardChoice.get(3).setEventHandler(pickCard(cardChoice.get(3)));
-//        yourMinions.add(cardChoice.get(0));
-//        yourMinions.add(cardChoice.get(1));
-//        opponentsMinions.add(cardChoice.get(2));
-//        opponentsMinions.add(cardChoice.get(3));
-//        placeMinionCards();        
-//        opponentsMinions.set(1, new CardControl(new MinionCard(3, "veranderd", "", "", 1, 1, 8)));
-//        placeMinionCards();
-        //drawCards();
     }
-
-    ;
-    
-    public void searchingMatch() {
-        this.timer = new Timer();
-        sec = 10;
-        timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    StageController sc = StageController.getInstance();
-                    if (sec == 10) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
-                        sec--;
-                    } else if (sec > 1) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
-                        sec--;
-                    } else if (sec == 1) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
-                        sec--;
-                    } else if (sec == 0) {
-                        sc.popup("Searching for a match", false, " next try in: now");
-                        sec--;
-                    } else if (sec < 0) {
-                        sc.closePopUp();
-                        sec = 10;
-                        this.cancel();
-                    }
-                });
-            }
-        }, 0, 1 * 1000);
-    }
-
+ 
     public void setOpponent(String name, int iconId) {
         LOG.info("Start match: " + name + " icon: " + iconId);
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
@@ -196,8 +138,8 @@ public class MatchController implements Initializable {
     public void turnEnd(int cardId) {
         cardID = cardId;
         Optional<Card> card;
-        card = allCards.stream().filter((c)->c.getId()==cardID).findFirst();
-        if(!card.isPresent()){
+        card = allCards.stream().filter((c) -> c.getId() == cardID).findFirst();
+        if (!card.isPresent()) {
             //todo error
         }
         CardControl cc = new CardControl(card.get());
@@ -264,7 +206,7 @@ public class MatchController implements Initializable {
 
         if (!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()) {
             //groot probleem!
-            System.exit(JE_MOEDER);
+            System.exit(error);
         }
 
         cardChoice.add(new CardControl(cardO1.get()));
@@ -290,16 +232,16 @@ public class MatchController implements Initializable {
         alert.setTitle("You Won!");
         alert.setHeaderText("Whoho!");
         alert.setContentText("You have won!");
-        
+
         ButtonType buttonTypeOne = new ButtonType("OK");
-        
+
         alert.getButtonTypes().setAll(buttonTypeOne);
-        
+
         Optional<ButtonType> result = alert.showAndWait();
-        
+
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
-        
+
         //todo
         System.out.println("YAY");
     }
@@ -309,13 +251,13 @@ public class MatchController implements Initializable {
         alert.setTitle("You Lost!");
         alert.setHeaderText("Awh!");
         alert.setContentText("You have lost!");
-        
+
         ButtonType buttonTypeOne = new ButtonType("OK");
-        
+
         alert.getButtonTypes().setAll(buttonTypeOne);
-        
+
         Optional<ButtonType> result = alert.showAndWait();
-        
+
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
         System.out.println("BOE!");
@@ -326,13 +268,13 @@ public class MatchController implements Initializable {
         alert.setTitle("You played Tie!");
         alert.setHeaderText("Whoho!");
         alert.setContentText("You have played tie!");
-        
+
         ButtonType buttonTypeOne = new ButtonType("OK");
-        
+
         alert.getButtonTypes().setAll(buttonTypeOne);
-        
+
         Optional<ButtonType> result = alert.showAndWait();
-        
+
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
         System.out.println("Meh");

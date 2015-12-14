@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @author Rick Rongen, www.R-Ware.tk
  */
 public class SocketManager {
-    private static final int DIEN_MAM = -1;
+    private static final int error = -1;
     
     private static final Logger LOG = Logger.getLogger(SocketManager.class.getName());
     
@@ -62,17 +62,17 @@ public class SocketManager {
             return;
         }
         while(!socket.isClosed()){
-            int val = DIEN_MAM;
+            int val = error;
             try {
                 val = in.read();
             } catch (IOException ex) {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo to GUI?
             }
-            if(val!=DIEN_MAM)
+            if(val!=error)
                 LOG.info("Command: " + val);
             switch(val){
-                case DIEN_MAM:
+                case error:
                     //todo to GUI?
                     break;
                 case 0x01://CONN_ACCEPTED
