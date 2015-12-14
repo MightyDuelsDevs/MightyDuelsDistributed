@@ -32,10 +32,19 @@ public class CardDeckController {
         allCards = getAllCardsFromDB();
     }
 
+    /**
+     * Function that returns a Card at a certain index.
+     * @param index, index in the list of cards.
+     * @return returns a card that corresponds with the index of the list.
+     */
     public static Card getCard(int index) {
         return allCards.get(index);
     }
 
+    /**
+     * Function that returns all the cards.
+     * @return A list of cards that contains every single card.
+     */
     public static List<Card> getAllCards() {
         return allCards;
     }
@@ -198,8 +207,14 @@ public class CardDeckController {
         return decks;
     }
 
-    public static boolean removeDeck(int playerID, int deckId) {
-        String statement = String.format("DELETE FROM DECK WHERE PLAYERID = %1$s AND ID = %2$s", playerID, deckId);
+    /**
+     * A function that is used to remove a deck from the database.
+     * @param playerId, the ID of the player of whom a deck will be deleted.
+     * @param deckId, The ID of the deck that will be deleted.
+     * @return a boolean if the removal was successful.
+     */
+    public static boolean removeDeck(int playerId, int deckId) {
+        String statement = String.format("DELETE FROM DECK WHERE PLAYERID = %1$s AND ID = %2$s", playerId, deckId);
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);
@@ -214,6 +229,13 @@ public class CardDeckController {
         return true;
     }
 
+    /**
+     * Function that adds a deck to the database.
+     * This function will create a randomised deck and add it to the database.
+     * @param playerID, The player that created the deck.
+     * @param deckName, The name of the deck that will be created.
+     * @return a boolean if the addition was successful.
+     */
     public static boolean addDeck(int playerID, String deckName) {
         String cardString = "";
 
@@ -243,8 +265,14 @@ public class CardDeckController {
         return true;
     }
     
-     public static boolean setSelectedDeck(int playerID, int deckId) {
-        String statement = String.format("UPDATE PLAYER SET SELDECKID = %1$s WHERE ID = %2$s", deckId, playerID);
+    /**
+     * Function that selects a deck for a player in the database.
+     * @param playerId, The ID of the player that is selecting.
+     * @param deckId, The ID of the deck that the player selected.
+     * @return a boolean if the selection was successful.
+     */
+    public static boolean setSelectedDeck(int playerId, int deckId) {
+        String statement = String.format("UPDATE PLAYER SET SELDECKID = %1$s WHERE ID = %2$s", deckId, playerId);
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statement);

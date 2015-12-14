@@ -32,13 +32,13 @@ public class Game {
         return instance;
     }
 
-    public boolean findMatch(Player player) {
+    public synchronized boolean findMatch(Player player) {
         Player closestPlayer = null;
         for (Player p : waitingPlayers) {
             if (closestPlayer == null){
                 closestPlayer = p;
             }
-            else if(Math.abs(closestPlayer.getRating() - player.getRating()) > Math.abs(p.getRating() - player.getRating())){
+            else if(Math.abs(closestPlayer.getRating() - player.getRating()) > Math.abs(p.getRating() - player.getRating()) && !player.equals(p)){
                 closestPlayer = p;
             }
         }

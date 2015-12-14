@@ -7,6 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import Client.SocketManagerClient.SocketManager;
 import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
@@ -15,6 +16,7 @@ import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -44,11 +46,15 @@ import javafx.scene.layout.GridPane;
  * @author Matthijs
  */
 public class MatchController implements Initializable {
+    private static final int JE_MOEDER = -1000000000;
+    
 
     private int ownMinion = -1;
     private int opponentMinion = -1;
     private static byte[] loginHash;
     private static final Logger LOG = Logger.getLogger(MatchController.class.getName());
+    
+    private static byte[] loginHash;
 
     public static void setHash(byte[] hash) {
         loginHash = hash;
@@ -85,9 +91,13 @@ public class MatchController implements Initializable {
     private SocketManager client;
     private Timer timer;
     private int sec;
+    
+    private List<Card> allCards;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        allCards = Game.getInstance().getCards();
+        
         client = new SocketManager(this);
         initializeButtons();
 
@@ -177,6 +187,7 @@ public class MatchController implements Initializable {
     }
 
     public void setOpponent(String name, int iconId) {
+        LOG.info("Start match: " + name + " icon: " + iconId);
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
         Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
@@ -235,12 +246,23 @@ public class MatchController implements Initializable {
     }
 
     public void newTurn(int card1, int card2, int card3) {
-        Platform.runLater(() -> cardChoice.clear());
-        //cardChoice.add(new CardControl(getCard(card1)));
-        //cardChoice.add(new CardControl(getCard(card2)));
-        //cardChoice.add(new CardControl(getCard(card3)));
-
-        Platform.runLater(() -> drawCards());
+        LOG.info("New cards " + card1 + " "+ card2 + " "+ card3 + " ");
+        Platform.runLater(()->cardChoice.clear());
+        Optional<Card> cardO1,cardO2,cardO3;
+        cardO1 = allCards.stream().filter((c)->c.getId()==card1).findFirst();
+        cardO2 = allCards.stream().filter((c)->c.getId()==card2).findFirst();
+        cardO3 = allCards.stream().filter((c)->c.getId()==card3).findFirst();
+        
+        if(!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()){
+            //groot probleem!
+            System.exit(JE_MOEDER);
+        }
+        
+        cardChoice.add(new CardControl(cardO1.get()));
+        cardChoice.add(new CardControl(cardO2.get()));
+        cardChoice.add(new CardControl(cardO3.get()));
+        
+        Platform.runLater(()->drawCards());
     }
 
     private void drawCards() {

@@ -66,6 +66,7 @@ public class PlayerIconController {
      *
      * @param playerID the id of the player
      * @param iconID the id of the icon the player wants
+     * @return true if the update was successful.
      */
     public static boolean changePlayerIcon(int playerID, int iconID) {
         String statement = "UPDATE PLAYER SET ICONID = " + iconID + " WHERE ID = " + playerID;
@@ -221,7 +222,7 @@ public class PlayerIconController {
      * Creates a new player object from the database and puts it in a list for
      * future reference
      *
-     * @param displayname
+     * @param playerId
      * @return the instance of the player
      */
     public static Player createPlayerWithId(int playerId) {
@@ -269,6 +270,13 @@ public class PlayerIconController {
         return unlockedIcons;
     }
 
+    /**
+     * Function that updates the rating of two players in the database.
+     * @param playerOneId, The ID of the first player.
+     * @param playerTwoId, The ID of the second player.
+     * @param playerOneWon, true if the first player won.
+     * @return returns true if the update was successful.
+     */
     public static boolean updateRating(int playerOneId, int playerTwoId, boolean playerOneWon) {
         String statementOne;
         String statementTwo;
@@ -304,6 +312,11 @@ public class PlayerIconController {
         return true;
     }
 
+    /**
+     * Function that hashes an input string into a string.
+     * @param hashableValue, The value of the hashable string.
+     * @return A hashed string.
+     */
     public static String hashGenerator(String hashableValue) {
         StringBuilder sb = new StringBuilder();
         byte[] data = hashByteGenerator(hashableValue);
@@ -318,6 +331,11 @@ public class PlayerIconController {
         return sb.toString();
     }
 
+    /**
+     * Function that hashes an input string into a byte array.
+     * @param hashableValue, The value of the hashable string.
+     * @return A hashed byte array.
+     */
     public static byte[] hashByteGenerator(String hashableValue) {
         //source:
         //http://stackoverflow.com/a/25243174/2675935
