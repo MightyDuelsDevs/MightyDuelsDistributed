@@ -141,6 +141,7 @@ public class SocketManager {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    controller.turnEnd(opponendCard);
                     //todo check -1
                     //todo return the opponend card to the GUI
                     

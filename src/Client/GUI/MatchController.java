@@ -201,7 +201,7 @@ public class MatchController implements Initializable {
             //todo error
         }
         CardControl cc = new CardControl(card.get());
-        gridYourSide.add(cc.CardPane(), 1, 0);
+        Platform.runLater(()->gridOpponentSide.add(cc.CardPane(), 4, 0));
         //getCard(cardId);
     }
 
