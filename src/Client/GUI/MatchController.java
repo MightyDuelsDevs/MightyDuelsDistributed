@@ -65,6 +65,9 @@ public class MatchController implements Initializable {
     @FXML
     private Label lblDamageVisualisation;
 
+    private int cardID;
+    private HeroCard myHeroCard;
+    
     private CardControl minion1;
     private CardControl minion2;
     private CardControl minion3;
@@ -178,6 +181,7 @@ public class MatchController implements Initializable {
     }
 
     public void turnEnd(int cardId) {
+        cardID = cardId;
         //getCard(cardId);
     }
 
@@ -278,7 +282,7 @@ public class MatchController implements Initializable {
                     //todo fatal?
                 }
                 if (cardControl.getCard() instanceof HeroCard) {
-
+                    myHeroCard = (HeroCard)cardControl.getCard();
                     gridChooseCard.getChildren().clear();
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
                 } else if (cardControl.getCard() instanceof MinionCard) {
@@ -345,7 +349,10 @@ public class MatchController implements Initializable {
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                StageController.getInstance().dmgPopup("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+                CardControl cc = new CardControl(getCard(cardID));
+                HeroCard enemyCard = (HeroCard)cc.getCard();
+                
+                StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage()+"", myHeroCard.getPhysicalBlock()+"", myHeroCard.getMagicalDamage()+"", myHeroCard.getMagicalBlock()+"", myHeroCard.getHealValue()+"", "6", enemyCard.getPhysicalDamage()+"", enemyCard.getPhysicalBlock() +"", enemyCard.getMagicalDamage()+"", enemyCard.getMagicalBlock()+"", enemyCard.getHealValue()+"", "12");
             }
         });
         
