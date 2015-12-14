@@ -91,6 +91,7 @@ public class MatchController implements Initializable {
     private int sec;
 
     private int cardID;
+    private int hero1Hp, hero2Hp;
     private HeroCard myHeroCard;
 
     private List<Card> allCards;
@@ -233,7 +234,11 @@ public class MatchController implements Initializable {
     public void setHealth(boolean self, boolean hero, int id, int health) {
         if (self) {
             if (hero) {
-                Platform.runLater(() -> hero1.setHealth(health));
+                Platform.runLater(() -> {
+                    hero1.setHealth(health);
+                    hero1Hp = health;
+                });
+
             } else {
                 if (id == 1) {
                     Platform.runLater(() -> minion1.setHealth(health));
@@ -243,7 +248,10 @@ public class MatchController implements Initializable {
             }
         } else {
             if (hero) {
-                Platform.runLater(() -> hero2.setHealth(health));
+                Platform.runLater(() -> {
+                    hero2.setHealth(health);
+                    hero2Hp = health;
+                });
             } else {
                 if (id == 1) {
                     Platform.runLater(() -> minion3.setHealth(health));
@@ -462,7 +470,7 @@ public class MatchController implements Initializable {
                     CardControl cc = new CardControl(card.get());
                     HeroCard enemyCard = (HeroCard) cc.getCard();
 
-                    StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", "6", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", "12");
+                    StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", hero1Hp + "", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", hero2Hp + "");
                 }
             }
         });
