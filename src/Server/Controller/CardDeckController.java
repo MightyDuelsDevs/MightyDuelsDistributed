@@ -242,4 +242,20 @@ public class CardDeckController {
         }
         return true;
     }
+    
+     public static boolean setSelectedDeck(int playerID, int deckId) {
+        String statement = String.format("UPDATE PLAYER SET SELDECKID = %1$s WHERE ID = %2$s", deckId, playerID);
+        try {
+            if (Database.checkConnection()) {
+                Database.DMLRecordIntoTable(statement);
+            } else {
+                System.out.println("Database connection is lost.");
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
 }

@@ -86,6 +86,12 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
         PlayerShared player = loginProvider.getPlayerFromToken(token);
         return CardDeckController.removeDeck(player.getId(), id);
     }
+    
+    @Override
+    public  boolean setSelectedDeck(String token, int deckId){
+        PlayerShared player = loginProvider.getPlayerFromToken(token);
+        return CardDeckController.setSelectedDeck(player.getId(), deckId);
+    }
 
     @Override
     public PlayerShared getPlayer(String token) {

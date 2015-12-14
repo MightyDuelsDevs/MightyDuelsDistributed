@@ -68,7 +68,7 @@ public class DeckFXMLController implements Initializable {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
         String title = "Let the Duel begin!!!";
-        String root = "GUIMatch.fxml";
+        String root = "Match.fxml";
         StageController.getInstance().navigate(root, title);
     }
 
@@ -132,6 +132,7 @@ public class DeckFXMLController implements Initializable {
                 }
                 DeckFXMLController.selectDeck(iv.getId());
                 lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
+                game.setSelectedDeck(game.getToken(), selectedDeck.getId());
             });
             gpDecks.setHalignment(ivDeck, HPos.CENTER);
             gpDecks.add(ivDeck, i, j);
