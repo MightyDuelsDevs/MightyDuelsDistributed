@@ -62,9 +62,6 @@ public class DamageDisplayFXMLController implements Initializable {
     @FXML
     private Label lblEnemyResult;
 
-    @FXML
-    private Button btnClose;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.lblYouPhysicalDamage.setText(StageController.physicalDamageYou);
@@ -79,17 +76,6 @@ public class DamageDisplayFXMLController implements Initializable {
         this.lblEnemyMagicalBlock.setText(StageController.magicalBlockEnemy);
         this.lblEnemyHealing.setText(StageController.healingEnemy);
         this.lblEnemyResult.setText(StageController.resultEnemy);
-    }
-
-    @FXML
-    private void btnClose_OnClick(ActionEvent event) throws IOException {
-        Stage stage = (Stage) btnClose.getScene().getWindow();
-        stage.close();
-    }
-    
-    public void close() {
-        Stage stage = (Stage) btnClose.getScene().getWindow();
-        stage.close();
     }
 
 }

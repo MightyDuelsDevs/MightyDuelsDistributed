@@ -12,6 +12,7 @@ import Server.Domain.ITarget;
 import Server.Domain.Match;
 import Server.Domain.Minion;
 import Server.Domain.Player;
+import Server.Domain.WaitingPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -87,14 +88,14 @@ public class SocketClient {
                 //todo throw error
                 continue;
             }
-            LOG.info("Command: " + input);
+            //LOG.info("Command: " + input);
             switch(input){
                 case -1:
                     //todo read error
                     break;
                 case 0x01://login
                     LOG.info("Reading hash");
-                    int hashlength = 0x100;//todo tbd
+                    int hashlength = 32;//todo tbd
                     byte[] hash = new byte[hashlength];
             
                     try {
@@ -115,12 +116,15 @@ public class SocketClient {
                         closed=true;
                         try {
                             socket.close();
+                            
                         } catch (IOException ex) {
                             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        return;
                     }
                     loginAccepted();
-                    Game.getInstance().addWaitingPlayer(player);
+                    player.setSocket(this);
+                    new WaitingPlayer(player);
                     break;
                 case 0x02://set_card
                     int cardId;
@@ -209,8 +213,8 @@ public class SocketClient {
                     accepted();
                     break;
                 case 0x05://Consede
-                    match.concede(hero);
                     accepted();
+                    match.concede(hero);
                     break;
                 case (byte)0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
@@ -240,10 +244,10 @@ public class SocketClient {
                     }
                     //todo send message to other client
                     break;
-                case (byte)0xE0://PING
+                case 0xE0://PING
                     pong();
                     break;
-                case (byte)0xE1://PONG
+                case 0xE1://PONG
                     synchronized(this){
                         notify();
                     }
@@ -377,7 +381,7 @@ public class SocketClient {
         byte[] data = new byte[usernameEncoded.length +4];
         data[0] = 0x04;
         System.arraycopy(usernameEncoded, 0, data, 1, usernameEncoded.length);
-        data[usernameEncoded.length]=0x00;
+        data[usernameEncoded.length+1]=0x00;
         System.arraycopy(int16Id, 0, data, usernameEncoded.length+1, 2);
         try {
             sendData(data);

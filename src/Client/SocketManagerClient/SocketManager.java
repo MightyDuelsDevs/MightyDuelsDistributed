@@ -69,6 +69,8 @@ public class SocketManager {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo to GUI?
             }
+            if(val!=DIEN_MAM)
+                LOG.info("Command: " + val);
             switch(val){
                 case DIEN_MAM:
                     //todo to GUI?
