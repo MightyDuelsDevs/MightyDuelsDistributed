@@ -196,6 +196,13 @@ public class MatchController implements Initializable {
 
     public void turnEnd(int cardId) {
         cardID = cardId;
+        Optional<Card> card;
+        card = allCards.stream().filter((c)->c.getId()==cardID).findFirst();
+        if(!card.isPresent()){
+            //todo error
+        }
+        CardControl cc = new CardControl(card.get());
+        gridYourSide.add(cc.CardPane(), 1, 0);
         //getCard(cardId);
     }
 
@@ -287,17 +294,55 @@ public class MatchController implements Initializable {
     }
 
     public void win() {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("You Won!");
+        alert.setHeaderText("Whoho!");
+        alert.setContentText("You have won!");
+        
+        ButtonType buttonTypeOne = new ButtonType("OK");
+        
+        alert.getButtonTypes().setAll(buttonTypeOne);
+        
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
+        client.nonFatalDisconnect();
+        
         //todo
         System.out.println("YAY");
     }
 
     public void lose() {
-        //todo
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("You Lost!");
+        alert.setHeaderText("Awh!");
+        alert.setContentText("You have lost!");
+        
+        ButtonType buttonTypeOne = new ButtonType("OK");
+        
+        alert.getButtonTypes().setAll(buttonTypeOne);
+        
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
+        client.nonFatalDisconnect();
         System.out.println("BOE!");
     }
 
     public void tie() {
-        //todo
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("You played Tie!");
+        alert.setHeaderText("Whoho!");
+        alert.setContentText("You have played tie!");
+        
+        ButtonType buttonTypeOne = new ButtonType("OK");
+        
+        alert.getButtonTypes().setAll(buttonTypeOne);
+        
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
+        client.nonFatalDisconnect();
         System.out.println("Meh");
     }
 
@@ -360,6 +405,7 @@ public class MatchController implements Initializable {
 
                         gridChooseCard.getChildren().clear();
                         //yourMinions.add(cardControl);
+                        gridYourSide.add(cardControl.CardPane(), 1, 0);
                         placeMinionCards();
                     }
                 }

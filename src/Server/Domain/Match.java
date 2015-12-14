@@ -127,21 +127,23 @@ public class Match {
 
             //log.info("Filter non hero attack, attack minions");
         //all not player attacks            
-        p1min.stream().filter((m) -> m.getITarget() != hero2).forEach((m) -> m.attack());//attack all not players
-        p2min.stream().filter((m) -> m.getITarget() != hero1).forEach((m) -> m.attack());//attack all not players
+        p1min.stream().filter((m) -> m.getITarget() != hero2).forEach((m) -> {
+            m.attack();});//attack all not players
+        p2min.stream().filter((m) -> m.getITarget() != hero1).forEach((m) -> {
+            m.attack();});//attack all not players
 
             //log.info("Remove dead minions");
         //remove dead minions
         p1min.forEach((m)->{
             if(m.getHitPoints()<=0){
-                player1.getSocket().setHealth(true, p1min.indexOf(m)==0?1:2, 0);
-                player2.getSocket().setHealth(false, p1min.indexOf(m)==0?1:2, 0);
+                player1.getSocket().setHealth(true, p1min.indexOf(m)==0?2:3, 0);
+                player2.getSocket().setHealth(false, p1min.indexOf(m)==0?2:3, 0);
             }
         });
         p2min.forEach((m)->{
             if(m.getHitPoints()<=0){
-                player1.getSocket().setHealth(false, p2min.indexOf(m)==0?1:2, 0);
-                player2.getSocket().setHealth(true, p2min.indexOf(m)==0?1:2, 0);
+                player1.getSocket().setHealth(false, p2min.indexOf(m)==0?2:3, 0);
+                player2.getSocket().setHealth(true, p2min.indexOf(m)==0?2:3, 0);
             }
         });
         p1min.removeIf((m) -> m.getHitPoints() <= 0);
@@ -218,11 +220,7 @@ public class Match {
             //Matthijs
         }
         log.info("Turn finished");
-        //todo here or somwere else?
-        determineGameState();
-        //Matthijs
-        hero1.setFinished(false);
-        hero2.setFinished(false);
+        
         
         player1.getSocket().setHealth(true, 1, hero1.getHitPoints());
         player1.getSocket().setHealth(false, 1, hero2.getHitPoints());
@@ -237,6 +235,12 @@ public class Match {
             player1.getSocket().setHealth(false, i+1, hero2.getMinions().get(i).getHitPoints());
             player2.getSocket().setHealth(true, i+1, hero2.getMinions().get(i).getHitPoints());
         }
+        
+        //todo here or somwere else?
+        determineGameState();
+        //Matthijs
+        hero1.setFinished(false);
+        hero2.setFinished(false);
         
         //Matthijs
         turns++;
@@ -286,6 +290,9 @@ public class Match {
                         Thread.sleep(1000);//wait a second before showing new cards
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Match.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if(gameState == GameState.Tie || gameState == GameState.Defined){
+                        timer.shutdown();
                     }
                     startTurn();
                 }
@@ -348,6 +355,7 @@ public class Match {
     public void startTurn() {
         log.info("New Turn! " + player1.getUsername() + " " + player2.getUsername());
         determineGameState();
+        
         hero1.pullCards();
         hero2.pullCards();
         //send all card ids
