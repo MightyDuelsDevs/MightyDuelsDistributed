@@ -68,7 +68,7 @@ public class DeckFXMLController implements Initializable {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
         String title = "Let the Duel begin!!!";
-        String root = "GUIMatch.fxml";
+        String root = "Match.fxml";
         StageController.getInstance().navigate(root, title);
     }
 
