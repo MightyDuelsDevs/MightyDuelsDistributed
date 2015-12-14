@@ -255,14 +255,14 @@ public class MatchController implements Initializable {
     }
 
     public void newTurn(int card1, int card2, int card3) {
-        LOG.info("New cards " + card1 + " "+ card2 + " "+ card3 + " ");
+        LOG.info("New cards " + card1 + " " + card2 + " " + card3 + " ");
         cardChoice.clear();
-        Optional<Card> cardO1,cardO2,cardO3;
-        cardO1 = allCards.stream().filter((c)->c.getId()==card1).findFirst();
-        cardO2 = allCards.stream().filter((c)->c.getId()==card2).findFirst();
-        cardO3 = allCards.stream().filter((c)->c.getId()==card3).findFirst();
-        
-        if(!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()){
+        Optional<Card> cardO1, cardO2, cardO3;
+        cardO1 = allCards.stream().filter((c) -> c.getId() == card1).findFirst();
+        cardO2 = allCards.stream().filter((c) -> c.getId() == card2).findFirst();
+        cardO3 = allCards.stream().filter((c) -> c.getId() == card3).findFirst();
+
+        if (!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()) {
             //groot probleem!
             System.exit(JE_MOEDER);
         }
@@ -457,15 +457,13 @@ public class MatchController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Optional<Card> card;
-                card = allCards.stream().filter((c)->c.getId()==cardID).findFirst();
-                if(!card.isPresent()){
-                    //todo error
+                card = allCards.stream().filter((c) -> c.getId() == cardID).findFirst();
+                if (card.isPresent()) {
+                    CardControl cc = new CardControl(card.get());
+                    HeroCard enemyCard = (HeroCard) cc.getCard();
+
+                    StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", "6", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", "12");
                 }
-                CardControl cc = new CardControl(card.get());
-                HeroCard enemyCard = (HeroCard) cc.getCard();
-
-                StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", "6", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", "12");
-
             }
         });
 
