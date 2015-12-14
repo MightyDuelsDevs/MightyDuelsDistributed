@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class PlayerIconController {
 
     static private List<Icon> icons;
+    static private int ratingMultiplier = 25;
 
     /**
      * Initialise the PlayerIcon Controller
@@ -62,6 +63,7 @@ public class PlayerIconController {
 
     /**
      * Change the icon of an player in the database
+     *
      * @param playerID the id of the player
      * @param iconID the id of the icon the player wants
      */
@@ -216,6 +218,41 @@ public class PlayerIconController {
     }
 
     /**
+     * Creates a new player object from the database and puts it in a list for
+     * future reference
+     *
+     * @param displayname
+     * @return the instance of the player
+     */
+    public static Player createPlayerWithId(int playerId) {
+        Player player = null;
+        String statement = "SELECT * FROM PLAYER WHERE ID = " + playerId;
+        try {
+            if (Database.checkConnection()) {
+                List<List> resultSet = Database.selectRecordFromTable(statement);
+
+                List<String> column = resultSet.get(0);
+
+                String username = column.get(3);
+                int id = Integer.parseInt(column.get(0));
+                int iconId = Integer.parseInt(column.get(1));
+                int rating = Integer.parseInt(column.get(5));
+                int wins = Integer.parseInt(column.get(7));
+                int losses = Integer.parseInt(column.get(8));
+                int matches = Integer.parseInt(column.get(6));
+
+                player = new Player(id, username, iconId, rating, wins, losses, matches);
+
+            } else {
+                System.out.println("Database connection is lost.");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return player;
+    }
+
+    /**
      * Function to get all the current unlocked icons
      *
      * @param rating Current rating of the player
@@ -223,7 +260,7 @@ public class PlayerIconController {
      */
     public static List<Icon> getIcons(int rating) {
         List<Icon> unlockedIcons = new ArrayList<>();
-        unlockedIcons.addAll(icons.stream().filter((i)->i.getRatingLock()<= rating).collect(Collectors.toList()));
+        unlockedIcons.addAll(icons.stream().filter((i) -> i.getRatingLock() <= rating).collect(Collectors.toList()));
 //        for (Icon icon : icons) {
 //            if (icon.getRatingLock() <= rating) {
 //                unlockedIcons.add(icon);
@@ -231,20 +268,57 @@ public class PlayerIconController {
 //        }
         return unlockedIcons;
     }
-    
-    public static String hashGenerator(String hashableValue){
+
+    public static boolean updateRating(int playerOneId, int playerTwoId, boolean playerOneWon) {
+        String statementOne;
+        String statementTwo;
+        
+        Player playerOne = createPlayerWithId(playerOneId);
+        Player playerTwo = createPlayerWithId(playerTwoId);
+        
+        //Player who won.
+        int newRatingOne = playerOne.getRating() - (int)((1 - 0.5/(1 + (10*Math.abs(playerOne.getRating() - playerTwo.getRating()))/400)) * ratingMultiplier);
+        //Player who lost.
+        int newRatingTwo = playerOne.getRating() - (int)((0 - 0.5/(1 + (10*Math.abs(playerOne.getRating() - playerTwo.getRating()))/400)) * ratingMultiplier);
+            
+        if (playerOneWon) {
+            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingOne, playerOneId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingTwo, playerTwoId);
+        } else {
+            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingOne, playerTwoId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingTwo, playerOneId);
+        }
+
+        try {
+            if (Database.checkConnection()) {
+                Database.DMLRecordIntoTable(statementOne);
+                Database.DMLRecordIntoTable(statementTwo);
+            } else {
+                System.out.println("Database connection is lost.");
+                return false;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+        return true;
+    }
+
+    public static String hashGenerator(String hashableValue) {
         StringBuilder sb = new StringBuilder();
         byte[] data = hashByteGenerator(hashableValue);
         //convert to an hex string with leading zero's
-        for(byte d : data){
+        for (byte d : data) {
             String hex = Integer.toHexString(0xff & d);
-            if(hex.length() == 1) sb.append('0');
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
             sb.append(hex);
         }
         return sb.toString();
     }
-    
-    public static byte[] hashByteGenerator(String hashableValue){
+
+    public static byte[] hashByteGenerator(String hashableValue) {
         //source:
         //http://stackoverflow.com/a/25243174/2675935
         try {
@@ -252,7 +326,7 @@ public class PlayerIconController {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(("MDPass" + hashableValue).getBytes("UTF-16"));
             byte[] data = md.digest();
-            
+
             return data;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             //schould never occure, if so the application runs in an unsupported Java VM or Operating system
