@@ -15,6 +15,7 @@ import Shared.Domain.PlayerShared;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +26,10 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -39,6 +44,7 @@ import javafx.scene.layout.GridPane;
 public class MatchController implements Initializable {
 
     private static byte[] loginHash;
+    private static final Logger LOG = Logger.getLogger(MatchController.class.getName());
 
     public static void setHash(byte[] hash) {
         loginHash = hash;
@@ -302,6 +308,28 @@ public class MatchController implements Initializable {
         }
     }
 
+    private void Mbox(String title, String header, String content) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        ButtonType buttonTypeOne = new ButtonType("Yes");
+        ButtonType buttonTypeTwo = new ButtonType("No");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo,buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne) {
+           client.concede();
+        } else if (result.get() == buttonTypeTwo) {
+            alert.close();
+        } else {
+            alert.close();
+        }
+    }
+
     //TODO button functionality
     private void initializeButtons() {
         btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
@@ -310,8 +338,8 @@ public class MatchController implements Initializable {
         });
 
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
-            client.concede();
-            SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+           // LOG.info("test");
+           Mbox("Concede","Concede screen", "Are you sure you wish to concede?");
         });
 
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
