@@ -138,9 +138,9 @@ public class Hero implements ITarget {
         List<Card> cardsInHand = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
-            int cardPosition = randomCard.nextInt(29);
+            int cardPosition = randomCard.nextInt(cards.size());
             cardsInHand.add(cards.get(cardPosition));
-            cards.remove(cardPosition);
+            //cards.remove(cardPosition);
         }
 
         this.setNewHand(cardsInHand);

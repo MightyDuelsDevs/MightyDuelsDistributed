@@ -35,6 +35,7 @@ public class Game {
     public synchronized boolean findMatch(Player player) {
         Player closestPlayer = null;
         for (Player p : waitingPlayers) {
+            if(p == player) continue;
             if (closestPlayer == null){
                 closestPlayer = p;
             }

@@ -241,7 +241,7 @@ public class MatchController implements Initializable {
 
     public void newTurn(int card1, int card2, int card3) {
         LOG.info("New cards " + card1 + " "+ card2 + " "+ card3 + " ");
-        Platform.runLater(()->cardChoice.clear());
+        cardChoice.clear();
         Optional<Card> cardO1,cardO2,cardO3;
         cardO1 = allCards.stream().filter((c)->c.getId()==card1).findFirst();
         cardO2 = allCards.stream().filter((c)->c.getId()==card2).findFirst();

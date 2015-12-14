@@ -10,6 +10,10 @@ import Shared.Domain.MinionCard;
 import Shared.Domain.HeroCard;
 import Shared.Domain.Deck;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.logging.Level;
 
 /**
@@ -31,7 +35,7 @@ public class Match {
     
     private boolean pingP1 = true;
 
-    Timer timer;
+    private ScheduledExecutorService timer;
 
     /**
      * check's the players health and updates the gamestate according to their
@@ -253,16 +257,26 @@ public class Match {
         player2.getSocket().setHero(hero2);
         player1.getSocket().newMatch(this, player2.getUsername(), player2.getIconId());
         player2.getSocket().newMatch(this, player1.getUsername(), player1.getIconId());
+        
+        log.info("New Turn! " + player1.getUsername() + " " + player2.getUsername());
         determineGameState();
-        timer = new Timer();
-        timer.schedule(new TimerTask(){
+        hero1.pullCards();
+        hero2.pullCards();
+        //send all card ids
+        player1.getSocket().newTurn(hero1.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
+        player2.getSocket().newTurn(hero2.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
+        
+        determineGameState();
+        timer = Executors.newScheduledThreadPool(1);
+        
+        timer.scheduleAtFixedRate(new Runnable(){
 
             @Override
             public void run() {
                 //ping one or the other to detect a dead connection
-                (pingP1 ? player1 : player2).getSocket().ping();
+                //(pingP1 ? player1 : player2).getSocket().ping();
                 
-                pingP1 = !pingP1;
+                //pingP1 = !pingP1;
                 
                 if (hero1.getFinished() && hero2.getFinished()) {
                     player1.getSocket().turnEnd(hero2.getCardPlayed().getId());
@@ -276,14 +290,9 @@ public class Match {
                     startTurn();
                 }
             }
-        }, 0,100);
-        timer.schedule(new TimerTask(){
-
-            @Override
-            public void run() {
-                startTurn();
-            }
-        }, 3000);
+        }, 0, 100, TimeUnit.MILLISECONDS);
+        
+        
     }
 
     /**

@@ -128,6 +128,7 @@ public class SocketClient {
                     new WaitingPlayer(player);
                     break;
                 case 0x02://set_card
+                    LOG.info("setCard");
                     int cardId;
                     try {
                         cardId = readInt16(in);
@@ -202,6 +203,7 @@ public class SocketClient {
                     break;
                     
                 case 0x04://set finished
+                    LOG.info("finished");
                     int finished;
                     try {
                         finished = in.read();
@@ -406,10 +408,7 @@ public class SocketClient {
         data[2]=int16[1];
         try {
             sendData(data);
-            synchronized(this){
-                wait();
-            }
-        } catch (IOException | InterruptedException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -426,10 +425,10 @@ public class SocketClient {
         data[3]=int16Card[1];
         try {
             sendData(data);
-            synchronized(this){
-                wait();
-            }
-        } catch (IOException | InterruptedException ex) {
+//            synchronized(this){
+//                wait();
+//            }
+        } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -442,11 +441,11 @@ public class SocketClient {
         data[1]=totalPos;
         data[2]=(byte)value;
         try {
-            sendData(data);
-            synchronized(this){
-                wait();
-            }
-        } catch (IOException | InterruptedException ex) {
+              sendData(data);
+//            synchronized(this){
+//                wait();
+//            }
+        } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -464,10 +463,10 @@ public class SocketClient {
         try {
             sendData(data);
             
-            synchronized(this){
-                wait();
-            }
-        } catch (IOException | InterruptedException ex) {
+//            synchronized(this){
+//                wait();
+//            }
+        } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -480,10 +479,10 @@ public class SocketClient {
         data[1] = (byte)win;
         try {
             sendData(data);
-            synchronized(this){
-                wait();
-            }
-        } catch (IOException | InterruptedException ex) {
+//            synchronized(this){
+//                wait();
+//            }
+        } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //fatal error
         }
@@ -563,6 +562,7 @@ public class SocketClient {
     }
     
     private synchronized void sendData(byte[] data) throws IOException{
+        LOG.info(Arrays.toString(data));
         socket.getOutputStream().write(data);
     }
 

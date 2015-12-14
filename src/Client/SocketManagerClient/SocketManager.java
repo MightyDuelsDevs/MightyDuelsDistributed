@@ -143,6 +143,7 @@ public class SocketManager {
                     }
                     //todo check -1
                     //todo return the opponend card to the GUI
+                    
                     break;
                 case 0x06://ADD_MINION
                     int boardLocation = -1;
@@ -166,6 +167,7 @@ public class SocketManager {
                     }catch(IOException ex){
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    LOG.info("set health " + character + " " + value);
                     if(character<1||value<1){
                         //todo throw error
                     }
@@ -175,7 +177,7 @@ public class SocketManager {
                     //self your side or other side
                     //minion if it is an minion
                     //minionId 1 or 2 for minion id
-                    controller.setHealth(self, minion, minionId, val);
+                    controller.setHealth(self, !minion, minionId, value);
                     break;
                 case 0x08://NEW_TURN
                     int card1 = -1,card2 = -1,card3 = -1;
@@ -190,7 +192,9 @@ public class SocketManager {
                     if(card1<0||card2<0||card3<0){
                         //throw error
                     }
+                    accepted();
                     controller.newTurn(card1, card2, card3);
+                    
                     break;
                 case 0x09://MATCH_END
                     int state = -1;
@@ -362,6 +366,7 @@ public class SocketManager {
     }
     
     public void setCard(int cardId) throws Exception{
+        LOG.info("setCard" + cardId);
         if(cardId>0xFFFF){
             throw new Exception("CardId out of range");
         }
@@ -407,6 +412,7 @@ public class SocketManager {
     }
     
     public void setFinished(boolean finished){
+        LOG.info("Finished!");
         if(!socket.isConnected()){
             //todo throw error
             return;
