@@ -9,10 +9,12 @@ import Server.Domain.Player;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -102,7 +104,12 @@ public class SocketManager {
     }
     
     public Player getPlayer(byte[] token){
-        return playerMap.get(token);
+        Optional<byte[]> key = playerMap.keySet().stream().filter((a->Arrays.equals(a, token))).findFirst();
+        if(key.isPresent()){
+            return playerMap.get(key.get());
+        }else{
+            return null;
+        }
     }
     
     public int activeConnections(){

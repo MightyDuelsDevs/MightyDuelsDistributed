@@ -252,12 +252,22 @@ public class SocketManager {
                 case 0xFA:
                     lastAccepted = false;
                     synchronized(this){ notifyAll();};
-                    //todo notify fatal disconnection
+                    try {
+                        socket.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    controller.closed(true);
                     break;
                 case 0xFB:
                     lastAccepted = false;
                     synchronized(this){ notifyAll();}
-                    //todo notify non fatal disconnection
+                    try {
+                        socket.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    controller.closed(true);
                     break;
                 default:
                     LOG.info("Unkown command: " + val);
@@ -475,6 +485,11 @@ public class SocketManager {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //socket dead
         }
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void nonFatalDisconnect(){
@@ -489,6 +504,11 @@ public class SocketManager {
         } catch (IOException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //socket dead
+        }
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
