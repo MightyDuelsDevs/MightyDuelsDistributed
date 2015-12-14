@@ -41,9 +41,11 @@ public class MainScreenFXMLController implements Initializable {
     private void btnDuel_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
         
-        String title = "Let the Duel begin!!!";
-        String root = "Match.fxml";
-        StageController.getInstance().navigate(root, title);
+        MatchController match = new MatchController();
+        match.searchingMatch();
+//        String title = "Let the Duel begin!!!";
+//        String root = "Match.fxml";
+//        StageController.getInstance().navigate(root, title);
     }
 
     @FXML

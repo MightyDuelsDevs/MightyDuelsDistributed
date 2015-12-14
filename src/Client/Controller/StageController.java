@@ -25,7 +25,7 @@ import javafx.stage.StageStyle;
  */
 public class StageController {
 
-    private Stage stage;
+    private Stage stage, popUpStage, oldPopUpStage;
     private static StageController instance;
 
     public static String title, text;
@@ -40,6 +40,7 @@ public class StageController {
 
     /**
      * Returns the main stage
+     *
      * @return
      */
     public Stage getStage() {
@@ -48,6 +49,7 @@ public class StageController {
 
     /**
      * Sets the main stage
+     *
      * @param stage
      */
     public void setStage(Stage stage) {
@@ -101,6 +103,7 @@ public class StageController {
 
     /**
      * Create popup with the given valeus
+     *
      * @param title title of the popup
      * @param yesNo true = yes & no button, false = ok button
      * @param text text of the popup
@@ -111,50 +114,57 @@ public class StageController {
         StageController.text = text;
         StageController.yesNo = yesNo;
 
-        Stage popUpStage = new Stage();
+        oldPopUpStage = popUpStage;
+        popUpStage = new Stage();
         popUpStage.setTitle(title);
 
         Platform.runLater(() -> {
             try {
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
                 Scene scene = new Scene(root);
-
                 popUpStage.initStyle(StageStyle.UNDECORATED);
                 popUpStage.initModality(Modality.WINDOW_MODAL);
                 popUpStage.initOwner(stage.getScene().getWindow());
                 popUpStage.setScene(scene);
                 popUpStage.centerOnScreen();
                 popUpStage.show();
+                if (oldPopUpStage != null) {
+                    oldPopUpStage.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
-    
+
+    public void closePopUp() {
+        popUpStage.close();
+    }
+
     public void dmgPopup(String title, boolean show, String a, String b) {
         title = title == null ? "Mighty Duels" : title;
 
         Stage popUpStage = new Stage();
         popUpStage.setTitle(title);
-        
-            Platform.runLater(() -> {
-                try {
-                    Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
-                    Scene scene = new Scene(root);
 
-                    //popUpStage.initStyle(StageStyle.UNDECORATED);
-                    //popUpStage.initModality(Modality.WINDOW_MODAL);
-                    popUpStage.initOwner(stage.getScene().getWindow());
-                    popUpStage.setScene(scene);
-                    popUpStage.centerOnScreen();
-                    if (show) {
+        Platform.runLater(() -> {
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
+                Scene scene = new Scene(root);
+
+                //popUpStage.initStyle(StageStyle.UNDECORATED);
+                //popUpStage.initModality(Modality.WINDOW_MODAL);
+                popUpStage.initOwner(stage.getScene().getWindow());
+                popUpStage.setScene(scene);
+                popUpStage.centerOnScreen();
+                if (show) {
                     popUpStage.show();
-                    }else {
-                        popUpStage.close();
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
+                } else {
+                    popUpStage.close();
                 }
-            });
+            } catch (IOException ex) {
+                Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 }
