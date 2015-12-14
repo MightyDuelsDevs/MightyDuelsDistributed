@@ -91,7 +91,7 @@ public class AccountFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         game = Game.getInstance();
-        this.loggedInPlayer = game.getPlayer();
+        this.loggedInPlayer = game.getPlayer(game.getToken());
 
         lblAccountName.setText(" " + loggedInPlayer.getUsername());
         lblTheRating.setText(" " + loggedInPlayer.getRating());
