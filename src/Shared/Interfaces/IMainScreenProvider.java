@@ -85,4 +85,10 @@ public interface IMainScreenProvider extends Remote {
      */
     public PlayerShared getPlayer(String token) throws RemoteException;
 
+     /**
+     * Set a selected deck
+     * @param token Token that represents a player
+     * @return a boolean if the selection was successful.
+     */
+    public  boolean setSelectedDeck(String token, int deckId) throws RemoteException;
 }

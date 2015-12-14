@@ -116,6 +116,10 @@ public class RMIClient {
         return mainScreenProvider.removeDeck(token, id);
     }
 
+    public boolean setSelectedDeck(String token, int deckId) throws RemoteException {
+        return mainScreenProvider.setSelectedDeck(token, deckId);
+    }
+
     public PlayerShared getPlayer(String token) throws RemoteException {
         return mainScreenProvider.getPlayer(token);
     }

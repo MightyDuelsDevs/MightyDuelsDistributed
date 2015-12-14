@@ -180,6 +180,16 @@ public class Game {
             return false;
         }
     }
+    
+    
+    public boolean setSelectedDeck(String token, int deckId) {
+        try {
+            return client.setSelectedDeck(token, deckId);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
 
     public PlayerShared getPlayer(String token) {
         try {

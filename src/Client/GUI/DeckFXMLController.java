@@ -132,6 +132,7 @@ public class DeckFXMLController implements Initializable {
                 }
                 DeckFXMLController.selectDeck(iv.getId());
                 lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
+                game.setSelectedDeck(game.getToken(), selectedDeck.getId());
             });
             gpDecks.setHalignment(ivDeck, HPos.CENTER);
             gpDecks.add(ivDeck, i, j);
