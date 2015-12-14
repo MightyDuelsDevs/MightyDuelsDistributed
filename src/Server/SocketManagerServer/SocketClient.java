@@ -12,6 +12,7 @@ import Server.Domain.ITarget;
 import Server.Domain.Match;
 import Server.Domain.Minion;
 import Server.Domain.Player;
+import Server.Domain.WaitingPlayer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -94,7 +95,7 @@ public class SocketClient {
                     break;
                 case 0x01://login
                     LOG.info("Reading hash");
-                    int hashlength = 0x100;//todo tbd
+                    int hashlength = 32;//todo tbd
                     byte[] hash = new byte[hashlength];
             
                     try {
@@ -115,12 +116,14 @@ public class SocketClient {
                         closed=true;
                         try {
                             socket.close();
+                            
                         } catch (IOException ex) {
                             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        return;
                     }
                     loginAccepted();
-                    Game.getInstance().addWaitingPlayer(player);
+                    new WaitingPlayer(player);
                     break;
                 case 0x02://set_card
                     int cardId;
