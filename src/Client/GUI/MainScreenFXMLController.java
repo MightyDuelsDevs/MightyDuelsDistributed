@@ -7,6 +7,7 @@ package Client.GUI;
 
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
+import Client.Domain.Game;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +41,8 @@ public class MainScreenFXMLController implements Initializable {
     @FXML
     private void btnDuel_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+        
+        MatchController.setHash(Game.getInstance().startMatch());
         
         String title = "Let the Duel begin!!!";
         String root = "Match.fxml";

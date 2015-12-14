@@ -26,7 +26,8 @@ import java.util.logging.Logger;
  * @author Rick Rongen, www.R-Ware.tk
  */
 public class SocketClient {
-
+    private static final Logger LOG = Logger.getLogger(SocketClient.class.getName());
+    
     private Socket socket;
     
     private Player player;
@@ -70,6 +71,7 @@ public class SocketClient {
             //todo throw error
             return;
         }
+        
         while(socket.isConnected()){
             int input;
             try {
@@ -85,12 +87,13 @@ public class SocketClient {
                 //todo throw error
                 continue;
             }
-            connAccepted();
+            LOG.info("Command: " + input);
             switch(input){
                 case -1:
                     //todo read error
                     break;
                 case 0x01://login
+                    LOG.info("Reading hash");
                     int hashlength = 0x100;//todo tbd
                     byte[] hash = new byte[hashlength];
             
@@ -99,6 +102,7 @@ public class SocketClient {
                     } catch (IOException ex) {
                         Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    LOG.info("Hash done");
 //                    StringBuilder sb = new StringBuilder();
 //                    for(byte d : hash){
 //                        String hex = Integer.toHexString(0xff & d);
@@ -261,6 +265,9 @@ public class SocketClient {
                     break;
                 case 0xFB:
                     //todo notify non fatal disconnection
+                    break;
+                default:
+                    LOG.info("Unkown command: " + input);
                     break;
             }
             

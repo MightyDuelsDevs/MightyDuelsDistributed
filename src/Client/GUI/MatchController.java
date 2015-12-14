@@ -34,6 +34,12 @@ import javafx.scene.layout.GridPane;
  * @author Matthijs
  */
 public class MatchController implements Initializable {
+    
+    private static byte[] loginHash;
+    public static void setHash(byte[] hash){
+        loginHash = hash;
+    }
+    
     @FXML private GridPane gridPlayedCards;
     @FXML private GridPane gridChooseCard;
     @FXML private GridPane gridYourSide;
@@ -62,6 +68,8 @@ public class MatchController implements Initializable {
         client = new SocketManager(this);
         initializeButtons();
         
+        System.out.println("Connecting to LocalHost");
+        
         try {
             client.Connect("localhost");
         } catch (IOException ex) {
@@ -70,12 +78,17 @@ public class MatchController implements Initializable {
             //todo back to main screen and error message
         }
         
+        System.out.println("Identifying");
+        
         client.connect();
         
-        if(!client.login(new byte[0])){//todo login hash
+        System.out.println("Sending Hash...");
+        
+        if(!client.login(loginHash)){
+            System.out.println("Error can't login!");
             //todo error logging in, show and back to main
         }
-        
+        System.out.println("OK!");
         cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
@@ -264,7 +277,7 @@ public class MatchController implements Initializable {
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                StageController.getInstance().dmgPopup("Damage Visualisation", true, "-", "-");
+                //StageController.getInstance().dmgPopup("Damage Visualisation", true, "-", "-");
             }
         });
     }

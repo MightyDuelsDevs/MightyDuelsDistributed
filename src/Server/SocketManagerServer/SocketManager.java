@@ -24,6 +24,8 @@ import java.util.logging.Logger;
  */
 public class SocketManager {
     
+    private static final Logger LOG = Logger.getLogger(SocketManager.class.getName());
+    
     private static SocketManager instance = null;
     private Map<byte[],Player> playerMap;
     
@@ -72,7 +74,9 @@ public class SocketManager {
         while(!ss.isClosed()){
             Socket newClient;
             try {
+                LOG.info("Waiting for connection");
                 newClient = ss.accept();
+                LOG.info("New Connection! " + newClient.toString());
             } catch (IOException ex) {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo check if need to quit

@@ -22,6 +22,10 @@ import java.util.logging.Logger;
  * @author Rick Rongen, www.R-Ware.tk
  */
 public class SocketManager {
+    private static final int DIEN_MAM = -1;
+    
+    private static final Logger LOG = Logger.getLogger(SocketManager.class.getName());
+    
  //   private static SocketManager instance;
     
 //    public static SocketManager getInstance(){
@@ -45,6 +49,7 @@ public class SocketManager {
     public void Connect(String ip) throws IOException{
         socket.connect(new InetSocketAddress(ip,420));
         inputReaderThread = new Thread(()->inputReader());
+        inputReaderThread.start();
     }
     
     private void inputReader(){
@@ -57,7 +62,7 @@ public class SocketManager {
             return;
         }
         while(!socket.isClosed()){
-            int val = -1;
+            int val = DIEN_MAM;
             try {
                 val = in.read();
             } catch (IOException ex) {
@@ -65,7 +70,7 @@ public class SocketManager {
                 //todo to GUI?
             }
             switch(val){
-                case -1:
+                case DIEN_MAM:
                     //todo to GUI?
                     break;
                 case 0x01://CONN_ACCEPTED
@@ -254,7 +259,9 @@ public class SocketManager {
                     synchronized(this){ notifyAll();}
                     //todo notify non fatal disconnection
                     break;
-                    
+                default:
+                    LOG.info("Unkown command: " + val);
+                    break;
             }
         }
     }
@@ -283,6 +290,7 @@ public class SocketManager {
     }
     
     public boolean login(byte[] loginHash){
+        LOG.info("Hash lenght: " + loginHash.length);
         if(!socket.isConnected())
             //todo throw error
             return false;
