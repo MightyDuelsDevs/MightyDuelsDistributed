@@ -393,7 +393,7 @@ public class SocketManager {
         }
     }
     
-    public void setTarger(int source, int target){
+    public void setTarget(int source, int target){
         //todo check source and target 1..3
         if(!socket.isConnected()){
             //todo throw error
