@@ -130,7 +130,7 @@ public class StageController {
                 popUpStage.setScene(scene);
                 popUpStage.centerOnScreen();
                 popUpStage.show();
-                
+
                 if (oldPopUpStage != null) {
                     oldPopUpStage.close();
                 }
@@ -141,8 +141,12 @@ public class StageController {
     }
 
     public void closePopUp() {
-        synchronized(this){ this.notify();}
-        popUpStage.close();
+        synchronized (this) {
+            this.notify();
+        }
+        if (popUpStage != null){
+            popUpStage.close();
+        }
     }
 
     public void dmgPopup(String physicalDamageYou, String physicalBlockYou, String magicalDamageYou, String magicalBlockYou, String healingYou, String resultYou, String physicalDamageEnemy, String physicalBlockEnemy, String magicalDamageEnemy, String magicalBlockEnemy, String healingEnemy, String resultEnemy) {

@@ -8,11 +8,11 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Client.GUI.MatchController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.GUI.MatchController">
   <children>
     <ImageView fitHeight="768.0" fitWidth="1024.0">
       <image>
-        <Image url="@../Resources/Images/AwesomeMightyduelsBord.png" backgroundLoading="false" />
+        <Image backgroundLoading="false" url="@../Resources/Images/AwesomeMightyduelsBord.png" />
       </image>
     </ImageView>
     <GridPane fx:id="gridPlayedCards" layoutX="327.0" prefHeight="768.0" prefWidth="401.0">
@@ -28,7 +28,7 @@
       <children>
         <Button id="btnYourSide1" fx:id="btnOpponentside2" mnemonicParsing="false" onAction="#attackTarget" opacity="0.0" prefHeight="281.0000999999975" prefWidth="174.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="0" />
         <Button id="btnYourSide1" fx:id="btnOpponentSide1" mnemonicParsing="false" onAction="#attackTarget" opacity="0.0" prefHeight="281.0000999999975" prefWidth="174.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Button mnemonicParsing="false" prefHeight="281.0" prefWidth="312.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+        <Button mnemonicParsing="false" opacity="0.0" prefHeight="281.0" prefWidth="312.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="0" />
       </children>
       <columnConstraints>
         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="336.0" minWidth="10.0" prefWidth="185.0" />
