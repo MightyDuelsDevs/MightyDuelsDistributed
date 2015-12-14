@@ -410,7 +410,12 @@ public class MatchController implements Initializable {
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                CardControl cc = new CardControl(getCard(cardID));
+                Optional<Card> card;
+                card = allCards.stream().filter((c)->c.getId()==cardID).findFirst();
+                if(!card.isPresent()){
+                    //todo error
+                }
+                CardControl cc = new CardControl(card.get());
                 HeroCard enemyCard = (HeroCard) cc.getCard();
 
                 StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", "6", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", "12");
