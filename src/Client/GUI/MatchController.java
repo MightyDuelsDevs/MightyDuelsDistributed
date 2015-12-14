@@ -204,28 +204,18 @@ public class MatchController implements Initializable {
     }
     
     public void win(){
-        StageController.getInstance().popup("You Won!", false, "You've won the match!");
-        StageController.getInstance().navigate("MainScreenFXML.fxml", "Main menu");
         //todo
         System.out.println("YAY");
     }
     
     public void lose(){
-        StageController.getInstance().popup("You Lost!", false, "You've lost the match!");
-        StageController.getInstance().navigate("MainScreenFXML.fxml", "Main menu");
+        //todo
         System.out.println("BOE!");
     }
     
     public void tie(){
-        StageController.getInstance().popup("You tieëd!", false, "You've played a tie!");
-        StageController.getInstance().navigate("MainScreenFXML.fxml", "Main menu");
+        //todo
         System.out.println("Meh");
-        client.nonFatalDisconnect();
-    }
-    
-    public void closed(boolean fatal){
-        if(fatal)StageController.getInstance().popup("Connection closed!", false, "The connection has closed fataly!");
-        StageController.getInstance().navigate("MainScreenFXML.fxml", "Main menu");
     }
     
     private EventHandler pickCard(CardControl cardControl){
@@ -272,7 +262,7 @@ public class MatchController implements Initializable {
         }
     }
     
-    
+    //TODO button functionality
     private void initializeButtons(){
         btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
             client.setFinished(true);
@@ -287,7 +277,7 @@ public class MatchController implements Initializable {
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                StageController.getInstance().dmgPopup("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+                //StageController.getInstance().dmgPopup("Damage Visualisation", true, "-", "-");
             }
         });
     }

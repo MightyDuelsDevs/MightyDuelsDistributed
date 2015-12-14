@@ -1,6 +1,5 @@
 package Server.Domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,15 +8,13 @@ import java.util.List;
 public class Game {
 
     private static Game instance;
-    private final List<Player> waitingPlayers;
-    private final List<Match> matches;
+    private List<Player> waitingPlayers;
+    private List<Match> matches;
 
     /**
      * Initialise the game instance
      */
     public Game() {
-        waitingPlayers = new ArrayList<>();
-        matches = new ArrayList<>();
         // Exists only to defeat instantiation.        
     }
 
