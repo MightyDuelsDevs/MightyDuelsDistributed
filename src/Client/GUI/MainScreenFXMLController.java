@@ -26,17 +26,11 @@ public class MainScreenFXMLController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    @FXML
-    private Button btnDuel;
-
-    @FXML
-    private Button btnNewDeck;
-
-    @FXML
-    private Button btnAccount;
-
-    @FXML
-    private Button btnLogOut;
+    @FXML private Button btnDuel;
+    @FXML private Button btnNewDeck;
+    @FXML private Button btnAccount;
+    @FXML private Button btnLogOut;
+    @FXML private Button btnTutorial;
 
     @FXML
     private void btnDuel_OnClick(ActionEvent event) throws IOException {
@@ -73,6 +67,15 @@ public class MainScreenFXMLController implements Initializable {
         
         String title = "Mighty Duels";
         String root = "AccountFXML.fxml";
+        StageController.getInstance().navigate(root, title);
+    }
+    
+    @FXML
+    private void btnTutorial_OnClick(ActionEvent event) throws IOException{
+        SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+        
+        String title = "Mighty Duels";
+        String root = "TutorialFXML.fxml";
         StageController.getInstance().navigate(root, title);
     }
 

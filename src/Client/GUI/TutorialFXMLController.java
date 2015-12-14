@@ -5,6 +5,7 @@
  */
 package Client.GUI;
 
+import Client.Controller.SoundController;
 import Client.Controller.StageController;
 import java.io.IOException;
 import java.net.URL;
@@ -27,39 +28,33 @@ public class TutorialFXMLController implements Initializable {
      * background
      */
     @FXML
-    private ImageView Imv1 = new ImageView("@../Resources/Images/Tutorial%20Screen.png");
+    private ImageView Imv1 = new ImageView("/Client/Resources/Images/Tutorial Screen.png");
     @FXML
-    private ImageView Imv2 = new ImageView("@../Resources/Images/Tutorial%20Screen2.png");
+    private ImageView Imv2 = new ImageView("/Client/Resources/Images/Tutorial Screen2.png");
     @FXML
-    private ImageView Imv3 = new ImageView("@../Resources/Images/Tutorial%20Screen3.png");
+    private ImageView Imv3 = new ImageView("/Client/Resources/Images/Tutorial Screen3.png");
     @FXML
-    private ImageView Imv4 = new ImageView("@../Resources/Images/Tutorial%20Screen4.png");
+    private ImageView Imv4 = new ImageView("/Client/Resources/Images/Tutorial Screen4.png");
 
     /**
      * Button for the next pages
      */
     @FXML
-    private Button btnnextpage = new Button();
-
+    private Button btnNextPage;
     @FXML
-    private Button btnmainmenu = new Button();
+    private Button btnMainMenu;
 
-    int pagecounter = 1;
-    /**
-     * stagecontroller to switch back to the main menu if selected
-     */
-
-    private StageController sc;
+    private int pagecounter;
 
     /**
      * Initializes the coontroller class, sets the opacity of the image views to
-     * 0
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Imv2.setOpacity(0);
-        Imv3.setOpacity(0);
-        Imv4.setOpacity(0);
+        Imv2.setOpacity(0.0f);
+        Imv3.setOpacity(0.0f);
+        Imv4.setOpacity(0.0f);
+        pagecounter = 1;
     }
 
     /**
@@ -69,35 +64,42 @@ public class TutorialFXMLController implements Initializable {
      * @param event
      * @throws IOException
      */
-    
-    public void btnnextpage_OnClick(ActionEvent event) throws IOException {
-        pagecounter += pagecounter;
-        if (pagecounter == 4) {
+    @FXML
+    public void btnNextPage_OnClick(ActionEvent event) throws IOException {
+        SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+        pagecounter++;
+        if (pagecounter == 5) {
             pagecounter = 1;
         } else {
             switch (pagecounter) {
                 case 1:
                     setOpacity();
-                    Imv1.setOpacity(100);
+                    Imv1.setOpacity(1.0f);
+                    break;
                 case 2:
                     setOpacity();
-                    Imv2.setOpacity(100);
+                    Imv2.setOpacity(1.0f);
+                    break;
                 case 3:
                     setOpacity();
-                    Imv3.setOpacity(100);
+                    Imv3.setOpacity(1.0f);
+                    break;
                 case 4:
                     setOpacity();
-                    Imv4.setOpacity(100);
-
+                    Imv4.setOpacity(1.0f);
+                    break;
             }
         }
     }
 
-    public void btnmainmenu_OnClick(ActionEvent event) throws IOException {
+    @FXML
+    public void btnMainMenu_OnClick(ActionEvent event) throws IOException {
+        SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
         String title = "Mighty Duels";
         String root = "MainScreenFXML.fxml";
-        sc.navigate(root, title);
+        StageController.getInstance().navigate(root, title);
     }
 
     /**
@@ -105,9 +107,9 @@ public class TutorialFXMLController implements Initializable {
      * minimise redundancy
      */
     private void setOpacity() {
-        Imv1.setOpacity(0);
-        Imv2.setOpacity(0);
-        Imv3.setOpacity(0);
-        Imv4.setOpacity(0);
+        Imv1.setOpacity(0.0f);
+        Imv2.setOpacity(0.0f);
+        Imv3.setOpacity(0.0f);
+        Imv4.setOpacity(0.0f);
     }
 }
