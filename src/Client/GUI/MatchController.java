@@ -16,8 +16,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,57 +37,67 @@ import javafx.scene.layout.GridPane;
  * @author Matthijs
  */
 public class MatchController implements Initializable {
-    
+
     private static byte[] loginHash;
-    public static void setHash(byte[] hash){
+
+    public static void setHash(byte[] hash) {
         loginHash = hash;
     }
-    
-    @FXML private GridPane gridPlayedCards;
-    @FXML private GridPane gridChooseCard;
-    @FXML private GridPane gridYourSide;
-    @FXML private GridPane gridOpponentSide;
-    @FXML private ImageView btnEndTurn;
-    @FXML private ImageView btnConcede;
-    @FXML private Label lblDamageVisualisation;
-    
+
+    @FXML
+    private GridPane gridPlayedCards;
+    @FXML
+    private GridPane gridChooseCard;
+    @FXML
+    private GridPane gridYourSide;
+    @FXML
+    private GridPane gridOpponentSide;
+    @FXML
+    private ImageView btnEndTurn;
+    @FXML
+    private ImageView btnConcede;
+    @FXML
+    private Label lblDamageVisualisation;
+
     private CardControl minion1;
     private CardControl minion2;
     private CardControl minion3;
     private CardControl minion4;
     private HeroCard heroCard;
-    
+
     private HeroControl hero1;
     private HeroControl hero2;
-    
+
     private ArrayList<CardControl> cardChoice;
     private ArrayList<CardControl> yourMinions;
     private ArrayList<CardControl> opponentsMinions;
-    
+
     private SocketManager client;
-    
+    private Timer timer;
+    private int sec;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         client = new SocketManager(this);
         initializeButtons();
-        
+
         System.out.println("Connecting to LocalHost");
-        
+
         try {
             client.Connect("localhost");
         } catch (IOException ex) {
             Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
-            
+
             //todo back to main screen and error message
         }
-        
+
         System.out.println("Identifying");
-        
+
         client.connect();
-        
+
         System.out.println("Sending Hash...");
-        
-        if(!client.login(loginHash)){
+
+        if (!client.login(loginHash)) {
             System.out.println("Error can't login!");
             //todo error logging in, show and back to main
         }
@@ -93,50 +106,78 @@ public class MatchController implements Initializable {
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
         hero1 = new HeroControl(50, new PlayerShared(1, "Loek", 1, 1, 1, 1, 1));//todo own settings
-        
+
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
-        
+
 //        minion1 = new MinionCard(1, "test1", "", "", 1, 0, 10);
 //        minion2 = new MinionCard(2, "test2", "", "", 0, 1, 10);
 //        minion3 = new MinionCard(3, "test3", "", "", 1, 0, 10);
 //        minion4 = new MinionCard(4, "test4", "", "", 0, 1, 10);
 //        heroCard = new HeroCard(1, "spell", "", "", 1, 1, 1, 1, 0);
-        
 //        cardChoice.add(new CardControl(minion1));
 //        cardChoice.add(new CardControl(minion2));
 //        cardChoice.add(new CardControl(minion3));
 //        cardChoice.add(new CardControl(minion4));
 //        cardChoice.add(new CardControl(heroCard));
-        
 //        cardChoice.get(0).setEventHandler(pickCard(cardChoice.get(0)));
 //        cardChoice.get(1).setEventHandler(pickCard(cardChoice.get(1)));
 //        cardChoice.get(2).setEventHandler(pickCard(cardChoice.get(2)));
 //        cardChoice.get(3).setEventHandler(pickCard(cardChoice.get(3)));
-        
 //        yourMinions.add(cardChoice.get(0));
 //        yourMinions.add(cardChoice.get(1));
 //        opponentsMinions.add(cardChoice.get(2));
 //        opponentsMinions.add(cardChoice.get(3));
-        
 //        placeMinionCards();        
-        
 //        opponentsMinions.set(1, new CardControl(new MinionCard(3, "veranderd", "", "", 1, 1, 8)));
 //        placeMinionCards();
         //drawCards();
-    };
+    }
+
+    ;
     
-    public void setOpponent(String name, int iconId){
+    public void searchingMatch() {
+        this.timer = new Timer();
+        sec = 10;
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    StageController sc = StageController.getInstance();
+                    if (sec == 10) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec > 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec == 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
+                        sec--;
+                    } else if (sec == 0) {
+                        sc.popup("Searching for a match", false, " next try in: now");
+                        sec--;
+                    } else if (sec < 0) {
+                        sc.closePopUp();
+                        sec = 10;
+                        this.cancel();
+                    }
+                });
+            }
+        }, 0, 1 * 1000);
+    }
+
+    public void setOpponent(String name, int iconId) {
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
         gridOpponentSide.add(hero2.getHeroControl(), 5, 0);
     }
-    
-    public void turnEnd(int cardId){
+
+    public void turnEnd(int cardId) {
         //getCard(cardId);
     }
-    
-    public void addMinion(int id, int boardId){
+
+    public void addMinion(int id, int boardId) {
         CardControl card = null;// = new CardControl(getCard(CardId));
-        switch(boardId){
+        switch (boardId) {
             case 1:
                 minion1 = card;
                 yourMinions.add(card);
@@ -158,71 +199,71 @@ public class MatchController implements Initializable {
                 break;
         }
     }
-    
-    public void setHealth(boolean self, boolean hero, int id, int health){
-        if(self){
-            if(hero){
+
+    public void setHealth(boolean self, boolean hero, int id, int health) {
+        if (self) {
+            if (hero) {
                 hero1.setHealth(health);
-            }else{
-                if(id == 1){
+            } else {
+                if (id == 1) {
                     minion1.setHealth(health);
-                }else{
+                } else {
                     minion2.setHealth(health);
                 }
             }
-        }else{
-            if(hero){
+        } else {
+            if (hero) {
                 hero2.setHealth(health);
-            }else{
-                if(id == 1){
+            } else {
+                if (id == 1) {
                     minion3.setHealth(health);
-                }else{
+                } else {
                     minion4.setHealth(health);
                 }
             }
         }
     }
-    
-    public void newTurn(int card1, int card2, int card3){
+
+    public void newTurn(int card1, int card2, int card3) {
         cardChoice.clear();
         //cardChoice.add(new CardControl(getCard(card1)));
         //cardChoice.add(new CardControl(getCard(card2)));
         //cardChoice.add(new CardControl(getCard(card3)));
-        
+
         drawCards();
     }
-    
-    private void drawCards(){
-        
-        for(int i = 0 ; i < 3 ; i++){
+
+    private void drawCards() {
+
+        for (int i = 0; i < 3; i++) {
             CardControl cardControl = cardChoice.get(i);
-            
+
             cardControl.setEventHandler(pickCard(cardControl));
-            
-            gridChooseCard.add(cardControl.CardPane(),i,0);
+
+            gridChooseCard.add(cardControl.CardPane(), i, 0);
         }
     }
-    
-    public void win(){
+
+    public void win() {
         //todo
         System.out.println("YAY");
     }
-    
-    public void lose(){
+
+    public void lose() {
         //todo
         System.out.println("BOE!");
     }
-    
-    public void tie(){
+
+    public void tie() {
         //todo
         System.out.println("Meh");
     }
-    
-    private EventHandler pickCard(CardControl cardControl){
+
+    private EventHandler pickCard(CardControl cardControl) {
         EventHandler handler = new EventHandler() {
 
             @Override
-            public void handle(Event event) {  
+            public void handle(Event event) {
                 System.out.println(cardControl.getCard().getName());
                 try {
                     client.setCard(cardControl.getCard().getId());
@@ -230,14 +271,13 @@ public class MatchController implements Initializable {
                     Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
                     //todo fatal?
                 }
-                if(cardControl.getCard() instanceof HeroCard){
-                    
+                if (cardControl.getCard() instanceof HeroCard) {
+
                     gridChooseCard.getChildren().clear();
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
-                }
-                else if(cardControl.getCard() instanceof MinionCard){
-                    if(yourMinions.size() < 2){
-                        
+                } else if (cardControl.getCard() instanceof MinionCard) {
+                    if (yourMinions.size() < 2) {
+
                         gridChooseCard.getChildren().clear();
                         //yourMinions.add(cardControl);
                         placeMinionCards();
@@ -248,36 +288,36 @@ public class MatchController implements Initializable {
         };
         return handler;
     }
-    
-    private void placeMinionCards(){
+
+    private void placeMinionCards() {
         gridYourSide.getChildren().removeAll(yourMinions);
         gridOpponentSide.getChildren().removeAll(opponentsMinions);
-        
-        for(int i = 0; i < yourMinions.size(); i++){
-            gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i*2), 0);
+
+        for (int i = 0; i < yourMinions.size(); i++) {
+            gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
         }
-        
-        for(int i = 0; i < opponentsMinions.size(); i++){
-            gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i*2), 0);
+
+        for (int i = 0; i < opponentsMinions.size(); i++) {
+            gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
         }
     }
-    
+
     //TODO button functionality
-    private void initializeButtons(){
+    private void initializeButtons() {
         btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
             client.setFinished(true);
             SoundController.play(SoundController.SoundFile.BUTTONPRESS);
         });
-        
+
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
             client.concede();
             SoundController.play(SoundController.SoundFile.BUTTONPRESS);
         });
-        
+
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                //StageController.getInstance().dmgPopup("Damage Visualisation", true, "-", "-");
+                StageController.getInstance().dmgPopup("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
             }
         });
     }

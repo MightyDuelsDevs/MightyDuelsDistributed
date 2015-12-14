@@ -26,7 +26,7 @@ import javafx.stage.StageStyle;
  */
 public class StageController {
 
-    private Stage stage;
+    private Stage stage, popUpStage, oldPopUpStage;
     private static StageController instance;
 
     public static String title, text;
@@ -116,24 +116,31 @@ public class StageController {
         StageController.text = text;
         StageController.yesNo = yesNo;
 
-        Stage popUpStage = new Stage();
+        oldPopUpStage = popUpStage;
+        popUpStage = new Stage();
         popUpStage.setTitle(title);
 
         Platform.runLater(() -> {
             try {
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
                 Scene scene = new Scene(root);
-
                 popUpStage.initStyle(StageStyle.UNDECORATED);
                 popUpStage.initModality(Modality.WINDOW_MODAL);
                 popUpStage.initOwner(stage.getScene().getWindow());
                 popUpStage.setScene(scene);
                 popUpStage.centerOnScreen();
                 popUpStage.show();
+                if (oldPopUpStage != null) {
+                    oldPopUpStage.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+    }
+
+    public void closePopUp() {
+        popUpStage.close();
     }
 
     public void dmgPopup(String physicalDamageYou, String physicalBlockYou, String magicalDamageYou, String magicalBlockYou, String healingYou, String resultYou, String physicalDamageEnemy, String physicalBlockEnemy, String magicalDamageEnemy, String magicalBlockEnemy, String healingEnemy, String resultEnemy) {
@@ -150,7 +157,7 @@ public class StageController {
         StageController.magicalBlockEnemy = magicalBlockEnemy;
         StageController.healingEnemy = healingEnemy;
         StageController.resultEnemy = resultEnemy;
-        
+
         Platform.runLater(() -> {
             try {
                 Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
