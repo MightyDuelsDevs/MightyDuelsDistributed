@@ -5,6 +5,7 @@
  */
 package Client.Controller;
 
+import Client.GUI.DamageDisplayFXMLController;
 import Client.GUI.PopUpController;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ public class StageController {
     private static StageController instance;
 
     public static String title, text;
+    public static String physicalDamageYou, physicalBlockYou, magicalDamageYou, magicalBlockYou, healingYou, resultYou, physicalDamageEnemy, physicalBlockEnemy, magicalDamageEnemy, magicalBlockEnemy, healingEnemy, resultEnemy;
     public static boolean yesNo, choosen;
 
     public static StageController getInstance() {
@@ -40,6 +42,7 @@ public class StageController {
 
     /**
      * Returns the main stage
+     *
      * @return
      */
     public Stage getStage() {
@@ -48,6 +51,7 @@ public class StageController {
 
     /**
      * Sets the main stage
+     *
      * @param stage
      */
     public void setStage(Stage stage) {
@@ -101,6 +105,7 @@ public class StageController {
 
     /**
      * Create popup with the given valeus
+     *
      * @param title title of the popup
      * @param yesNo true = yes & no button, false = ok button
      * @param text text of the popup
@@ -130,31 +135,36 @@ public class StageController {
             }
         });
     }
-    
-    public void dmgPopup(String title, boolean show, String a, String b) {
-        title = title == null ? "Mighty Duels" : title;
 
+    public void dmgPopup(String physicalDamageYou, String physicalBlockYou, String magicalDamageYou, String magicalBlockYou, String healingYou, String resultYou, String physicalDamageEnemy, String physicalBlockEnemy, String magicalDamageEnemy, String magicalBlockEnemy, String healingEnemy, String resultEnemy) {
         Stage popUpStage = new Stage();
-        popUpStage.setTitle(title);
+        StageController.physicalDamageYou = physicalDamageYou;
+        StageController.physicalBlockYou = physicalBlockYou;
+        StageController.magicalDamageYou = magicalDamageYou;
+        StageController.magicalBlockYou = magicalBlockYou;
+        StageController.healingYou = healingYou;
+        StageController.resultYou = resultYou;
+        StageController.physicalDamageEnemy = physicalDamageEnemy;
+        StageController.physicalBlockEnemy = physicalBlockEnemy;
+        StageController.magicalDamageEnemy = magicalDamageEnemy;
+        StageController.magicalBlockEnemy = magicalBlockEnemy;
+        StageController.healingEnemy = healingEnemy;
+        StageController.resultEnemy = resultEnemy;
         
-            Platform.runLater(() -> {
-                try {
-                    Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
-                    Scene scene = new Scene(root);
+        Platform.runLater(() -> {
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
+                Scene scene = new Scene(root);
 
-                    //popUpStage.initStyle(StageStyle.UNDECORATED);
-                    //popUpStage.initModality(Modality.WINDOW_MODAL);
-                    popUpStage.initOwner(stage.getScene().getWindow());
-                    popUpStage.setScene(scene);
-                    popUpStage.centerOnScreen();
-                    if (show) {
-                    popUpStage.show();
-                    }else {
-                        popUpStage.close();
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+                popUpStage.initStyle(StageStyle.UNDECORATED);
+                popUpStage.initModality(Modality.WINDOW_MODAL);
+                popUpStage.initOwner(stage.getScene().getWindow());
+                popUpStage.setScene(scene);
+                popUpStage.centerOnScreen();
+                popUpStage.show();
+            } catch (IOException ex) {
+                Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 }
