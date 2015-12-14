@@ -5,6 +5,7 @@
  */
 package Client.SocketManagerClient;
 
+import Client.GUI.MatchController;
 import com.sun.media.jfxmedia.track.Track;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,21 +22,24 @@ import java.util.logging.Logger;
  * @author Rick Rongen, www.R-Ware.tk
  */
 public class SocketManager {
-    private static SocketManager instance;
+ //   private static SocketManager instance;
     
-    public static SocketManager getInstance(){
-        if(instance == null){
-            instance = new SocketManager();
-        }
-        return instance;
-    }
+//    public static SocketManager getInstance(){
+//        if(instance == null){
+//            instance = new SocketManager();
+//        }
+//        return instance;
+//    }
 
     private Socket socket;
     private Thread inputReaderThread;
     private boolean lastAccepted = false;
     
-    public SocketManager() {
+    private MatchController controller;
+    
+    public SocketManager(MatchController controller) {
         socket = new Socket();
+        this.controller = controller;
     }
     
     public void Connect(String ip) throws IOException{
@@ -60,7 +64,7 @@ public class SocketManager {
                 Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 //todo to GUI?
             }
-            switch((byte)val){
+            switch(val){
                 case -1:
                     //todo to GUI?
                     break;
@@ -118,8 +122,8 @@ public class SocketManager {
                         //todo throw error;
                         return;
                     }
-                    //todo return iconId and username to GUI for new match
-                    //todo return ACCEPTED
+                    controller.setOpponent(username, iconId);
+                    accepted();
                     break;
                 case 0x05://TURN_END
                     int opponendCard = -1;
@@ -143,8 +147,7 @@ public class SocketManager {
                     if(boardLocation<0||cardId<0){
                         //todo throw error
                     }
-                    //todo update GUI 
-                                        
+                    controller.addMinion(cardId, boardLocation);
                     break;
                 case 0x07: //SET_HEALTH
                     int character=-1,value=-1;
@@ -163,7 +166,7 @@ public class SocketManager {
                     //self your side or other side
                     //minion if it is an minion
                     //minionId 1 or 2 for minion id
-                    //todo update GUI set health
+                    controller.setHealth(self, minion, minionId, val);
                     break;
                 case 0x08://NEW_TURN
                     int card1 = -1,card2 = -1,card3 = -1;
@@ -178,9 +181,9 @@ public class SocketManager {
                     if(card1<0||card2<0||card3<0){
                         //throw error
                     }
-                    //todo send new cards to gui
+                    controller.newTurn(card1, card2, card3);
                     break;
-                case 0x09:
+                case 0x09://MATCH_END
                     int state = -1;
                     try {
                         state = in.read();
@@ -192,14 +195,14 @@ public class SocketManager {
                     }
                     //todo send to gui
                     if(state == 2){
-                        //win
+                        controller.win();
                     }else if(state == 1){
-                        //tie
+                        controller.tie();
                     }else{
-                        //lose
+                        controller.lose();
                     }
                     break;
-                case (byte)0x80://MESSAGE
+                case 0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
                     int message = -1;
                     try {
@@ -227,26 +230,26 @@ public class SocketManager {
                     }
                     //todo send message to GUI
                     break;
-                case (byte)0xE0://PING
+                case 0xE0://PING
                     pong();
                     break;
-                case (byte)0xE1://PONG
+                case 0xE1://PONG
                     synchronized(this){ notify();}
                     break;
-                case (byte)0xF0://ACCEPTD
+                case 0xF0://ACCEPTD
                     lastAccepted = true;
                     synchronized(this){ notify();}
                     break;
-                case (byte)0xF1://ILLEGAL_ACTION
+                case 0xF1://ILLEGAL_ACTION
                     lastAccepted = false;
                     synchronized(this){ notify();}
                     break;
-                case (byte)0xFA:
+                case 0xFA:
                     lastAccepted = false;
                     synchronized(this){ notifyAll();};
                     //todo notify fatal disconnection
                     break;
-                case (byte)0xFB:
+                case 0xFB:
                     lastAccepted = false;
                     synchronized(this){ notifyAll();}
                     //todo notify non fatal disconnection
