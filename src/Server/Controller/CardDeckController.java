@@ -138,7 +138,7 @@ public class CardDeckController {
      * player with the corresponding playerID.
      */
     public static Deck getDeckFromPlayer(int playerID) {
-        String statement = String.format("SELECT * FROM DECK WHERE ID = (SELECT SELDECKID FROM PLAYER WHERE ID = %1$s)", playerID);
+        String statement = String.format("SELECT * FROM DECK WHERE ID = (SELECT SELDECKID FROM PLAYER WHERE ID = 1%1$s)", playerID);
         Deck deck = null;
         
         try {

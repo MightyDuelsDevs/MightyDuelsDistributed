@@ -51,8 +51,6 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
     }
     
     public PlayerShared getPlayerFromToken(String token) {
-        PlayerShared updatedPlayer = PlayerIconController.createPlayer(mapTokenPlayer.get(token).getUsername());
-        mapTokenPlayer.replace(token, updatedPlayer);
-        return updatedPlayer;
+        return mapTokenPlayer.get(token);
     }
 }
