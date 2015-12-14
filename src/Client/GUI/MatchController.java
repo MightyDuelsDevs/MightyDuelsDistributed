@@ -46,15 +46,13 @@ import javafx.scene.layout.GridPane;
  * @author Matthijs
  */
 public class MatchController implements Initializable {
+
     private static final int JE_MOEDER = -1000000000;
-    
 
     private int ownMinion = -1;
     private int opponentMinion = -1;
     private static byte[] loginHash;
     private static final Logger LOG = Logger.getLogger(MatchController.class.getName());
-    
-    private static byte[] loginHash;
 
     public static void setHash(byte[] hash) {
         loginHash = hash;
@@ -91,13 +89,16 @@ public class MatchController implements Initializable {
     private SocketManager client;
     private Timer timer;
     private int sec;
-    
+
+    private int cardID;
+    private HeroCard myHeroCard;
+
     private List<Card> allCards;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         allCards = Game.getInstance().getCards();
-        
+
         client = new SocketManager(this);
         initializeButtons();
 
@@ -193,6 +194,7 @@ public class MatchController implements Initializable {
     }
 
     public void turnEnd(int cardId) {
+        cardID = cardId;
         //getCard(cardId);
     }
 
@@ -246,23 +248,23 @@ public class MatchController implements Initializable {
     }
 
     public void newTurn(int card1, int card2, int card3) {
-        LOG.info("New cards " + card1 + " "+ card2 + " "+ card3 + " ");
-        Platform.runLater(()->cardChoice.clear());
-        Optional<Card> cardO1,cardO2,cardO3;
-        cardO1 = allCards.stream().filter((c)->c.getId()==card1).findFirst();
-        cardO2 = allCards.stream().filter((c)->c.getId()==card2).findFirst();
-        cardO3 = allCards.stream().filter((c)->c.getId()==card3).findFirst();
-        
-        if(!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()){
+        LOG.info("New cards " + card1 + " " + card2 + " " + card3 + " ");
+        Platform.runLater(() -> cardChoice.clear());
+        Optional<Card> cardO1, cardO2, cardO3;
+        cardO1 = allCards.stream().filter((c) -> c.getId() == card1).findFirst();
+        cardO2 = allCards.stream().filter((c) -> c.getId() == card2).findFirst();
+        cardO3 = allCards.stream().filter((c) -> c.getId() == card3).findFirst();
+
+        if (!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()) {
             //groot probleem!
             System.exit(JE_MOEDER);
         }
-        
+
         cardChoice.add(new CardControl(cardO1.get()));
         cardChoice.add(new CardControl(cardO2.get()));
         cardChoice.add(new CardControl(cardO3.get()));
-        
-        Platform.runLater(()->drawCards());
+
+        Platform.runLater(() -> drawCards());
     }
 
     private void drawCards() {
@@ -341,6 +343,7 @@ public class MatchController implements Initializable {
                     //todo fatal?
                 }
                 if (cardControl.getCard() instanceof HeroCard) {
+                    myHeroCard = (HeroCard) cardControl.getCard();
 
                     gridChooseCard.getChildren().clear();
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
@@ -407,7 +410,11 @@ public class MatchController implements Initializable {
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                StageController.getInstance().dmgPopup("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+                CardControl cc = new CardControl(getCard(cardID));
+                HeroCard enemyCard = (HeroCard) cc.getCard();
+
+                StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", "6", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", "12");
+
             }
         });
 
