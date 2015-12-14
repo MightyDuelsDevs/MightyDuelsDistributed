@@ -8,10 +8,17 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="769.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.GUI.TutorialFXMLController">
-  <children>
-    <ImageView fx:id="ImageViewTutorial" fitHeight="769.0" fitWidth="1024.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
-    </ImageView>
-    <Button fx:id="btnNextPage" layoutX="58.0" layoutY="591.0" mnemonicParsing="false" onAction="#btnNextPage_OnClick" text="Next page" />
-    <Button id="btn" fx:id="btnMainMenu" layoutX="86.0" layoutY="287.0" mnemonicParsing="false" onAction="#btnMainMenu_OnClick" text="Main menu" />
-  </children>
+    <children>
+        <Pane fx:id="paneImage" prefHeight="769.0" prefWidth="1024.0">
+            <children>
+                <ImageView fx:id="ImageViewTutorial" fitHeight="769.0" fitWidth="1024.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </Pane>
+        <Pane fx:id="paneButtons" prefHeight="769.0" prefWidth="1024.0">
+            <children>
+                <Button fx:id="btnMain" layoutX="182.0" layoutY="646.0" mnemonicParsing="false" onAction="#btnMainMenu_OnClick" opacity="0.0" prefHeight="61.0" prefWidth="292.0" text="Button" />
+                <Button fx:id="btnNext" layoutX="544.0" layoutY="646.0" mnemonicParsing="false" onAction="#btnNextPage_OnClick" opacity="0.0" prefHeight="61.0" prefWidth="292.0" text="Button" />
+            </children>
+        </Pane>
+    </children>
 </AnchorPane>

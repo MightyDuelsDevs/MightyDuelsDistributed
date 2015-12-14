@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -382,7 +383,7 @@ public class SocketClient {
         data[0] = 0x04;
         System.arraycopy(usernameEncoded, 0, data, 1, usernameEncoded.length);
         data[usernameEncoded.length+1]=0x00;
-        System.arraycopy(int16Id, 0, data, usernameEncoded.length+1, 2);
+        System.arraycopy(int16Id, 0, data, usernameEncoded.length+2, 2);
         try {
             sendData(data);
             synchronized(this){
@@ -452,6 +453,7 @@ public class SocketClient {
     }
     
     public void newTurn(Integer[] cards){
+        LOG.info("New turn " + Arrays.toString(cards));
         byte[] data = new byte[7];
         data[0]=0x08;
         for(int i = 0;i<3;i++){

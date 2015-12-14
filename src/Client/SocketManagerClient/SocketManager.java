@@ -102,7 +102,9 @@ public class SocketManager {
                     }      
                     while(opponendName!=0x00){
                         if(opponendName == -1){
+                            LOG.info("Received NULL while reading oppenendName");
                             //todo throw error
+                            continue;
                         }
                         buf.put((byte)opponendName);
                         try {
