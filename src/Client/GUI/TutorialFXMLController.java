@@ -39,9 +39,13 @@ public class TutorialFXMLController implements Initializable {
      * Button for the next pages
      */
     @FXML
-    private Button btnNextPage;
+    private Button btnNext;
     @FXML
-    private Button btnMainMenu;
+    private Button btnMain;
+    @FXML
+    private ImageView imNext;
+    @FXML
+    private ImageView imMain;
 
     private int pagecounter;
 
