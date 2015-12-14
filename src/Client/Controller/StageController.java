@@ -130,6 +130,7 @@ public class StageController {
                 popUpStage.setScene(scene);
                 popUpStage.centerOnScreen();
                 popUpStage.show();
+                
                 if (oldPopUpStage != null) {
                     oldPopUpStage.close();
                 }
@@ -140,6 +141,7 @@ public class StageController {
     }
 
     public void closePopUp() {
+        synchronized(this){ this.notify();}
         popUpStage.close();
     }
 
