@@ -6,8 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="206.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="Client.GUI.DamageDisplayFXMLController">
+<AnchorPane id="AnchorPane" prefHeight="276.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.GUI.DamageDisplayFXMLController">
    <children>
       <GridPane gridLinesVisible="true" prefHeight="206.0" prefWidth="600.0">
         <columnConstraints>
@@ -48,5 +47,6 @@
             <Label fx:id="lblEnemyResult" text="Label" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
          </children>
       </GridPane>
+      <Button fx:id="btnClose" layoutX="268.0" layoutY="223.0" mnemonicParsing="false" onAction="#btnClose_OnClick" text="Close" />
    </children>
 </AnchorPane>
