@@ -320,5 +320,14 @@ public class MatchController implements Initializable {
                 StageController.getInstance().dmgPopup("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
             }
         });
+        
+        lblDamageVisualisation.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Platform.runLater(() -> {
+                StageController.getInstance().closePopUp();
+                });
+            }
+        });
     }
 }
