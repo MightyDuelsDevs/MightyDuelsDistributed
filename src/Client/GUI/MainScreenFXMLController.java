@@ -11,6 +11,9 @@ import Client.Domain.Game;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,18 +29,58 @@ public class MainScreenFXMLController implements Initializable {
     /**
      * Initializes the controller class.
      */
-    @FXML private Button btnDuel;
-    @FXML private Button btnNewDeck;
-    @FXML private Button btnAccount;
-    @FXML private Button btnLogOut;
-    @FXML private Button btnTutorial;
+    @FXML
+    private Button btnDuel;
+    @FXML
+    private Button btnNewDeck;
+    @FXML
+    private Button btnAccount;
+    @FXML
+    private Button btnLogOut;
+    @FXML
+    private Button btnTutorial;
+
+    private Timer timer;
+    private int sec;
 
     @FXML
     private void btnDuel_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         MatchController.setHash(Game.getInstance().startMatch());
-        
+
+        this.timer = new Timer();
+        sec = 10;
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    StageController sc = StageController.getInstance();
+                    if (sec == 10) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec > 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec == 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
+                        sec--;
+                    } else if (sec == 0) {
+                        sc.popup("Searching for a match", false, " next try in: now");
+                        sec--;
+                    } else if (sec < 0) {
+                        sc.closePopUp();
+                        sec = 10;
+                        this.cancel();
+                    }
+                    if (false){ // een cancel manier
+                        this.cancel();
+                    }
+                });
+            }
+        }, 0, 1 * 1000);
+
         String title = "Let the Duel begin!!!";
         String root = "Match.fxml";
         StageController.getInstance().navigate(root, title);
@@ -46,7 +89,7 @@ public class MainScreenFXMLController implements Initializable {
     @FXML
     private void btnNewDeck_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
         String root = "DeckFXML.fxml";
         StageController.getInstance().navigate(root, title);
@@ -55,7 +98,7 @@ public class MainScreenFXMLController implements Initializable {
     @FXML
     private void btnLogOut_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
         String root = "LogOnFXML.fxml";
         StageController.getInstance().navigate(root, title);
@@ -64,16 +107,16 @@ public class MainScreenFXMLController implements Initializable {
     @FXML
     private void btnAccount_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
         String root = "AccountFXML.fxml";
         StageController.getInstance().navigate(root, title);
     }
-    
+
     @FXML
-    private void btnTutorial_OnClick(ActionEvent event) throws IOException{
+    private void btnTutorial_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        
+
         String title = "Mighty Duels";
         String root = "TutorialFXML.fxml";
         StageController.getInstance().navigate(root, title);

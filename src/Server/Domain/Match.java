@@ -262,6 +262,7 @@ public class Match {
         player1.getSocket().newMatch(this, player2.getUsername(), player2.getIconId());
         player2.getSocket().newMatch(this, player1.getUsername(), player1.getIconId());
         
+        
         log.info("New Turn! " + player1.getUsername() + " " + player2.getUsername());
         determineGameState();
         hero1.pullCards();
