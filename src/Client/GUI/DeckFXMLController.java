@@ -115,8 +115,10 @@ public class DeckFXMLController implements Initializable {
         int i = 0; // Collomn
         int j = 0; // Row
 
+        if (!decks.isEmpty()){
         selectedDeck = decks.get(0);
-        lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
+        lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());            
+        }
 
         for (Deck deck : decks) {
             // Icon Image
