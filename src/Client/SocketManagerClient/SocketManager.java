@@ -16,6 +16,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 /**
  *
@@ -49,6 +50,7 @@ public class SocketManager {
     public void Connect(String ip) throws IOException{
         socket.connect(new InetSocketAddress(ip,420));
         inputReaderThread = new Thread(()->inputReader());
+        inputReaderThread.setName("ClientSocketReader");
         inputReaderThread.start();
     }
     
@@ -61,7 +63,7 @@ public class SocketManager {
             //todo make sure this go's to the GUI
             return;
         }
-        while(!socket.isClosed()){
+        while(!socket.isClosed() && socket.isConnected()){
             int val = error;
             try {
                 val = in.read();
@@ -207,14 +209,19 @@ public class SocketManager {
                     if(state<0){
                         //todo show error
                     }
+                    
+                    final int fState = state;
                     //todo send to gui
-                    if(state == 2){
-                        controller.win();
-                    }else if(state == 1){
-                        controller.tie();
-                    }else{
-                        controller.lose();
-                    }
+                    Platform.runLater(()->{
+                        if(fState == 2){
+                            controller.win();
+                        }else if(fState == 1){
+                            controller.tie();
+                        }else{
+                            controller.lose();
+                        }
+                    });
+                    nonFatalDisconnect();
                     break;
                 case 0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
@@ -486,6 +493,11 @@ public class SocketManager {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //socket dead
         }
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void nonFatalDisconnect(){
@@ -500,6 +512,11 @@ public class SocketManager {
         } catch (IOException ex) {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
             //socket dead
+        }
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

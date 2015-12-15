@@ -357,6 +357,7 @@ public class MatchController implements Initializable {
                     myHeroCard = (HeroCard) cardControl.getCard();
 
                     gridChooseCard.getChildren().clear();
+                    cardControl.setEventHandler(null);
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {

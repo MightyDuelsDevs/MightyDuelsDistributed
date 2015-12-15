@@ -48,6 +48,14 @@ public class Match {
         }
         if (hero1.getHitPoints() <= 0 ^ hero2.getHitPoints() <= 0) {//^= XOR true+false = true, false+false = false and true+true=false
             gameState = GameState.Defined;
+            timer.shutdown();
+            if(hero1.getHitPoints()>0){
+                player1.getSocket().matchEnd(2);
+                player2.getSocket().matchEnd(0);
+            }else if(hero2.getHitPoints()>0){
+                player1.getSocket().matchEnd(0);
+                player2.getSocket().matchEnd(2);
+            }
             return;
         }
         if (hero1.getHitPoints() > 0 && hero2.getHitPoints() > 0) {
@@ -55,19 +63,9 @@ public class Match {
             return;
         }
         gameState = GameState.Tie;
-        
-        if (gameState == GameState.Defined || gameState == GameState.Tie) {
-            if(hero1.getHitPoints()>0){
-                player1.getSocket().matchEnd(2);
-                player2.getSocket().matchEnd(0);
-            }else if(hero2.getHitPoints()>0){
-                player1.getSocket().matchEnd(0);
-                player2.getSocket().matchEnd(2);
-            }else{
-                player1.getSocket().matchEnd(1);
-                player2.getSocket().matchEnd(1);
-            }
-        }
+        timer.shutdown();
+        player1.getSocket().matchEnd(1);
+        player2.getSocket().matchEnd(1);
     }
 
     /**

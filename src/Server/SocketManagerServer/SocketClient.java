@@ -74,7 +74,7 @@ public class SocketClient {
             return;
         }
         
-        while(socket.isConnected()){
+        while(socket.isConnected() && !socket.isClosed()){
             int input;
             try {
                 input = in.read();
@@ -267,11 +267,14 @@ public class SocketClient {
                         notify();
                     }
                     break;
-                case 0xFA:
-                    //todo notify fatal disconnection
+                case 0xFA://fatal disconnect
+                    if(hero.getHitPoints()>0)
+                        match.concede(hero);
+                    //todo send message
                     break;
-                case 0xFB:
-                    //todo notify non fatal disconnection
+                case 0xFB://non fatal disconnect
+                    
+                    //todo send message
                     break;
                 default:
                     LOG.info("Unkown command: " + input);
@@ -372,6 +375,7 @@ public class SocketClient {
     }
     
     public void newMatch(Match match,String username, int id){
+        this.match = match;
         byte[] usernameEncoded;
         try {
             usernameEncoded = username.getBytes("UTF-8");
@@ -514,6 +518,8 @@ public class SocketClient {
     }
     
     public void fatalDisconnect(){
+        if(hero.getHitPoints()>0)
+            match.concede(hero);
         if(!socket.isConnected()){
             //todo throw error
             return;
@@ -525,6 +531,11 @@ public class SocketClient {
         } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //socket dead
+        }
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -540,6 +551,11 @@ public class SocketClient {
         } catch (IOException ex) {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             //socket dead
+        }
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
