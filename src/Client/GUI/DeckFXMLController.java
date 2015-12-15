@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,10 +65,46 @@ public class DeckFXMLController implements Initializable {
     @FXML
     private TextField tfDeckName;
 
+    private Timer timer;
+    private int sec;
+
     //Set the right deck as 'selected' into the database when pressed on 'Play'.
     @FXML
     private void btnPlay_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+        MatchController.setHash(Game.getInstance().startMatch());
+
+        this.timer = new Timer();
+        sec = 10;
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    StageController sc = StageController.getInstance();
+                    if (sec == 10) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec > 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                        sec--;
+                    } else if (sec == 1) {
+                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
+                        sec--;
+                    } else if (sec == 0) {
+                        sc.popup("Searching for a match", false, " next try in: now");
+                        sec--;
+                    } else if (sec < 0) {
+                        sc.closePopUp();
+                        this.cancel();
+                    }
+                    if (false) { // een cancel manier
+                        this.cancel();
+                    }
+                });
+            }
+        }, 0, 1 * 1000);
 
         String title = "Let the Duel begin!!!";
         String root = "Match.fxml";
@@ -85,7 +124,7 @@ public class DeckFXMLController implements Initializable {
     private void btnCreateDeck_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
-        if(decks.size() < 4){
+        if (decks.size() < 4) {
             game.addDeck(game.getToken(), tfDeckName.getText());
         }
         //TODO pop-up for to much decks.
@@ -115,8 +154,10 @@ public class DeckFXMLController implements Initializable {
         int i = 0; // Collomn
         int j = 0; // Row
 
-        selectedDeck = decks.get(0);
-        lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
+        if (!decks.isEmpty()) {
+            selectedDeck = decks.get(0);
+            lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
+        }
 
         for (Deck deck : decks) {
             // Icon Image
@@ -155,7 +196,11 @@ public class DeckFXMLController implements Initializable {
     static public void selectDeck(String name) {
         for (Deck deck : decks) {
             if (deck.getName() == null ? name == null : deck.getName().equals(name)) {
-                selectedDeck = deck;
+                if (selectedDeck.getName().equals(name)) {
+                    StageController.getInstance().popup("", false, "This deck is already selected");
+                } else {
+                    selectedDeck = deck;
+                }
             }
         }
     }
