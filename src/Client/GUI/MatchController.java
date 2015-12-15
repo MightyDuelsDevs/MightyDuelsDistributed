@@ -129,7 +129,7 @@ public class MatchController implements Initializable {
 
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
     }
- 
+
     public void setOpponent(String name, int iconId) {
         LOG.info("Start match: " + name + " icon: " + iconId);
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
@@ -144,6 +144,22 @@ public class MatchController implements Initializable {
             //todo error
         }
         CardControl cc = new CardControl(card.get());
+
+        HeroCard playerCard = (HeroCard) cc.getCard();
+
+        int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
+
+        if (maxValue == playerCard.getPhysicalDamage()) {
+            SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
+        } else if (maxValue == playerCard.getMagicalBlock()) {
+            SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
+        } else if (maxValue == playerCard.getMagicalDamage()) {
+            SoundController.play(SoundController.SoundFile.MAGICALATTACK);
+        } else if (maxValue == playerCard.getMagicalBlock()) {
+            SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
+        } else if (maxValue == playerCard.getHealValue()) {
+            SoundController.play(SoundController.SoundFile.HEAL);
+        }
         gridYourSide.add(cc.CardPane(), 1, 0);
         //getCard(cardId);
     }
