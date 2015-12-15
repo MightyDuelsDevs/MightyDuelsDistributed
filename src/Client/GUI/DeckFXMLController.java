@@ -157,7 +157,12 @@ public class DeckFXMLController implements Initializable {
     static public void selectDeck(String name) {
         for (Deck deck : decks) {
             if (deck.getName() == null ? name == null : deck.getName().equals(name)) {
-                selectedDeck = deck;
+                if (selectedDeck.getName().equals(name)){
+                    StageController.getInstance().popup("", false, "This deck is already selected");
+                }
+                else{
+                selectedDeck = deck;                    
+                }
             }
         }
     }
