@@ -64,7 +64,7 @@ public class DeckFXMLController implements Initializable {
 
     @FXML
     private TextField tfDeckName;
-    
+
     private Timer timer;
     private int sec;
 
@@ -97,10 +97,9 @@ public class DeckFXMLController implements Initializable {
                         sec--;
                     } else if (sec < 0) {
                         sc.closePopUp();
-                        sec = 10;
                         this.cancel();
                     }
-                    if (false){ // een cancel manier
+                    if (false) { // een cancel manier
                         this.cancel();
                     }
                 });
@@ -125,7 +124,7 @@ public class DeckFXMLController implements Initializable {
     private void btnCreateDeck_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
-        if(decks.size() < 4){
+        if (decks.size() < 4) {
             game.addDeck(game.getToken(), tfDeckName.getText());
         }
         //TODO pop-up for to much decks.
@@ -155,9 +154,9 @@ public class DeckFXMLController implements Initializable {
         int i = 0; // Collomn
         int j = 0; // Row
 
-        if (!decks.isEmpty()){
-        selectedDeck = decks.get(0);
-        lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());            
+        if (!decks.isEmpty()) {
+            selectedDeck = decks.get(0);
+            lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
         }
 
         for (Deck deck : decks) {
@@ -197,11 +196,10 @@ public class DeckFXMLController implements Initializable {
     static public void selectDeck(String name) {
         for (Deck deck : decks) {
             if (deck.getName() == null ? name == null : deck.getName().equals(name)) {
-                if (selectedDeck.getName().equals(name)){
+                if (selectedDeck.getName().equals(name)) {
                     StageController.getInstance().popup("", false, "This deck is already selected");
-                }
-                else{
-                selectedDeck = deck;                    
+                } else {
+                    selectedDeck = deck;
                 }
             }
         }
