@@ -160,7 +160,7 @@ public class MatchController implements Initializable {
         } else if (maxValue == playerCard.getHealValue()) {
             SoundController.play(SoundController.SoundFile.HEAL);
         }
-        gridYourSide.add(cc.CardPane(), 1, 0);
+        Platform.runLater(()->gridYourSide.add(cc.CardPane(), 4, 0));
         //getCard(cardId);
     }
 
