@@ -48,6 +48,9 @@ public class SocketManager {
     }
     
     public void Connect(String ip) throws IOException{
+        if(ip==null){
+            ip="127.0.0.1";
+        }
         socket.connect(new InetSocketAddress(ip,420));
         inputReaderThread = new Thread(()->inputReader());
         inputReaderThread.setName("ClientSocketReader");

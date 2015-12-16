@@ -5,7 +5,6 @@
  */
 package Server.Run;
 
-import Client.GUI.MainScreenFXMLController;
 import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
 import Server.Domain.Game;
@@ -14,9 +13,13 @@ import Server.RMI.LoginProvider;
 import Server.RMI.MainScreenProvider;
 import Server.SocketManagerServer.SocketManager;
 import java.awt.SplashScreen;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +41,25 @@ public class MightyDuelsServer {
      */
     public static void main(String[] args) {
         log.info("Starting MightyDuels server application");
+        
+        try {
+            FileInputStream in = new FileInputStream("server.properties");
+        
+            Properties p = new Properties(System.getProperties());
+            
+            p.load(in);
+            
+            System.setProperties(p);
+            
+            System.getProperties().list(System.out);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MightyDuelsServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(-10000);
+        } catch (IOException ex) {
+            Logger.getLogger(MightyDuelsServer.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(-10001);
+        }
+        
         log.info("Initialising database");
         Server.Database.Database.openConnection();
         try {
@@ -52,6 +74,7 @@ public class MightyDuelsServer {
             log.severe("Exiting....");
             System.exit(1001);
         }
+        
         log.info("Creating Game instance");
         game = new Game();
         log.info("Creating CardDeckController");

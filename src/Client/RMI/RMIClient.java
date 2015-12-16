@@ -35,11 +35,15 @@ public class RMIClient {
     private Registry loginRegistry = null;
     private Registry mainScreenRegistry = null;
 
-    private static final String ipAdress = "127.0.0.1";
+    //private static final String ipAdress = "127.0.0.1";
+    private static String ipAdress = System.getProperty("MightyDuels.RMIServer");
 
     private static RMIClient instance;
 
     public RMIClient() {
+        if(ipAdress == null){
+            ipAdress = "127.0.0.1";
+        }
         try {
             loginRegistry = LocateRegistry.getRegistry(ipAdress, 421);
             mainScreenRegistry = LocateRegistry.getRegistry(ipAdress, 422);

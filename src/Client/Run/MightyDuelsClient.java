@@ -10,6 +10,11 @@ import java.awt.SplashScreen;
 import java.util.logging.Logger;
 import Client.Controller.StageController;
 import Client.RMI.RMIClient;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.Level;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 
@@ -28,6 +33,24 @@ public class MightyDuelsClient {
      */
     public static void main(String[] args) {
         log.info("Starting MightyDuels client application");
+        
+        try {
+            FileInputStream in = new FileInputStream("client.properties");
+        
+            Properties p = new Properties(System.getProperties());
+            
+            p.load(in);
+            
+            System.setProperties(p);
+            
+            System.getProperties().list(System.out);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MightyDuelsClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(-10000);
+        } catch (IOException ex) {
+            Logger.getLogger(MightyDuelsClient.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(-10001);
+        }
         log.info("Starting main application");
         SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash != null) {

@@ -104,7 +104,7 @@ public class MatchController implements Initializable {
         System.out.println("Connecting to LocalHost");
 
         try {
-            client.Connect("localhost");
+            client.Connect(System.getProperty("MightyDuels.SocketServer"));
         } catch (IOException ex) {
             Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
 

@@ -24,6 +24,7 @@ public class Database {
     private static final Logger log = Logger.getLogger(Database.class.getName());
     
     private static final String url = "jdbc:oracle:thin:@192.168.2.14:1521/orcl";
+    //private static final String url = "jdbc:oracle:thin:@localhost:1521/orcl";
     private static final String user = "MightyDuels";
     private static final String password = "MDPW";
     private static volatile Connection connection = null;
@@ -32,6 +33,10 @@ public class Database {
      * Opens connection
      */
     public static void openConnection() {
+        String url = System.getProperty("MightyDuels.Database");
+        if(url == null){
+            url = "jdbc:oracle:thin:@192.168.2.14:1521/orcl";
+        }
         if (connection == null) {
             try {
                 connection = DriverManager.getConnection(url, user, password);
