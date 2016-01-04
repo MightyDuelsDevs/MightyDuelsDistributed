@@ -51,10 +51,6 @@ public class MightyDuelsClient {
             System.exit(-10001);
         }
         log.info("Starting main application");
-        SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
-        }
         JFXPanel jfxp = new JFXPanel();
         StageController.getInstance().start();
     }
