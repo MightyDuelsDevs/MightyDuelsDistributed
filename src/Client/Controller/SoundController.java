@@ -7,6 +7,7 @@ package Client.Controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -31,47 +32,47 @@ public class SoundController {
         /**
          * The sound when a button is pressed.
          */
-        BUTTONPRESS("src/Client/Resources/Sound/buttonPress.wav"),
+        BUTTONPRESS("/Client/Resources/Sound/buttonPress.wav"),
 
         /**
          * The sound when a turn ends.
          */
-        ENDTURN("src/Client/Resources/Sound/endTurn.wav"),
+        ENDTURN("/Client/Resources/Sound/endTurn.wav"),
 
         /**
          * The sound when heal is the highest value played.
          */
-        HEAL("src/Client/Resources/Sound/heal.wav"),
+        HEAL("/Client/Resources/Sound/heal.wav"),
 
         /**
          * The sound when magical attack is the highest value played.
          */
-        MAGICALATTACK("src/Client/Resources/Sound/magicalAttack.wav"),
+        MAGICALATTACK("/Client/Resources/Sound/magicalAttack.wav"),
 
         /**
          * The sound when magical block is the highest value played.
          */
-        MAGICALBLOCK("src/Client/Resources/Sound/magicalBlock.wav"),
+        MAGICALBLOCK("/Client/Resources/Sound/magicalBlock.wav"),
 
         /**
          * The sound when a minion is played.
          */
-        MINION("src/Client/Resources/Sound/minion.wav"),
+        MINION("/Client/Resources/Sound/minion.wav"),
 
         /**
          * The sound when physical attack is the highest value played.
          */
-        PHYSICALATTACK("src/Client/Resources/Sound/physicalAttack.wav"),
+        PHYSICALATTACK("/Client/Resources/Sound/physicalAttack.wav"),
 
         /**
          * The sound when physical block is the highest value played.
          */
-        PHYSICALBLOCK("src/Client/Resources/Sound/physicalBlock.wav"),
+        PHYSICALBLOCK("/Client/Resources/Sound/physicalBlock.wav"),
 
         /**
          * The sound when a turn starts.
          */
-        STARTTURN("src/Client/Resources/Sound/startTurn.wav");
+        STARTTURN("/Client/Resources/Sound/startTurn.wav");
 
         private final String audioFilePath;
 
@@ -109,7 +110,8 @@ public class SoundController {
 
             @Override
             public void run() {
-                File audioFile = new File(audioFilePath);
+                URL audioFile = this.getClass().getResource(audioFilePath);
+                //File audioFile = new File(audioFilePath);
 
                 try {
                     AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);

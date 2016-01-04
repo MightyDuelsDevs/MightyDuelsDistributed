@@ -38,7 +38,7 @@ public class CardDeckController {
      * @return returns a card that corresponds with the index of the list.
      */
     public static Card getCard(int index) {
-        return allCards.get(index);
+        return allCards.stream().filter((c)->c.getId()==index).findFirst().get();
     }
 
     /**
