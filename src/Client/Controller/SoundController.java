@@ -23,17 +23,54 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class SoundController {
 
-    //Enumerator for all the different sound files.
-    public static enum SoundFile {
+    /**
+     * Enumerator for all the different sound files.
+     */
+        public static enum SoundFile {
 
+        /**
+         * The sound when a button is pressed.
+         */
         BUTTONPRESS("src/Client/Resources/Sound/buttonPress.wav"),
+
+        /**
+         * The sound when a turn ends.
+         */
         ENDTURN("src/Client/Resources/Sound/endTurn.wav"),
+
+        /**
+         * The sound when heal is the highest value played.
+         */
         HEAL("src/Client/Resources/Sound/heal.wav"),
+
+        /**
+         * The sound when magical attack is the highest value played.
+         */
         MAGICALATTACK("src/Client/Resources/Sound/magicalAttack.wav"),
+
+        /**
+         * The sound when magical block is the highest value played.
+         */
         MAGICALBLOCK("src/Client/Resources/Sound/magicalBlock.wav"),
+
+        /**
+         * The sound when a minion is played.
+         */
         MINION("src/Client/Resources/Sound/minion.wav"),
+
+        /**
+         * The sound when physical attack is the highest value played.
+         */
         PHYSICALATTACK("src/Client/Resources/Sound/physicalAttack.wav"),
+
+        /**
+         * The sound when physical block is the highest value played.
+         */
         PHYSICALBLOCK("src/Client/Resources/Sound/physicalBlock.wav"),
+
+        /**
+         * The sound when a turn starts.
+         */
         STARTTURN("src/Client/Resources/Sound/startTurn.wav");
 
         private final String audioFilePath;
@@ -42,6 +79,10 @@ public class SoundController {
             this.audioFilePath = audioFilePath;
         }
 
+        /**
+         * Method that returns the String that corresponds to the file path of the file.
+         * @return The file path of the audio file.
+         */
         public String getAudioFilePath() {
             return audioFilePath;
         }

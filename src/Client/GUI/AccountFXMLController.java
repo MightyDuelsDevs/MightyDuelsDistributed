@@ -134,6 +134,10 @@ public class AccountFXMLController implements Initializable {
         }
     }
 
+    /**
+     * Method that saves the selection of an icon.
+     * @param id, the ID of the icon that is selected.
+     */
     public static void setSelectedIcon(int id) {
         selectedIcon = id;
     }

@@ -30,7 +30,8 @@ public class Match {
     /**
      * Create a new instance of match with P1 as the first player/hero
      *
-     * @param P1 The first player
+     * @param token1, token of the first player.
+     * @param token2, token of the second player.
      */
     public Match(String token1, String token2) {
         game = Game.getInstance();
@@ -38,23 +39,6 @@ public class Match {
         player2 = game.getPlayer(token2);
 
         hero1 = new Hero(this, player1, game.getDeck(token1));//todo deck
-        //gameState = GameState.Waiting;
-        //Matthijs
-//            timer = new Timer();
-//            timer.schedule(new TimerTask(){
-//                @Override
-//                public void run() {
-//                    if(gameState != GameState.Active){
-//                        if(gameState == GameState.Defined || gameState == GameState.Tie){
-//                            timer.cancel();//quit if the game has finished
-//                            return;
-//                        }
-//                    }
-//                    if(hero1.getFinished() && hero2.getFinished()){
-//                        processTurn();
-//                    }
-//                }
-//            }, 0, 100);
     }
 
     /**
@@ -75,6 +59,11 @@ public class Match {
 //        SocketManager.getInstance().concede();
     }
 
+    /**
+     * Method that sets the target of an attack.
+     * @param source, the source of the attack. This in an integer that determines which minion attacks.
+     * @param target, the target of the attack. This is an integer that determines which target is attacked.
+     */
     public void setITarget(int source, int target) {
 //TODO
     }

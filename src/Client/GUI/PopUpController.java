@@ -70,6 +70,9 @@ public class PopUpController implements Initializable {
         stage.close();
     }
     
+    /**
+     * Method that reloads the pop-up.
+     */
     public void reload(){
         this.tfTitel.setText(StageController.title);
         this.tfText.setText(StageController.text);
