@@ -193,6 +193,10 @@ public class DeckFXMLController implements Initializable {
 
     }
 
+    /**
+     * Method that selects a deck for the player.
+     * @param name, the name of the deck that is selected.
+     */
     static public void selectDeck(String name) {
         for (Deck deck : decks) {
             if (deck.getName() == null ? name == null : deck.getName().equals(name)) {

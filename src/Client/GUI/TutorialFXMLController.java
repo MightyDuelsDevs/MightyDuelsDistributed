@@ -49,9 +49,6 @@ public class TutorialFXMLController implements Initializable {
 
     private int pagecounter;
 
-    /**
-     * Initializes the coontroller class, sets the opacity of the image views to
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ImageViewTutorial.setImage(tutorialImage1);

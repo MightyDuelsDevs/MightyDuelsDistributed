@@ -25,11 +25,20 @@ public class HeroControl {
     private Label lHealt;
     private PlayerShared player;
 
+    /**
+     * Method that sets the health of the hero of a certain player.
+     * @param health, the health he hero has.
+     * @param player, the player the hero belongs to.
+     */
     public HeroControl(int health, PlayerShared player) {
         this.health = health;
         this.player = player;
     }
 
+    /**
+     * Method that creates the visual of the hero.
+     * @return an AnchorPane that represents a visual of the hero.
+     */
     public AnchorPane getHeroControl() {
         ImageView img = new ImageView("/Client/Resources/Images/I" + player.getIconId() + ".png");
 
@@ -67,6 +76,10 @@ public class HeroControl {
         return root;
     }
 
+    /**
+     * Method that sets the health of the hero.
+     * @param health, the health that will be set.
+     */
     public void setHealth(int health) {
         Platform.runLater(() -> {
             pHealth.setProgress(health / 50.0);
