@@ -26,15 +26,7 @@ public class SocketManager {
     private static final int error = -1;
     
     private static final Logger LOG = Logger.getLogger(SocketManager.class.getName());
-    
- //   private static SocketManager instance;
-    
-//    public static SocketManager getInstance(){
-//        if(instance == null){
-//            instance = new SocketManager();
-//        }
-//        return instance;
-//    }
+
 
     private Socket socket;
     private Thread inputReaderThread;
@@ -42,11 +34,20 @@ public class SocketManager {
     
     private MatchController controller;
     
+    /**
+     * Initiating the SocketManager for the match.
+     * @param controller, The controller for the match from this players side.
+     */
     public SocketManager(MatchController controller) {
         socket = new Socket();
         this.controller = controller;
     }
     
+    /**
+     * Method that connects the SocketManager with an IP.
+     * @param ip, the IP the client uses to talk to the server.
+     * @throws IOException 
+     */
     public void Connect(String ip) throws IOException{
         if(ip==null){
             ip="127.0.0.1";
@@ -56,6 +57,7 @@ public class SocketManager {
         inputReaderThread.setName("ClientSocketReader");
         inputReaderThread.start();
     }
+    
     
     private void inputReader(){
         InputStream in;
@@ -291,6 +293,9 @@ public class SocketManager {
         return lb+ub*0x100;
     }
     
+    /**
+     * Method used to connect to the server.
+     */
     public void connect(){
         byte[] data = new byte[]{0x4D,0x44,0x56,0x01};//MDV(0x01)
         if(socket.isConnected()){
@@ -308,6 +313,11 @@ public class SocketManager {
         }
     }
     
+    /**
+     * Method that tries to log in the server using the match byte array.
+     * @param loginHash, the hash that the client uses to try to log in.
+     * @return a boolean that confirms if the log in was successful(true) or not(false).
+     */
     public boolean login(byte[] loginHash){
         LOG.info("Hash lenght: " + loginHash.length);
         if(!socket.isConnected())
