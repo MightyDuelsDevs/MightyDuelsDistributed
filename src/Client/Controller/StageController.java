@@ -146,7 +146,7 @@ public class StageController {
         Platform.runLater(() -> {
             try {
                 this.setStage(new Stage());
-                Parent root = FXMLLoader.load(getClass().getResource("../GUI/LogOnFXML.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/Client/GUI/LogOnFXML.fxml"));
                 Scene scene = new Scene(root);
                 this.stage.setScene(scene);
                 this.stage.show();
@@ -172,7 +172,7 @@ public class StageController {
         this.stage.setTitle(title);
         Platform.runLater(() -> {
             try {
-                Scene scene = new Scene(FXMLLoader.load(getClass().getResource("../GUI/" + root)));
+                Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/Client/GUI/" + root)));
                 this.stage.setScene(scene);
                 Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
                 this.stage.setX((primScreenBounds.getWidth() - this.stage.getWidth()) / 2);
@@ -203,7 +203,7 @@ public class StageController {
 
         Platform.runLater(() -> {
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/Client/GUI/PopUp.fxml"));
                 Scene scene = new Scene(root);
                 popUpStage.initStyle(StageStyle.UNDECORATED);
                 popUpStage.initModality(Modality.WINDOW_MODAL);
@@ -265,7 +265,7 @@ public class StageController {
 
         Platform.runLater(() -> {
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/Client/GUI/DamageDisplayFXML.fxml"));
                 Scene scene = new Scene(root);
 
                 popUpStage.initStyle(StageStyle.UNDECORATED);
