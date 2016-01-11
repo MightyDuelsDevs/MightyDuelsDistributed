@@ -197,7 +197,9 @@ public class Game {
      */
     public boolean setIcon(String token, int iconID) {
         try {
-            return client.setIcons(token, iconID);
+            boolean result = client.setIcons(token, iconID);
+            player = client.getPlayer(token);
+            return result;
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return false;

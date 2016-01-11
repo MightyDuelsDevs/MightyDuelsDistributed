@@ -68,14 +68,16 @@ public class AccountFXMLController implements Initializable {
 
     @FXML
     private void btnSaveIcon_OnClick(ActionEvent event) throws IOException {
+        System.out.println("wtf");
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
         //TODO update player everytime player updates
         // Set the selected icon into the database.
         Image image = new Image("/Client/Resources/Images/I" + selectedIcon + ".png", 120, 120, false, false);
         ivSelectedIcon.setImage(image);
-        
+
         game.setIcon(game.getToken(), selectedIcon);
+        loggedInPlayer = game.getPlayer(game.getToken());
         //JOptionPane.showMessageDialog(null, "You have succesfully changed your icon to Icon number: " + selectedIcon + ".", "Icon saved", JOptionPane.INFORMATION_MESSAGE);
     }
 
