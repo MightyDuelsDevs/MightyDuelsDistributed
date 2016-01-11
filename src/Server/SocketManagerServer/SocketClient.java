@@ -196,9 +196,9 @@ public class SocketClient {
                     } else {
                         List<Minion> mm = hero.getMinions();
                         if (source == 1 && mm.size() >= 1) {
-                            mm.get(1).setITarget(itarget);
+                            mm.get(0).setITarget(itarget);
                         } else if (source == 2 && mm.size() >= 2) {
-                            mm.get(2).setITarget(itarget);
+                            mm.get(1).setITarget(itarget);
                         } else {
                             illegalAction();
                             continue;
@@ -467,6 +467,7 @@ public class SocketClient {
 
     public void setHealth(boolean self, int pos, int value) {
         byte totalPos = (byte) (self ? pos : pos + 3);
+        if(value<0)value=0;
         byte[] data = new byte[3];
         data[0] = 0x07;
         data[1] = totalPos;
