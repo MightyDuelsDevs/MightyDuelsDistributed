@@ -6,7 +6,6 @@
 package mightyduelsdistributed;
 
 /**
- *
  * @author Ramòn Janssen
  */
 public class MightyDuelsDistributed {

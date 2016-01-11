@@ -6,14 +6,35 @@ import java.io.Serializable;
  * An class containing attributes of an player
  */
 public class PlayerShared implements Serializable {
-
+    /**
+     * id the player id
+     */ 
     protected int id;
+    /**
+    * username the payers username
+    */
     protected final String username;
+    /**
+     * iconId the players icon
+     */
     protected int iconId;
+    /**
+     * rating the players rating
+     */
     protected int rating;
+    /**
+     * wins the players wins
+     */
     protected int matches;
+    /**
+     * losses the players losses
+     */
     protected int wins;
+    /**
+     * matches the players matches
+     */
     protected int losses;
+    
 /*
      Moet er een methode komen die het wachtwoord wegschrijft naar de database? 
      Of willen we het wachtwoord opslaan op de player?
@@ -86,7 +107,7 @@ public class PlayerShared implements Serializable {
     public int getWins() {
         return this.wins;
     }
-
+    
     /**
      * Gets the number of losses the player has made
      * @return the amount of losses

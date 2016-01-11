@@ -40,6 +40,10 @@ public class SocketClient {
     private boolean closed = false;
     private boolean lastAccepted = false;
     
+    /**
+     * 
+     * @param socket, is the connecting element, given by the server. 
+     */
     public SocketClient(Socket socket) {
         this.socket = socket;
         inputThread = new Thread(()->inputHandler());
@@ -284,15 +288,22 @@ public class SocketClient {
         }
         
     }
-    
+    /**
+     * Boolean method checking if connection is closed
+     * @return Returns the true or false value of the connection state 
+     */
     public boolean isClosed(){
         return closed;
     }
-    
+    /**
+     * This function is not initialised 
+     */
     public void stop(){
         
     }
-    
+    /**
+     * Sends the confirmation of the connection back to the server. 
+     */
     public void connAccepted(){
         byte[] data = new byte[]{(byte)0x01};
         try {
@@ -302,7 +313,9 @@ public class SocketClient {
             //todo end connection?
         }
     }
-    
+    /**
+     * Sends the acceptance of the login credentials. 
+     */
     public void loginAccepted(){
         byte[] data = new byte[]{(byte)0x02};
         try {
@@ -312,7 +325,9 @@ public class SocketClient {
             //todo end connection?
         }
     }
-    
+    /**
+     * Sends the confirmation of the authentication failure to the server. 
+     */
     public void loginDenied(){
         byte[] data = new byte[]{(byte)0x03};
         try {
@@ -327,7 +342,9 @@ public class SocketClient {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+     * Sends the confirmation of the connection back to the server. 
+     */
     public void accepted(){
         byte[] data = new byte[]{(byte)0xF0};
         try {
@@ -347,7 +364,9 @@ public class SocketClient {
             //todo end connection?
         }
     }
-
+    /**
+     * Pings the server
+     */
     public void ping(){
         byte[] data = new byte[]{(byte)0xE0};
         try {
@@ -364,7 +383,9 @@ public class SocketClient {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+     /**
+     * Pongs the server
+     */
     public void pong(){
         byte[] data = new byte[]{(byte)0xE1};
         try {
@@ -373,7 +394,7 @@ public class SocketClient {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void newMatch(Match match,String username, int id){
         this.match = match;
         byte[] usernameEncoded;
