@@ -239,12 +239,14 @@ public class SocketManager {
                     while(message!=0x00){
                         if(message == -1){
                             //todo throw error
+                            
                         }
                         mbuf.put((byte)message);
                         try {
                             message = in.read();
                         } catch (IOException ex) {
                             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                            break;
                         }
                     }
                     String mes;
@@ -253,7 +255,10 @@ public class SocketManager {
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         //todo fatal
+                        continue;
                     }
+                    LOG.log(Level.INFO, "Reseaved message: {0}", mes);
+                    controller.receiveMessage(mes);
                     //todo send message to GUI
                     break;
                 case 0xE0://PING

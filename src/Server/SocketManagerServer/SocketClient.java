@@ -246,8 +246,10 @@ public class SocketClient {
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketClient.class.getName() + "-" + player.getUsername()).log(Level.SEVERE, null, ex);
                         //todo fatal
+                        continue;
                     }
-                    //todo send message to other client
+                    
+                    match.forwardMessage(mes, hero);
                     break;
                 case 0xE0://PING
                     pong();

@@ -284,7 +284,12 @@ public class MatchController implements Initializable {
             gridChooseCard.add(cardControl.CardPane(), i, 0);
         }
     }
-
+    
+    public void receiveMessage(String message){
+        LOG.log(Level.INFO, "Received Message: {0}", message);
+        //todo popup or somthing
+    }
+    
     /**
      * Method that is called when the player won.
      * This will show a pop-up to tell the player he won.
