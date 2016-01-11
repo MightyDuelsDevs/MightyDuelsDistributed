@@ -1,6 +1,7 @@
 package Server.Domain;
 
 import Server.Controller.CardDeckController;
+import Server.Controller.PlayerIconController;
 import java.util.List;
 import java.util.Timer;
 import java.util.logging.Logger;
@@ -50,9 +51,11 @@ public class Match {
             gameState = GameState.Defined;
             timer.shutdown();
             if(hero1.getHitPoints()>0){
+                PlayerIconController.updateRating(player1.getId(), player2.getId(), true);
                 player1.getSocket().matchEnd(2);
                 player2.getSocket().matchEnd(0);
             }else if(hero2.getHitPoints()>0){
+                PlayerIconController.updateRating(player1.getId(), player2.getId(), false);
                 player1.getSocket().matchEnd(0);
                 player2.getSocket().matchEnd(2);
             }
