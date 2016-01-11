@@ -293,12 +293,12 @@ public class PlayerIconController {
             
         if (playerOneWon) {
             statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerOne.getRating() + ratingDifferenceWon, playerOneId);
-            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerTwo.getRating() + ratingDifferenceLost, playerTwoId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", Math.max(800, playerTwo.getRating() + ratingDifferenceLost), playerTwoId);
             statementThree = String.format("UPDATE PLAYER SET WINS = WINS + 1 WHERE ID = %1$s", playerOne.getId());
             statementFour = String.format("UPDATE PLAYER SET LOSSES = LOSSES + 1 WHERE ID = %1$s", playerTwo.getId());
         } else {
             statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerTwo.getRating() + ratingDifferenceWon, playerTwoId);
-            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerOne.getRating() + ratingDifferenceLost, playerOneId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", Math.max(800, playerOne.getRating() + ratingDifferenceLost), playerOneId);
             statementThree = String.format("UPDATE PLAYER SET WINS = WINS + 1 WHERE ID = %1$s", playerTwo.getId());
             statementFour = String.format("UPDATE PLAYER SET LOSSES = LOSSES + 1 WHERE ID = %1$s", playerOne.getId());
         }

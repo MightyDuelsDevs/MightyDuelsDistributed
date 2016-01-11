@@ -366,7 +366,12 @@ public class Match {
         
     }
     
-        public void forwardMessage(String message, Hero sender){
+    /**
+     * Method that sends messages between players.
+     * @param message, the message that will be send.
+     * @param sender, the sender of the message.
+     */
+    public void forwardMessage(String message, Hero sender){
         
         if(sender == hero1){
             log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
