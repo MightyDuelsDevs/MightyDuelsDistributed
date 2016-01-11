@@ -35,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -76,6 +77,8 @@ public class MatchController implements Initializable {
     private ImageView btnConcede;
     @FXML
     private Label lblDamageVisualisation;
+    @FXML
+    private Button btSendMessage;
 
     private CardControl minion1;
     private CardControl minion2;
@@ -132,6 +135,15 @@ public class MatchController implements Initializable {
         hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
 
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
+        btSendMessage.setOnAction((evt)->{
+            TextInputDialog dialog = new TextInputDialog("message");
+            dialog.setTitle("New message");
+            dialog.setHeaderText("Send message to opponend");
+            dialog.setContentText("Enter a message to send to the opponend");
+            
+            dialog.showAndWait().ifPresent((message)->client.sendMessage(message));
+            
+        });
     }
 
     /**
@@ -284,7 +296,22 @@ public class MatchController implements Initializable {
             gridChooseCard.add(cardControl.CardPane(), i, 0);
         }
     }
+    
+    public void receiveMessage(String message){
+        LOG.log(Level.INFO, "Received Message: {0}", message);
+        Platform.runLater(()->{
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Received an message");
+            alert.setHeaderText("You Received an message from opponend");
+            alert.setContentText(message);
 
+            ButtonType type = new ButtonType("Ok");
+            alert.getButtonTypes().setAll(type);
+
+            alert.show();
+        });
+    }
+    
     /**
      * Method that is called when the player won.
      * This will show a pop-up to tell the player he won.

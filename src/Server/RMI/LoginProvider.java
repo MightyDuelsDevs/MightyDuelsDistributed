@@ -5,6 +5,7 @@
  */
 package Server.RMI;
 
+import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
 import java.rmi.server.UnicastRemoteObject;
 import Shared.Interfaces.ILoginProvider;
@@ -47,7 +48,15 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
 
     @Override
     public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException {
-        return PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
+        int signUp = PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
+        if(signUp == 3){
+            Player p = PlayerIconController.createPlayer(displayname.toUpperCase());
+            if(!CardDeckController.addDeck(p.getId(), "default")){
+                return 1;
+            }
+            CardDeckController.setSelectedDeck(p.getId(), CardDeckController.getDecksFromPlayer(p.getId()).get(0).getId());
+        }
+        return signUp;
     }
     
     public PlayerShared getPlayerFromToken(String token) {

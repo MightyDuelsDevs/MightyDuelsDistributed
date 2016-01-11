@@ -221,7 +221,7 @@ public class SocketClient {
                     accepted();
                     match.concede(hero);
                     break;
-                case (byte) 0x80://MESSAGE
+                case 0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
                     int message = -1;
                     try {
@@ -233,7 +233,7 @@ public class SocketClient {
                         if (message == -1) {
                             //todo throw error
                         }
-                        mbuf.put((byte) message);
+                        mbuf.put((byte)message);
                         try {
                             message = in.read();
                         } catch (IOException ex) {
@@ -242,12 +242,15 @@ public class SocketClient {
                     }
                     String mes;
                     try {
-                        mes = new String(mbuf.array(), "UTF-8");
+                        mes = new String(mbuf.array(), 0, mbuf.position(),"UTF-8");
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketClient.class.getName() + "-" + player.getUsername()).log(Level.SEVERE, null, ex);
                         //todo fatal
+                        continue;
                     }
-                    //todo send message to other client
+                    
+                    match.forwardMessage(mes, hero);
+                    accepted();
                     break;
                 case 0xE0://PING
                     pong();

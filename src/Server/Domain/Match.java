@@ -1,6 +1,7 @@
 package Server.Domain;
 
 import Server.Controller.CardDeckController;
+import Server.Controller.PlayerIconController;
 import java.util.List;
 import java.util.Timer;
 import java.util.logging.Logger;
@@ -50,9 +51,11 @@ public class Match {
             gameState = GameState.Defined;
             timer.shutdown();
             if(hero1.getHitPoints()>0){
+                PlayerIconController.updateRating(player1.getId(), player2.getId(), true);
                 player1.getSocket().matchEnd(2);
                 player2.getSocket().matchEnd(0);
             }else if(hero2.getHitPoints()>0){
+                PlayerIconController.updateRating(player1.getId(), player2.getId(), false);
                 player1.getSocket().matchEnd(0);
                 player2.getSocket().matchEnd(2);
             }
@@ -361,5 +364,16 @@ public class Match {
         player1.getSocket().newTurn(hero1.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
         player2.getSocket().newTurn(hero2.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
         
+    }
+    
+        public void forwardMessage(String message, Hero sender){
+        
+        if(sender == hero1){
+            log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
+            player2.getSocket().sendMessage(message);
+        }else{
+            log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
+            player1.getSocket().sendMessage(message);
+        }
     }
 }
