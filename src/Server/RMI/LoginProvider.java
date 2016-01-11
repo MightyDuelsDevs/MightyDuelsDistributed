@@ -50,9 +50,11 @@ public class LoginProvider extends UnicastRemoteObject implements ILoginProvider
     public int signUpPlayer(String email, String displayname, String password, String passcheck) throws RemoteException {
         int signUp = PlayerIconController.signUpPlayer(email, displayname, password, passcheck);
         if(signUp == 3){
-            if(!CardDeckController.addDeck(PlayerIconController.createPlayer(displayname.toUpperCase()).getId(), "default")){
-                signUp=1;
+            Player p = PlayerIconController.createPlayer(displayname.toUpperCase());
+            if(!CardDeckController.addDeck(p.getId(), "default")){
+                return 1;
             }
+            CardDeckController.setSelectedDeck(p.getId(), CardDeckController.getDecksFromPlayer(p.getId()).get(0).getId());
         }
         return signUp;
     }
