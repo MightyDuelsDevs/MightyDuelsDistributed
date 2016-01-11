@@ -35,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -54,6 +55,10 @@ public class MatchController implements Initializable {
     private static byte[] loginHash;
     private static final Logger LOG = Logger.getLogger(MatchController.class.getName());
 
+    /**
+     * Method that sets the hash of the match.
+     * @param hash, the hash that identifies the match.
+     */
     public static void setHash(byte[] hash) {
         loginHash = hash;
     }
@@ -72,6 +77,8 @@ public class MatchController implements Initializable {
     private ImageView btnConcede;
     @FXML
     private Label lblDamageVisualisation;
+    @FXML
+    private Button btSendMessage;
 
     private CardControl minion1;
     private CardControl minion2;
@@ -128,14 +135,32 @@ public class MatchController implements Initializable {
         hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
 
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
+        btSendMessage.setOnAction((evt)->{
+            TextInputDialog dialog = new TextInputDialog("message");
+            dialog.setTitle("New message");
+            dialog.setHeaderText("Send message to opponend");
+            dialog.setContentText("Enter a message to send to the opponend");
+            
+            dialog.showAndWait().ifPresent((message)->client.sendMessage(message));
+            
+        });
     }
 
+    /**
+     * Method that adds an opponent to the match.
+     * @param name, the name of the opponent.
+     * @param iconId, the icon ID of the opponent.
+     */
     public void setOpponent(String name, int iconId) {
         LOG.info("Start match: " + name + " icon: " + iconId);
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
         Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
 
+    /**
+     * Method that processes the turn with the card played.
+     * @param cardId, The id of the card played.
+     */
     public void turnEnd(int cardId) {
         cardID = cardId;
         Optional<Card> card;
@@ -164,6 +189,11 @@ public class MatchController implements Initializable {
         //getCard(cardId);
     }
 
+    /**
+     * Method for adding a minion to the board.
+     * @param id, The ID of the minion.
+     * @param boardId, the ID of the side of the board.
+     */
     public void addMinion(int id, int boardId) {
         CardControl card = null;// = new CardControl(getCard(CardId));
         switch (boardId) {
@@ -189,6 +219,13 @@ public class MatchController implements Initializable {
         }
     }
 
+    /**
+     * Method that sets the health of a hero or a minion.
+     * @param self, determines if the one that the health has been set is either your own(true) or your opponents(false).
+     * @param hero, if it is a hero that is healed this will be true.
+     * @param id, the id of the minion of which the health will be set.
+     * @param health, the health value it will be changed to.
+     */
     public void setHealth(boolean self, boolean hero, int id, int health) {
         if (self) {
             if (hero) {
@@ -220,6 +257,12 @@ public class MatchController implements Initializable {
         }
     }
 
+    /**
+     * Method that prepares three cards for the player to choose from.
+     * @param card1, first card to be picked from.
+     * @param card2, second card to be picked from.
+     * @param card3, third card to be picked from.
+     */
     public void newTurn(int card1, int card2, int card3) {
         LOG.info("New cards " + card1 + " " + card2 + " " + card3 + " ");
         cardChoice.clear();
@@ -240,6 +283,9 @@ public class MatchController implements Initializable {
         Platform.runLater(() -> drawCards());
     }
 
+    /**
+     * Method that adds EventHandlers to the cards and adds them to the pane.
+     */
     private void drawCards() {
 
         for (int i = 0; i < 3; i++) {
@@ -250,7 +296,26 @@ public class MatchController implements Initializable {
             gridChooseCard.add(cardControl.CardPane(), i, 0);
         }
     }
+    
+    public void receiveMessage(String message){
+        LOG.log(Level.INFO, "Received Message: {0}", message);
+        Platform.runLater(()->{
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Received an message");
+            alert.setHeaderText("You Received an message from opponend");
+            alert.setContentText(message);
 
+            ButtonType type = new ButtonType("Ok");
+            alert.getButtonTypes().setAll(type);
+
+            alert.show();
+        });
+    }
+    
+    /**
+     * Method that is called when the player won.
+     * This will show a pop-up to tell the player he won.
+     */
     public void win() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("You Won!");
@@ -270,6 +335,10 @@ public class MatchController implements Initializable {
         System.out.println("YAY");
     }
 
+    /**
+     * Method that is called when the player lost.
+     * This will show a pop-up to tell the player he lost.
+     */
     public void lose() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("You Lost!");
@@ -287,6 +356,10 @@ public class MatchController implements Initializable {
         System.out.println("BOE!");
     }
 
+    /**
+     * Method that is called when the player tied.
+     * This will show a pop-up to tell the player he tied.
+     */
     public void tie() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("You played Tie!");

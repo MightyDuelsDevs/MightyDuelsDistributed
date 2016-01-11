@@ -31,6 +31,11 @@ public class CardControl {
     private EventHandler handler;
     private Label lHealth;
     
+    /**
+     * Method that checks what kind of card is being player.
+     * This can either be a HeroCard or a MinionCard.
+     * @param card, the card that is being checked.
+     */
     public CardControl(Card card){
         if(card instanceof MinionCard){
             this.minionCard = (MinionCard)card;
@@ -46,10 +51,19 @@ public class CardControl {
         }
     }
     
+    /**
+     * Method for giving the CardControl an EventHandler.
+     * @param handler, the EventHandler that will be associated with this CardControl.
+     */
     public void setEventHandler(EventHandler handler){
         this.handler = handler;
     }
     
+    /**
+     * Method that returns the card that this CardControl represents.
+     * This can either be a HeroCard or a MinionCard.
+     * @return the card that this CardControl represents.
+     */
     public Card getCard(){
         if(minionCard != null){
             return minionCard;
@@ -62,6 +76,11 @@ public class CardControl {
         }
     }
     
+    /**
+     * Method that creates the visual of the card.
+     * The card will look different depending on what type of card it is.
+     * @return A StackPane that represents the card of the CardControl.
+     */
     public StackPane CardPane(){               
         AnchorPane pane = new AnchorPane();
         Font font = new Font("Matura MT Script Capitals", 18.0);
@@ -171,6 +190,10 @@ public class CardControl {
         return root;
     }
     
+    /**
+     * Method that sets the health of the minion.
+     * @param hp, the current health of the minion.
+     */
     public void setHealth(int hp){
         lHealth.setText(hp+"");
     }

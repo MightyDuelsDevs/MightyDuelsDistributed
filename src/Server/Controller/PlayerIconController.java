@@ -280,27 +280,35 @@ public class PlayerIconController {
     public static boolean updateRating(int playerOneId, int playerTwoId, boolean playerOneWon) {
         String statementOne;
         String statementTwo;
+        String statementThree;
+        String statementFour;
         
         Player playerOne = createPlayerWithId(playerOneId);
         Player playerTwo = createPlayerWithId(playerTwoId);
         
         //Player who won.
-        int newRatingOne = playerOne.getRating() - (int)((1 - 0.5/(1 + (10*Math.abs(playerOne.getRating() - playerTwo.getRating()))/400)) * ratingMultiplier);
+        int ratingDifferenceWon =  (int)((1 - 0.5/(1 + (10*Math.abs(Math.abs(playerOne.getRating() - playerTwo.getRating())))/400)) * ratingMultiplier);
         //Player who lost.
-        int newRatingTwo = playerOne.getRating() - (int)((0 - 0.5/(1 + (10*Math.abs(playerOne.getRating() - playerTwo.getRating()))/400)) * ratingMultiplier);
+        int ratingDifferenceLost = (int)((0 - 0.5/(1 + (10*Math.abs(Math.abs(playerOne.getRating() - playerTwo.getRating())))/400)) * ratingMultiplier);
             
         if (playerOneWon) {
-            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingOne, playerOneId);
-            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingTwo, playerTwoId);
+            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerOne.getRating() + ratingDifferenceWon, playerOneId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerTwo.getRating() + ratingDifferenceLost, playerTwoId);
+            statementThree = String.format("UPDATE PLAYER SET WINS = WINS + 1 WHERE ID = %1$s", playerOne.getId());
+            statementFour = String.format("UPDATE PLAYER SET LOSSES = LOSSES + 1 WHERE ID = %1$s", playerTwo.getId());
         } else {
-            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingOne, playerTwoId);
-            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", newRatingTwo, playerOneId);
+            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerTwo.getRating() + ratingDifferenceWon, playerTwoId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerOne.getRating() + ratingDifferenceLost, playerOneId);
+            statementThree = String.format("UPDATE PLAYER SET WINS = WINS + 1 WHERE ID = %1$s", playerTwo.getId());
+            statementFour = String.format("UPDATE PLAYER SET LOSSES = LOSSES + 1 WHERE ID = %1$s", playerOne.getId());
         }
 
         try {
             if (Database.checkConnection()) {
                 Database.DMLRecordIntoTable(statementOne);
                 Database.DMLRecordIntoTable(statementTwo);
+                Database.DMLRecordIntoTable(statementThree);
+                Database.DMLRecordIntoTable(statementFour);
             } else {
                 System.out.println("Database connection is lost.");
                 return false;

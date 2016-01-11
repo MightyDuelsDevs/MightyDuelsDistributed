@@ -9,6 +9,7 @@ import Client.Controller.SoundController;
 import Client.Controller.StageController;
 import Client.Domain.Game;
 import Shared.Domain.PlayerShared;
+import java.awt.SplashScreen;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -81,6 +82,10 @@ public class LogOnFXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        SplashScreen splash = SplashScreen.getSplashScreen();
+        if (splash != null) {
+            splash.close();
+        }
         tfUserName.setOnAction((evt) -> {
             login();
         });

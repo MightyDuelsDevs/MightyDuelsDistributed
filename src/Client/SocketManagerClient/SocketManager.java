@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -26,15 +27,7 @@ public class SocketManager {
     private static final int error = -1;
     
     private static final Logger LOG = Logger.getLogger(SocketManager.class.getName());
-    
- //   private static SocketManager instance;
-    
-//    public static SocketManager getInstance(){
-//        if(instance == null){
-//            instance = new SocketManager();
-//        }
-//        return instance;
-//    }
+
 
     private Socket socket;
     private Thread inputReaderThread;
@@ -42,11 +35,20 @@ public class SocketManager {
     
     private MatchController controller;
     
+    /**
+     * Initiating the SocketManager for the match.
+     * @param controller, The controller for the match from this players side.
+     */
     public SocketManager(MatchController controller) {
         socket = new Socket();
         this.controller = controller;
     }
     
+    /**
+     * Method that connects the SocketManager with an IP.
+     * @param ip, the IP the client uses to talk to the server.
+     * @throws IOException 
+     */
     public void Connect(String ip) throws IOException{
         if(ip==null){
             ip="127.0.0.1";
@@ -56,6 +58,7 @@ public class SocketManager {
         inputReaderThread.setName("ClientSocketReader");
         inputReaderThread.start();
     }
+    
     
     private void inputReader(){
         InputStream in;
@@ -237,22 +240,27 @@ public class SocketManager {
                     while(message!=0x00){
                         if(message == -1){
                             //todo throw error
+                            
                         }
                         mbuf.put((byte)message);
                         try {
                             message = in.read();
                         } catch (IOException ex) {
                             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                            break;
                         }
                     }
                     String mes;
                     try {
-                        mes = new String(mbuf.array(),"UTF-8");
+                        mes = new String(mbuf.array(), 0, mbuf.position(),"UTF-8");
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         //todo fatal
+                        continue;
                     }
-                    //todo send message to GUI
+                    LOG.log(Level.INFO, "Reseaved message: {0}", mes);
+                    controller.receiveMessage(mes);
+                    accepted();
                     break;
                 case 0xE0://PING
                     pong();
@@ -291,6 +299,9 @@ public class SocketManager {
         return lb+ub*0x100;
     }
     
+    /**
+     * Method used to connect to the server.
+     */
     public void connect(){
         byte[] data = new byte[]{0x4D,0x44,0x56,0x01};//MDV(0x01)
         if(socket.isConnected()){
@@ -308,6 +319,11 @@ public class SocketManager {
         }
     }
     
+    /**
+     * Method that tries to log in the server using the match byte array.
+     * @param loginHash, the hash that the client uses to try to log in.
+     * @return a boolean that confirms if the log in was successful(true) or not(false).
+     */
     public boolean login(byte[] loginHash){
         LOG.info("Hash lenght: " + loginHash.length);
         if(!socket.isConnected())
@@ -468,8 +484,9 @@ public class SocketManager {
             return;
         }
         byte[] data = new byte[encodedString.length+2];
-        data[0] = (byte)0x80;
+        
         System.arraycopy(encodedString, 0, data, 1, encodedString.length);
+        data[0] = (byte)0x80;
         data[data.length-1]=0x00;
         try {
             sendData(data);
@@ -524,6 +541,7 @@ public class SocketManager {
     }
     
     private synchronized void sendData(byte[] data) throws IOException{
+        LOG.info(Arrays.toString(data));
         socket.getOutputStream().write(data);
     }
 }

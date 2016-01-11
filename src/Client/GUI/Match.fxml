@@ -80,5 +80,6 @@
       </rowConstraints>
     </GridPane>
     <Label fx:id="lblDamageVisualisation" layoutX="213.0" layoutY="708.0" text="Damage Visualisation" textFill="#faff05" />
+      <Button fx:id="btSendMessage" layoutX="75.0" layoutY="706.0" mnemonicParsing="false" text="Send Message" />
   </children>
 </AnchorPane>

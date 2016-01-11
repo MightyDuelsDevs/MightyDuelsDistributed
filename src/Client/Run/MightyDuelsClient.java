@@ -26,7 +26,6 @@ import javafx.embed.swing.JFXPanel;
 public class MightyDuelsClient {
 
     private static final Logger log = Logger.getLogger(MightyDuelsClient.class.getName());
-    public static Game game;//TODO <- not this
 
     /**
      * @param args the command line arguments
@@ -52,10 +51,6 @@ public class MightyDuelsClient {
             System.exit(-10001);
         }
         log.info("Starting main application");
-        SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash != null) {
-            splash.close();
-        }
         JFXPanel jfxp = new JFXPanel();
         StageController.getInstance().start();
     }

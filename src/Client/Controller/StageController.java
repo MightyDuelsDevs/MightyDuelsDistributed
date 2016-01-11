@@ -5,8 +5,6 @@
  */
 package Client.Controller;
 
-import Client.GUI.DamageDisplayFXMLController;
-import Client.GUI.PopUpController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,10 +27,91 @@ public class StageController {
     private Stage stage, popUpStage, oldPopUpStage;
     private static StageController instance;
 
-    public static String title, text;
-    public static String physicalDamageYou, physicalBlockYou, magicalDamageYou, magicalBlockYou, healingYou, resultYou, physicalDamageEnemy, physicalBlockEnemy, magicalDamageEnemy, magicalBlockEnemy, healingEnemy, resultEnemy;
-    public static boolean yesNo, choosen;
+    /**
+     * The title of the stage.
+     */
+    public static String title;
 
+    /**
+     * The text of the stage.
+     */
+    public static String text;
+    
+    /**
+     * The physical damage you deal.
+     */
+    public static String physicalDamageYou;
+
+    /**
+     * The physical block you put up.
+     */
+    public static String physicalBlockYou;
+
+    /**
+     * The magical damage you deal.
+     */
+    public static String magicalDamageYou;
+
+    /**
+     * The magical block you put up.
+     */
+    public static String magicalBlockYou; 
+
+    /**
+     * The healing you do.
+     */
+    public static String healingYou;
+
+    /**
+     * The net gain or loss of your life this turn.
+     */
+    public static String resultYou;
+
+    /**
+     * The physical damage done by the enemy.
+     */
+    public static String physicalDamageEnemy;
+
+    /**
+     * The physical block put up by the enemy.
+     */
+    public static String physicalBlockEnemy;
+
+    /**
+     * The magical damage done by the enemy.
+     */
+    public static String magicalDamageEnemy;
+
+    /**
+     * The magical block put up by the enemy.
+     */
+    public static String magicalBlockEnemy;
+
+    /**
+     * The healing done by the enemy.
+     */
+    public static String healingEnemy;
+
+    /**
+     * The net gain or loss of your opponents life this turn.
+     */
+    public static String resultEnemy;
+    
+    /**
+     * Determines if the pop-up has an "YES/NO" or an "OK" button.
+     */
+    public static boolean yesNo;
+
+    /**
+     * Keeps track if the user pressed "YES" or "NO".
+     */
+    public static boolean choosen;
+
+    /**
+     * Returns the only instance of the StageController.
+     * If this does not exist a StageController is created.
+     * @return The only instance of the StageController.
+     */
     public static StageController getInstance() {
         if (instance == null) {
             instance = new StageController();
@@ -65,7 +144,7 @@ public class StageController {
         Platform.runLater(() -> {
             try {
                 this.setStage(new Stage());
-                Parent root = FXMLLoader.load(getClass().getResource("../GUI/LogOnFXML.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/Client/GUI/LogOnFXML.fxml"));
                 Scene scene = new Scene(root);
                 this.stage.setScene(scene);
                 this.stage.show();
@@ -91,7 +170,7 @@ public class StageController {
         this.stage.setTitle(title);
         Platform.runLater(() -> {
             try {
-                Scene scene = new Scene(FXMLLoader.load(getClass().getResource("../GUI/" + root)));
+                Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/Client/GUI/" + root)));
                 this.stage.setScene(scene);
                 Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
                 this.stage.setX((primScreenBounds.getWidth() - this.stage.getWidth()) / 2);
@@ -122,7 +201,7 @@ public class StageController {
 
         Platform.runLater(() -> {
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("../GUI/PopUp.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/Client/GUI/PopUp.fxml"));
                 Scene scene = new Scene(root);
                 popUpStage.initStyle(StageStyle.UNDECORATED);
                 popUpStage.initModality(Modality.WINDOW_MODAL);
@@ -140,6 +219,9 @@ public class StageController {
         });
     }
 
+    /**
+     * Method that closes the pop-up.
+     */
     public void closePopUp() {
         synchronized (this) {
             this.notify();
@@ -149,6 +231,21 @@ public class StageController {
         }
     }
 
+    /**
+     * Method that creates a pop-up which contains all the data of the previous turn.
+     * @param physicalDamageYou, the physical damage dealt by you.
+     * @param physicalBlockYou, the physical block put up by you.
+     * @param magicalDamageYou, the magical damage dealt by you.
+     * @param magicalBlockYou, the magical block put up by you.
+     * @param healingYou, the healing done by you.
+     * @param resultYou, the net gain or loss of your life this turn.
+     * @param physicalDamageEnemy, the physical damage dealt by your opponent.
+     * @param physicalBlockEnemy, the physical block put up by your opponent.
+     * @param magicalDamageEnemy, the magical damage dealt by your opponent.
+     * @param magicalBlockEnemy, the magical block put up by your opponent.
+     * @param healingEnemy, the healing done by your opponent.
+     * @param resultEnemy, the net gain or loss of your opponents life this turn.
+     */
     public void dmgPopup(String physicalDamageYou, String physicalBlockYou, String magicalDamageYou, String magicalBlockYou, String healingYou, String resultYou, String physicalDamageEnemy, String physicalBlockEnemy, String magicalDamageEnemy, String magicalBlockEnemy, String healingEnemy, String resultEnemy) {
         popUpStage = new Stage();
         StageController.physicalDamageYou = physicalDamageYou;
@@ -166,7 +263,7 @@ public class StageController {
 
         Platform.runLater(() -> {
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("../GUI/DamageDisplayFXML.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/Client/GUI/DamageDisplayFXML.fxml"));
                 Scene scene = new Scene(root);
 
                 popUpStage.initStyle(StageStyle.UNDECORATED);

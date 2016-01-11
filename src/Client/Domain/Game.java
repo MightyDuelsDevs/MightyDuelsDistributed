@@ -23,12 +23,16 @@ public class Game {
     private RMIClient client;
     private String token;
 
+    /**
+     * Method that returns the player that is logged in in the client.
+     * @return returns the logged in player.
+     */
     public PlayerShared getPlayer() {
         return player;
     }
 
     /**
-     * Initialise the game instace
+     * Initialise the game instance
      */
     public Game() {
         client = RMIClient.getInstance();
@@ -64,7 +68,6 @@ public class Game {
 
     /**
      *
-     * @param player
      * @return match creates a match with the param player
      */
     public byte[] startMatch() {
@@ -78,9 +81,9 @@ public class Game {
     }
 
     /**
-     *
-     * @param username the player username
-     * @param password the player password
+     * Method that logs a player in the game using RMI and the server.
+     * @param Displayname, the display name that the user put in.
+     * @param Password, the password that the user put in.
      * @return player returns the player that gets logged in
      */
     public PlayerShared loginPlayer(String Displayname, String Password) {
@@ -97,11 +100,13 @@ public class Game {
     }
 
     /**
-     *
-     * @param username the player username
-     * @param password the player password
-     * @return boolean returns true when the signUp has succeeded and false when
-     * the username already exist
+     * Method that registers a player in a database.
+     * @param email, the email the player uses.
+     * @param password, the player password.
+     * @param displayname, the player display name.
+     * @param passcheck, The check which determines if the user entered his password correctly.
+     * @return integer that determines if the sign up is completed successful.
+     * This integer can also identify different error messages.
      */
     public int signUpPlayer(String email, String displayname, String password, String passcheck) {
         try {
@@ -112,7 +117,11 @@ public class Game {
         }
     }
 
-    //Methods from MainScreenProvider
+    /**
+     * Method that gets a byte array that represents a method.
+     * @param token, token that represents a player.
+     * @return a byte array that represents a match.
+     */
     public byte[] getNewMatch(String token) {
         try {
             return client.getNewMatch(token);
@@ -137,6 +146,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method that returns all the decks of a certain player.
+     * @param token, token that represents a player.
+     * @return a list of the decks the player uses.
+     */
     public List<Deck> getDecks(String token) {
         try {
             return client.getDecks(token);
@@ -146,6 +160,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method that returns the selected deck of a player.
+     * @param token, token that represents a player.
+     * @return the selected deck of a player.
+     */
     public Deck getDeck(String token) {
         try {
             return client.getDeck(token);
@@ -155,6 +174,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method that returns all the icons a player can select.
+     * @param token, token that represents a player.
+     * @return a list of icons the player can use. 
+     */
     public List<Icon> getIcons(String token) {
         try {
             return client.getIcons(token);
@@ -164,15 +188,30 @@ public class Game {
         }
     }
 
+    /**
+     * Method that selects an icon in the database.
+     * This will make sure the player can see his selected icon when he restarts the game.
+     * @param token, token that represents a player.
+     * @param iconID, the ID of the token that the player selected.
+     * @return a boolean that determines if the operation has succeeded.
+     */
     public boolean setIcon(String token, int iconID) {
         try {
-            return client.setIcons(token, iconID);
+            boolean result = client.setIcons(token, iconID);
+            player = client.getPlayer(token);
+            return result;
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
 
+    /**
+     * Method that adds a random deck to a certain player.
+     * @param token, token that represents a player.
+     * @param name, the name of the deck that is created.
+     * @return a boolean that determines if the operation has succeeded.
+     */
     public boolean addDeck(String token, String name) {
         try {
             return client.addDeck(token, name);
@@ -182,6 +221,12 @@ public class Game {
         }
     }
 
+    /**
+     * Method that removes a certain deck from the database.
+     * @param token, token that represents a player.
+     * @param id, the ID of the to be removed deck.
+     * @return a boolean that determines if the operation has succeeded.
+     */
     public boolean removeDeck(String token, int id) {
         try {
             return client.removeDeck(token, id);
@@ -191,6 +236,12 @@ public class Game {
         }
     }
 
+    /**
+     * Method that selects a deck for a player.
+     * @param token, token that represents a player.
+     * @param deckId, the ID of the deck.
+     * @return a boolean that determines if the operation has succeeded.
+     */
     public boolean setSelectedDeck(String token, int deckId) {
         try {
             return client.setSelectedDeck(token, deckId);
@@ -200,6 +251,11 @@ public class Game {
         }
     }
 
+    /**
+     * Method that returns a player that corresponds to the token.
+     * @param token, token that represents a player.
+     * @return a player that corresponds with the input token.
+     */
     public PlayerShared getPlayer(String token) {
         try {
             return client.getPlayer(token);
@@ -209,6 +265,10 @@ public class Game {
         }
     }
 
+    /**
+     * Method that returns the token of the player that is logged in.
+     * @return a string that represents the player.
+     */
     public String getToken() {
         return token;
     }

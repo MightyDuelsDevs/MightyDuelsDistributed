@@ -5,8 +5,8 @@
  */
 package Client.Controller;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -23,18 +23,55 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class SoundController {
 
-    //Enumerator for all the different sound files.
-    public static enum SoundFile {
+    /**
+     * Enumerator for all the different sound files.
+     */
+        public static enum SoundFile {
 
-        BUTTONPRESS("src/Client/Resources/Sound/buttonPress.wav"),
-        ENDTURN("src/Client/Resources/Sound/endTurn.wav"),
-        HEAL("src/Client/Resources/Sound/heal.wav"),
-        MAGICALATTACK("src/Client/Resources/Sound/magicalAttack.wav"),
-        MAGICALBLOCK("src/Client/Resources/Sound/magicalBlock.wav"),
-        MINION("src/Client/Resources/Sound/minion.wav"),
-        PHYSICALATTACK("src/Client/Resources/Sound/physicalAttack.wav"),
-        PHYSICALBLOCK("src/Client/Resources/Sound/physicalBlock.wav"),
-        STARTTURN("src/Client/Resources/Sound/startTurn.wav");
+        /**
+         * The sound when a button is pressed.
+         */
+        BUTTONPRESS("/Client/Resources/Sound/buttonPress.wav"),
+
+        /**
+         * The sound when a turn ends.
+         */
+        ENDTURN("/Client/Resources/Sound/endTurn.wav"),
+
+        /**
+         * The sound when heal is the highest value played.
+         */
+        HEAL("/Client/Resources/Sound/heal.wav"),
+
+        /**
+         * The sound when magical attack is the highest value played.
+         */
+        MAGICALATTACK("/Client/Resources/Sound/magicalAttack.wav"),
+
+        /**
+         * The sound when magical block is the highest value played.
+         */
+        MAGICALBLOCK("/Client/Resources/Sound/magicalBlock.wav"),
+
+        /**
+         * The sound when a minion is played.
+         */
+        MINION("/Client/Resources/Sound/minion.wav"),
+
+        /**
+         * The sound when physical attack is the highest value played.
+         */
+        PHYSICALATTACK("/Client/Resources/Sound/physicalAttack.wav"),
+
+        /**
+         * The sound when physical block is the highest value played.
+         */
+        PHYSICALBLOCK("/Client/Resources/Sound/physicalBlock.wav"),
+
+        /**
+         * The sound when a turn starts.
+         */
+        STARTTURN("/Client/Resources/Sound/startTurn.wav");
 
         private final String audioFilePath;
 
@@ -42,6 +79,10 @@ public class SoundController {
             this.audioFilePath = audioFilePath;
         }
 
+        /**
+         * Method that returns the String that corresponds to the file path of the file.
+         * @return The file path of the audio file.
+         */
         public String getAudioFilePath() {
             return audioFilePath;
         }
@@ -68,7 +109,8 @@ public class SoundController {
 
             @Override
             public void run() {
-                File audioFile = new File(audioFilePath);
+                URL audioFile = this.getClass().getResource(audioFilePath);
+                //File audioFile = new File(audioFilePath);
 
                 try {
                     AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
