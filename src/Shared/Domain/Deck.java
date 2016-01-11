@@ -28,6 +28,7 @@ public class Deck implements Serializable {
      * Create a new instance of Deck with a name
      *
      * @param name the name of the deck
+     * @param id the id of the deck
      */
     public Deck(int id, String name) {
         this.id = id;
@@ -92,8 +93,4 @@ public class Deck implements Serializable {
     public ArrayList<Card> getCards() {
         return this.cards;
     }
-
-    public void commitDeck() {
-    }
-
 }

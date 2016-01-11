@@ -5,8 +5,6 @@
  */
 package Client.Controller;
 
-import Client.GUI.DamageDisplayFXMLController;
-import Client.GUI.PopUpController;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
