@@ -365,4 +365,15 @@ public class Match {
         player2.getSocket().newTurn(hero2.getInHand().stream().map((i)->i.getId()).toArray(Integer[]::new));
         
     }
+    
+        public void forwardMessage(String message, Hero sender){
+        
+        if(sender == hero1){
+            log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
+            player2.getSocket().sendMessage(message);
+        }else{
+            log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
+            player1.getSocket().sendMessage(message);
+        }
+    }
 }

@@ -214,6 +214,22 @@ public class CardDeckController {
      * @return a boolean if the removal was successful.
      */
     public static boolean removeDeck(int playerId, int deckId) {
+        String checkDecks = String.format("SELECT COUNT(UNIQUE(ID)) FROM DECK WHERE PLAYERID = %1$s", playerId);
+        try{
+            if(Database.checkConnection()){
+                List<List> data = Database.selectRecordFromTable(checkDecks);
+                if(data.get(0).get(0).equals("1") || data.get(0).get(0).equals("0")){
+                    Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, "Only one deck left, can't remove");
+                    return false;
+                }
+            } else {
+                System.out.println("Database connection is lost.");
+                return false;
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(PlayerIconController.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
         String statement = String.format("DELETE FROM DECK WHERE PLAYERID = %1$s AND ID = %2$s", playerId, deckId);
         try {
             if (Database.checkConnection()) {

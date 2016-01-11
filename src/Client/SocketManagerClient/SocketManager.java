@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -239,22 +240,27 @@ public class SocketManager {
                     while(message!=0x00){
                         if(message == -1){
                             //todo throw error
+                            
                         }
                         mbuf.put((byte)message);
                         try {
                             message = in.read();
                         } catch (IOException ex) {
                             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                            break;
                         }
                     }
                     String mes;
                     try {
-                        mes = new String(mbuf.array(),"UTF-8");
+                        mes = new String(mbuf.array(), 0, mbuf.position(),"UTF-8");
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         //todo fatal
+                        continue;
                     }
-                    //todo send message to GUI
+                    LOG.log(Level.INFO, "Reseaved message: {0}", mes);
+                    controller.receiveMessage(mes);
+                    accepted();
                     break;
                 case 0xE0://PING
                     pong();
@@ -478,8 +484,9 @@ public class SocketManager {
             return;
         }
         byte[] data = new byte[encodedString.length+2];
-        data[0] = (byte)0x80;
+        
         System.arraycopy(encodedString, 0, data, 1, encodedString.length);
+        data[0] = (byte)0x80;
         data[data.length-1]=0x00;
         try {
             sendData(data);
@@ -534,6 +541,7 @@ public class SocketManager {
     }
     
     private synchronized void sendData(byte[] data) throws IOException{
+        LOG.info(Arrays.toString(data));
         socket.getOutputStream().write(data);
     }
 }
