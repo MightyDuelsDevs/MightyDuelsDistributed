@@ -401,6 +401,9 @@ public class MatchController implements Initializable {
             case "btnOpponentSide1":
                 if (ownMinion != -1) {
                     opponentMinion = 1;
+                    client.setTarget(ownMinion, opponentMinion);
+                    ownMinion = -1;
+                    opponentMinion = -1;
                 }
                 break;
             case "btnOpponentSide2":
