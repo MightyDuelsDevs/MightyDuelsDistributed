@@ -169,6 +169,8 @@ public class SocketManager {
                     }
                     if (boardLocation < 0 || cardId < 0) {
                         //todo throw error
+                        LOG.warning("Error receiving ADD_MINION command, data was " + boardLocation + ", " + cardId);
+                        continue;
                     }
                     controller.addMinion(cardId, boardLocation);
                     break;
@@ -183,7 +185,8 @@ public class SocketManager {
                     }
                     LOG.info("set health " + character + " " + value);
                     if (character < 1 || value < 1) {
-                        //todo throw error
+                        LOG.warning("Error receiving SET_HEALTH command, data was " + character + ", " + value);
+                        continue;
                     }
                     boolean self = character < 4;
                     boolean minion = self ? character > 1 : character > 4;
