@@ -195,28 +195,38 @@ public class MatchController implements Initializable {
      * @param boardId, the ID of the side of the board.
      */
     public void addMinion(int id, int boardId) {
-        CardControl card = null;// = new CardControl(getCard(CardId));
+        Optional<Card> crd = allCards.stream().filter((c) -> c.getId() == id).findFirst();
+        if(!crd.isPresent()){
+            LOG.warning(id + " was not found!");
+            return;
+        }
+        if(!(crd.get() instanceof MinionCard)){
+            LOG.warning(id + " is not an minion card!");
+            return;
+        }
+        CardControl card = new CardControl(crd.get());
         switch (boardId) {
             case 1:
                 minion1 = card;
-                Platform.runLater(() -> yourMinions.add(card));
+                yourMinions.add(card);
                 break;
             case 2:
                 minion2 = card;
-                Platform.runLater(() -> yourMinions.add(card));
+                yourMinions.add(card);
                 break;
             case 3:
                 minion3 = card;
-                Platform.runLater(() -> opponentsMinions.add(card));
+                opponentsMinions.add(card);
                 break;
             case 4:
                 minion4 = card;
-                Platform.runLater(() -> opponentsMinions.add(card));
+                opponentsMinions.add(card);
                 break;
             default:
                 //todo error
                 break;
         }
+        placeMinionCards();
     }
 
     /**
