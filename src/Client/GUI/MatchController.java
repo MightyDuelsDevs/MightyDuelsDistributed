@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -38,7 +36,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -57,6 +54,7 @@ public class MatchController implements Initializable {
 
     /**
      * Method that sets the hash of the match.
+     *
      * @param hash, the hash that identifies the match.
      */
     public static void setHash(byte[] hash) {
@@ -64,7 +62,7 @@ public class MatchController implements Initializable {
     }
 
     @FXML
-    private GridPane gridPlayedCards;
+    private GridPane gridCardHolder;
     @FXML
     private GridPane gridChooseCard;
     @FXML
@@ -135,19 +133,20 @@ public class MatchController implements Initializable {
         hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
 
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
-        btSendMessage.setOnAction((evt)->{
+        btSendMessage.setOnAction((evt) -> {
             TextInputDialog dialog = new TextInputDialog("message");
             dialog.setTitle("New message");
             dialog.setHeaderText("Send message to opponend");
             dialog.setContentText("Enter a message to send to the opponend");
-            
-            dialog.showAndWait().ifPresent((message)->client.sendMessage(message));
-            
+
+            dialog.showAndWait().ifPresent((message) -> client.sendMessage(message));
+
         });
     }
 
     /**
      * Method that adds an opponent to the match.
+     *
      * @param name, the name of the opponent.
      * @param iconId, the icon ID of the opponent.
      */
@@ -159,6 +158,7 @@ public class MatchController implements Initializable {
 
     /**
      * Method that processes the turn with the card played.
+     *
      * @param cardId, The id of the card played.
      */
     public void turnEnd(int cardId) {
@@ -185,12 +185,12 @@ public class MatchController implements Initializable {
         } else if (maxValue == playerCard.getHealValue()) {
             SoundController.play(SoundController.SoundFile.HEAL);
         }
-        Platform.runLater(()->gridYourSide.add(cc.CardPane(), 4, 0));
-        //getCard(cardId);
+        Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
     }
 
     /**
      * Method for adding a minion to the board.
+     *
      * @param id, The ID of the minion.
      * @param boardId, the ID of the side of the board.
      */
@@ -221,7 +221,9 @@ public class MatchController implements Initializable {
 
     /**
      * Method that sets the health of a hero or a minion.
-     * @param self, determines if the one that the health has been set is either your own(true) or your opponents(false).
+     *
+     * @param self, determines if the one that the health has been set is either
+     * your own(true) or your opponents(false).
      * @param hero, if it is a hero that is healed this will be true.
      * @param id, the id of the minion of which the health will be set.
      * @param health, the health value it will be changed to.
@@ -259,6 +261,7 @@ public class MatchController implements Initializable {
 
     /**
      * Method that prepares three cards for the player to choose from.
+     *
      * @param card1, first card to be picked from.
      * @param card2, second card to be picked from.
      * @param card3, third card to be picked from.
@@ -287,19 +290,16 @@ public class MatchController implements Initializable {
      * Method that adds EventHandlers to the cards and adds them to the pane.
      */
     private void drawCards() {
-
         for (int i = 0; i < 3; i++) {
             CardControl cardControl = cardChoice.get(i);
-
-            cardControl.setEventHandler(pickCard(cardControl));
-
-            gridChooseCard.add(cardControl.CardPane(), i, 0);
+            cardControl.setEventHandler(openCard(cardControl));
+            gridCardHolder.add(cardControl.CardPane(), i, 0);
         }
     }
-    
-    public void receiveMessage(String message){
+
+    public void receiveMessage(String message) {
         LOG.log(Level.INFO, "Received Message: {0}", message);
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Received an message");
             alert.setHeaderText("You Received an message from opponend");
@@ -311,10 +311,10 @@ public class MatchController implements Initializable {
             alert.show();
         });
     }
-    
+
     /**
-     * Method that is called when the player won.
-     * This will show a pop-up to tell the player he won.
+     * Method that is called when the player won. This will show a pop-up to
+     * tell the player he won.
      */
     public void win() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -336,8 +336,8 @@ public class MatchController implements Initializable {
     }
 
     /**
-     * Method that is called when the player lost.
-     * This will show a pop-up to tell the player he lost.
+     * Method that is called when the player lost. This will show a pop-up to
+     * tell the player he lost.
      */
     public void lose() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -357,8 +357,8 @@ public class MatchController implements Initializable {
     }
 
     /**
-     * Method that is called when the player tied.
-     * This will show a pop-up to tell the player he tied.
+     * Method that is called when the player tied. This will show a pop-up to
+     * tell the player he tied.
      */
     public void tie() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -413,6 +413,21 @@ public class MatchController implements Initializable {
 
     }
 
+    private EventHandler openCard(CardControl cardControl) {
+        EventHandler handler = new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                for (int i = 0; i < 3; i++) {
+                    gridCardHolder.getChildren().clear();
+                    CardControl cardControl = cardChoice.get(i);
+                    cardControl.setEventHandler(pickCard(cardControl));
+                    gridChooseCard.add(cardControl.CardPane(), i, 0);
+                }
+            }
+        };
+        return handler;
+    }
+
     private EventHandler pickCard(CardControl cardControl) {
         EventHandler handler = new EventHandler() {
 
@@ -434,7 +449,7 @@ public class MatchController implements Initializable {
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {
-
+                        //dit kan voor problemen zorgen
                         gridChooseCard.getChildren().clear();
                         //yourMinions.add(cardControl);
                         gridYourSide.add(cardControl.CardPane(), 1, 0);
