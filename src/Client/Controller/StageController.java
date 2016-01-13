@@ -106,6 +106,12 @@ public class StageController {
      * Keeps track if the user pressed "YES" or "NO".
      */
     public static boolean choosen;
+    
+    /**
+     * Keeps track if an match is found.
+     */
+    public static boolean matchFound = false;
+    
 
     /**
      * Returns the only instance of the StageController.

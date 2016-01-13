@@ -32,7 +32,7 @@ public class WaitingPlayer {
                     this.cancel();
                 }
             }
-        }, 10*1000, 10*1000);
+        }, 5*1000, 5*1000);
     }
     
 }
