@@ -26,7 +26,16 @@ public class HeroControl {
     private ProgressBar pHealth;
     private Label lHealt;
     private Label lDamage;
-    private PlayerShared player;
+    private final PlayerShared player;
+    private final String name;
+
+    /**
+     * Metho that gets the name of the current hero
+     * @return hero's player name
+     */
+    public String getName() {
+        return name;
+    }
 
     /**
      * Method that sets the health of the hero of a certain player.
@@ -37,6 +46,7 @@ public class HeroControl {
     public HeroControl(int health, PlayerShared player) {
         this.health = health;
         this.player = player;
+        this.name = player.getUsername();
     }
 
     /**

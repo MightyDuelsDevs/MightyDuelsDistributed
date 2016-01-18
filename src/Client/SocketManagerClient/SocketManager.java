@@ -7,13 +7,11 @@ package Client.SocketManagerClient;
 
 import Client.Controller.StageController;
 import Client.GUI.MatchController;
-import com.sun.media.jfxmedia.track.Track;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.logging.Level;

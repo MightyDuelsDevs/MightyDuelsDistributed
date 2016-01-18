@@ -310,15 +310,7 @@ public class MatchController implements Initializable {
     public void receiveMessage(String message) {
         LOG.log(Level.INFO, "Received Message: {0}", message);
         Platform.runLater(() -> {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Received an message");
-            alert.setHeaderText("You Received an message from opponend");
-            alert.setContentText(message);
-
-            ButtonType type = new ButtonType("Ok");
-            alert.getButtonTypes().setAll(type);
-
-            alert.show();
+            StageController.getInstance().popup("You received a message from your opponent.", false, hero1.getName() + ": " + message);
         });
     }
 
@@ -327,22 +319,12 @@ public class MatchController implements Initializable {
      * tell the player he won.
      */
     public void win() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("You Won!");
-        alert.setHeaderText("Whoho!");
-        alert.setContentText("You have won!");
-
-        ButtonType buttonTypeOne = new ButtonType("OK");
-
-        alert.getButtonTypes().setAll(buttonTypeOne);
-
-        Optional<ButtonType> result = alert.showAndWait();
-
+        LOG.log(Level.INFO, "victory");
+        Platform.runLater(() -> {
+            StageController.getInstance().popup("Whoho!", false, "You have won!");
+        });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
-
-        //todo
-        System.out.println("YAY");
     }
 
     /**
@@ -350,20 +332,12 @@ public class MatchController implements Initializable {
      * tell the player he lost.
      */
     public void lose() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("You Lost!");
-        alert.setHeaderText("Awh!");
-        alert.setContentText("You have lost!");
-
-        ButtonType buttonTypeOne = new ButtonType("OK");
-
-        alert.getButtonTypes().setAll(buttonTypeOne);
-
-        Optional<ButtonType> result = alert.showAndWait();
-
+        LOG.log(Level.INFO, "Defeat");
+        Platform.runLater(() -> {
+            StageController.getInstance().popup("Awh!", false, "You have lost!");
+        });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
-        System.out.println("BOE!");
     }
 
     /**
@@ -371,20 +345,12 @@ public class MatchController implements Initializable {
      * tell the player he tied.
      */
     public void tie() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("You played Tie!");
-        alert.setHeaderText("Whoho!");
-        alert.setContentText("You have played tie!");
-
-        ButtonType buttonTypeOne = new ButtonType("OK");
-
-        alert.getButtonTypes().setAll(buttonTypeOne);
-
-        Optional<ButtonType> result = alert.showAndWait();
-
+        LOG.log(Level.INFO, "Tie");
+        Platform.runLater(() -> {
+            StageController.getInstance().popup("Hey!", false, "You played Tie!");
+        });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
-        System.out.println("Meh");
     }
 
     @FXML

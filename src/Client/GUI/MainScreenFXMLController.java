@@ -58,10 +58,10 @@ public class MainScreenFXMLController implements Initializable {
                 Platform.runLater(() -> {
                     StageController sc = StageController.getInstance();
                     if (sec > 1) {
-                        sc.popup("Searching for a match", false, " Searching for a match: " + sec + " seconds");
+                        sc.popup("Searching for a match", false, " Searching for a match in " + sec + " seconds");
                         sec--;
                     } else if (sec == 1) {
-                        sc.popup("Searching for a match", false, " Searching for a match: " + sec + " second");
+                        sc.popup("Searching for a match", false, " Searching for a match in " + sec + " second");
                         sec--;
                     } else if (sec == 0) {
                         sc.popup("Searching for a match", false, " Searching for a match");
