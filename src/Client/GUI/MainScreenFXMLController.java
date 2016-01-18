@@ -125,9 +125,10 @@ public class MainScreenFXMLController implements Initializable {
 
         if(RMIClient.getInstance().isPossibleSpectate())
         {
+            SpectateController.setHash(Game.getInstance().startMatch());
             Game.getInstance().startMatch();
             String title = "Mighty Duels";
-            String root = "TutorialFXML.fxml";
+            String root = "Spectate.fxml";
             StageController.getInstance().navigate(root, title);
         }
         else

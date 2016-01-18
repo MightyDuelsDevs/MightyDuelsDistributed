@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -264,11 +265,11 @@ public class SocketManager {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         continue;
                     }
-                    
-                    //todo call method
+                    spectateController.spectateNewMatch(p1Name, p2Name, p1Icon, p2Icon);
+                    accepted();
             
                     break;
-                case 0x0B:
+                case 0x0B://SPEC_TURN_END
                     int p1Card;
                     int p2Card;
             
@@ -279,7 +280,8 @@ public class SocketManager {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         continue;
                     }
-                    //todo call method
+                    spectateController.turnEnd(p1Card, p2Card);
+                    
                     break;
                 case 0x80://MESSAGE
                     
@@ -311,6 +313,7 @@ public class SocketManager {
                     synchronized (this) {
                         notify();
                     }
+                    StageController.matchFound = true;
                     break;
                 case 0xF1://ILLEGAL_ACTION
                     lastAccepted = false;
