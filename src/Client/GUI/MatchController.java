@@ -170,22 +170,24 @@ public class MatchController implements Initializable {
         }
         CardControl cc = new CardControl(card.get());
 
-        HeroCard playerCard = (HeroCard) cc.getCard();
+        if (cc.getCard() instanceof HeroCard) {
+            HeroCard playerCard = (HeroCard) cc.getCard();
 
-        int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
+            int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
 
-        if (maxValue == playerCard.getPhysicalDamage()) {
-            SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
-        } else if (maxValue == playerCard.getMagicalBlock()) {
-            SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
-        } else if (maxValue == playerCard.getMagicalDamage()) {
-            SoundController.play(SoundController.SoundFile.MAGICALATTACK);
-        } else if (maxValue == playerCard.getMagicalBlock()) {
-            SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
-        } else if (maxValue == playerCard.getHealValue()) {
-            SoundController.play(SoundController.SoundFile.HEAL);
+            if (maxValue == playerCard.getPhysicalDamage()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
+            } else if (maxValue == playerCard.getMagicalDamage()) {
+                SoundController.play(SoundController.SoundFile.MAGICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
+            } else if (maxValue == playerCard.getHealValue()) {
+                SoundController.play(SoundController.SoundFile.HEAL);
+            }
+            Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
         }
-        Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
     }
 
     /**
@@ -196,11 +198,11 @@ public class MatchController implements Initializable {
      */
     public void addMinion(int id, int boardId) {
         Optional<Card> crd = allCards.stream().filter((c) -> c.getId() == id).findFirst();
-        if(!crd.isPresent()){
+        if (!crd.isPresent()) {
             LOG.warning(id + " was not found!");
             return;
         }
-        if(!(crd.get() instanceof MinionCard)){
+        if (!(crd.get() instanceof MinionCard)) {
             LOG.warning(id + " is not an minion card!");
             return;
         }
