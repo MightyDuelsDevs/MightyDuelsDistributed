@@ -84,4 +84,8 @@ public class Game {
         }
         return matches.get(random.nextInt(matches.size()));
     }
+    
+    public void removeMatch(Match match){
+        matches.remove(match);
+    }
 }

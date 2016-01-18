@@ -52,6 +52,7 @@ public class Match {
             return;
         }
         if (hero1.getHitPoints() <= 0 ^ hero2.getHitPoints() <= 0) {//^= XOR true+false = true, false+false = false and true+true=false
+            Game.getInstance().removeMatch(this);
             gameState = GameState.Defined;
             timer.shutdown();
             if (hero1.getHitPoints() > 0) {
@@ -71,6 +72,7 @@ public class Match {
             gameState = GameState.Active;
             return;
         }
+        Game.getInstance().removeMatch(this);
         gameState = GameState.Tie;
         timer.shutdown();
         player1.getSocket().matchEnd(1);
