@@ -151,7 +151,7 @@ public class SpectateController implements Initializable {
      * @param iconId, the icon ID of the opponent.
      */
     public void setOpponent(String name, int iconId) {
-        LOG.info("Start match: " + name + " icon: " + iconId);
+        LOG.log(Level.INFO, "Start match: {0} icon: {1}", new Object[]{name, iconId});
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
         Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
@@ -170,22 +170,24 @@ public class SpectateController implements Initializable {
         }
         CardControl cc = new CardControl(card.get());
 
-        HeroCard playerCard = (HeroCard) cc.getCard();
+        if (cc.getCard() instanceof HeroCard) {
+            HeroCard playerCard = (HeroCard) cc.getCard();
 
-        int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
+            int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
 
-        if (maxValue == playerCard.getPhysicalDamage()) {
-            SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
-        } else if (maxValue == playerCard.getMagicalBlock()) {
-            SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
-        } else if (maxValue == playerCard.getMagicalDamage()) {
-            SoundController.play(SoundController.SoundFile.MAGICALATTACK);
-        } else if (maxValue == playerCard.getMagicalBlock()) {
-            SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
-        } else if (maxValue == playerCard.getHealValue()) {
-            SoundController.play(SoundController.SoundFile.HEAL);
+            if (maxValue == playerCard.getPhysicalDamage()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
+            } else if (maxValue == playerCard.getMagicalDamage()) {
+                SoundController.play(SoundController.SoundFile.MAGICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
+            } else if (maxValue == playerCard.getHealValue()) {
+                SoundController.play(SoundController.SoundFile.HEAL);
+            }
+            Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
         }
-        Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
     }
 
     /**
@@ -196,11 +198,11 @@ public class SpectateController implements Initializable {
      */
     public void addMinion(int id, int boardId) {
         Optional<Card> crd = allCards.stream().filter((c) -> c.getId() == id).findFirst();
-        if(!crd.isPresent()){
+        if (!crd.isPresent()) {
             LOG.warning(id + " was not found!");
             return;
         }
-        if(!(crd.get() instanceof MinionCard)){
+        if (!(crd.get() instanceof MinionCard)) {
             LOG.warning(id + " is not an minion card!");
             return;
         }
@@ -277,34 +279,7 @@ public class SpectateController implements Initializable {
      * @param card3, third card to be picked from.
      */
     public void newTurn(int card1, int card2, int card3) {
-        LOG.info("New cards " + card1 + " " + card2 + " " + card3 + " ");
         cardChoice.clear();
-        Optional<Card> cardO1, cardO2, cardO3;
-        cardO1 = allCards.stream().filter((c) -> c.getId() == card1).findFirst();
-        cardO2 = allCards.stream().filter((c) -> c.getId() == card2).findFirst();
-        cardO3 = allCards.stream().filter((c) -> c.getId() == card3).findFirst();
-
-        if (!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()) {
-            //groot probleem!
-            System.exit(error);
-        }
-
-        cardChoice.add(new CardControl(cardO1.get()));
-        cardChoice.add(new CardControl(cardO2.get()));
-        cardChoice.add(new CardControl(cardO3.get()));
-
-        Platform.runLater(() -> drawCards());
-    }
-
-    /**
-     * Method that adds EventHandlers to the cards and adds them to the pane.
-     */
-    private void drawCards() {
-        for (int i = 0; i < 3; i++) {
-            CardControl cardControl = cardChoice.get(i);
-            cardControl.setEventHandler(openCard(cardControl));
-            gridCardHolder.add(cardControl.CardPane(), i, 0);
-        }
     }
 
     public void receiveMessage(String message) {
@@ -387,94 +362,6 @@ public class SpectateController implements Initializable {
         System.out.println("Meh");
     }
 
-    @FXML
-    private void attackTarget(ActionEvent event) throws IOException {
-        Button x = (Button) event.getSource();
-        String id = x.getId();
-        switch (id) {
-            case "btnYourSide1":
-                ownMinion = 1;
-                break;
-            case "btnYourSide2":
-                ownMinion = 2;
-                break;
-            case "btnOpponentSide1":
-                if (ownMinion != -1) {
-                    opponentMinion = 1;
-                    client.setTarget(ownMinion, opponentMinion);
-                    ownMinion = -1;
-                    opponentMinion = -1;
-                }
-                break;
-            case "btnOpponentSide2":
-                if (ownMinion != -1) {
-                    opponentMinion = 2;
-                    client.setTarget(ownMinion, opponentMinion);
-                    ownMinion = -1;
-                    opponentMinion = -1;
-                }
-                break;
-            case "btnHero":
-                if (ownMinion != -1) {
-                    opponentMinion = 0;
-                    client.setTarget(ownMinion, opponentMinion);
-                    ownMinion = -1;
-                    opponentMinion = -1;
-                }
-                break;
-        }
-
-    }
-
-    private EventHandler openCard(CardControl cardControl) {
-        EventHandler handler = new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                for (int i = 0; i < 3; i++) {
-                    gridCardHolder.getChildren().clear();
-                    CardControl cardControl = cardChoice.get(i);
-                    cardControl.setEventHandler(pickCard(cardControl));
-                    gridChooseCard.add(cardControl.CardPane(), i, 0);
-                }
-            }
-        };
-        return handler;
-    }
-
-    private EventHandler pickCard(CardControl cardControl) {
-        EventHandler handler = new EventHandler() {
-
-            @Override
-            public void handle(Event event) {
-
-                System.out.println(cardControl.getCard().getName());
-                try {
-                    client.setCard(cardControl.getCard().getId());
-                } catch (Exception ex) {
-                    Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
-                    //todo fatal?
-                }
-                if (cardControl.getCard() instanceof HeroCard) {
-                    myHeroCard = (HeroCard) cardControl.getCard();
-
-                    gridChooseCard.getChildren().clear();
-                    cardControl.setEventHandler(null);
-                    gridYourSide.add(cardControl.CardPane(), 1, 0);
-                } else if (cardControl.getCard() instanceof MinionCard) {
-                    if (yourMinions.size() < 2) {
-                        //dit kan voor problemen zorgen
-                        gridChooseCard.getChildren().clear();
-                        //yourMinions.add(cardControl);
-                        gridYourSide.add(cardControl.CardPane(), 1, 0);
-                        placeMinionCards();
-                    }
-                }
-                //drawCards();
-            }
-        };
-        return handler;
-    }
-
     private void placeMinionCards() {
         gridYourSide.getChildren().removeAll(yourMinions);
         gridOpponentSide.getChildren().removeAll(opponentsMinions);
@@ -502,7 +389,11 @@ public class SpectateController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            client.concede();
+            SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+            String titlescreen = "Mighty Duels";
+            String root = "MainScreenFXML.fxml";
+            StageController.getInstance().navigate(root, titlescreen);
         } else if (result.get() == buttonTypeTwo) {
             alert.close();
         } else {
@@ -512,13 +403,8 @@ public class SpectateController implements Initializable {
 
     //TODO button functionality
     private void initializeButtons() {
-        btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
-            client.setFinished(true);
-            SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        });
-
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
-            Mbox("Concede", "Concede screen", "Are you sure you wish to concede?");
+            Mbox("Main Menu", "Menu screen", "Are you sure you wish to go to main menu?");
         });
 
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
