@@ -210,18 +210,22 @@ public class MatchController implements Initializable {
         switch (boardId) {
             case 1:
                 minion1 = card;
+                minion1.setEventHandler((event) -> attackTarget(1));
                 yourMinions.add(card);
                 break;
             case 2:
                 minion2 = card;
+                minion2.setEventHandler((event) -> attackTarget(2));
                 yourMinions.add(card);
                 break;
             case 3:
                 minion3 = card;
+                minion3.setEventHandler((event) -> attackTarget(3));
                 opponentsMinions.add(card);
                 break;
             case 4:
                 minion4 = card;
+                minion4.setEventHandler((event) -> attackTarget(4));
                 opponentsMinions.add(card);
                 break;
             default:
@@ -356,17 +360,15 @@ public class MatchController implements Initializable {
     }
 
     @FXML
-    private void attackTarget(ActionEvent event) throws IOException {
-        Button x = (Button) event.getSource();
-        String id = x.getId();
+    private void attackTarget(int id) {
         switch (id) {
-            case "btnYourSide1":
+            case 1:
                 ownMinion = 1;
                 break;
-            case "btnYourSide2":
+            case 2:
                 ownMinion = 2;
                 break;
-            case "btnOpponentSide1":
+            case 3:
                 if (ownMinion != -1) {
                     opponentMinion = 1;
                     client.setTarget(ownMinion, opponentMinion);
@@ -374,7 +376,7 @@ public class MatchController implements Initializable {
                     opponentMinion = -1;
                 }
                 break;
-            case "btnOpponentSide2":
+            case 4:
                 if (ownMinion != -1) {
                     opponentMinion = 2;
                     client.setTarget(ownMinion, opponentMinion);
@@ -382,7 +384,7 @@ public class MatchController implements Initializable {
                     opponentMinion = -1;
                 }
                 break;
-            case "btnHero":
+            case 5:
                 if (ownMinion != -1) {
                     opponentMinion = 0;
                     client.setTarget(ownMinion, opponentMinion);
