@@ -10,6 +10,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import Server.Domain.Minion;
+import Shared.Domain.MinionCard;
 import static org.junit.Assert.*;
 
 /**
@@ -17,6 +19,9 @@ import static org.junit.Assert.*;
  * @author Loek
  */
 public class ITargetTest {
+         MinionCard minionCard = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50); 
+        Minion instance = new Minion(minionCard);
+
     
     public ITargetTest() {
     }
@@ -43,11 +48,9 @@ public class ITargetTest {
     @Test
     public void testSetHitPoints() {
         System.out.println("setHitPoints");
-        int hitPoints = 0;
-        ITarget instance = new ITargetImpl();
+        int hitPoints = 50;
         instance.setHitPoints(hitPoints);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(instance.getHitPoints(), hitPoints);
     }
 
     /**
@@ -56,12 +59,10 @@ public class ITargetTest {
     @Test
     public void testGetHitPoints() {
         System.out.println("getHitPoints");
-        ITarget instance = new ITargetImpl();
-        int expResult = 0;
+        int expResult = 50;
+        instance.setHitPoints(50);
         int result = instance.getHitPoints();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     public class ITargetImpl implements ITarget {

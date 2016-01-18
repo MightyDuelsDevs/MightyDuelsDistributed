@@ -40,31 +40,4 @@ public class Match {
 
         hero1 = new Hero(this, player1, game.getDeck(token1));//todo deck
     }
-
-    /**
-     * Get the current gamestate
-     *
-     * @return the current game state
-     */
-    public GameState getGameState() {
-        return this.gameState;
-    }
-
-    /**
-     * Concede a match, this will make a player force lose
-     *
-     * @param hero The hero that concedes
-     */
-    public void concede(Hero hero) {
-//        SocketManager.getInstance().concede();
-    }
-
-    /**
-     * Method that sets the target of an attack.
-     * @param source, the source of the attack. This in an integer that determines which minion attacks.
-     * @param target, the target of the attack. This is an integer that determines which target is attacked.
-     */
-    public void setITarget(int source, int target) {
-//TODO
-    }
 }

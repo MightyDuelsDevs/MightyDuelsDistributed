@@ -8,6 +8,7 @@ package Client.Domain;
 import Shared.Domain.Card;
 import Shared.Domain.Deck;
 import Shared.Domain.HeroCard;
+import Shared.Domain.MinionCard;
 import Shared.Domain.PlayerShared;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,11 @@ public class HeroTest {
     Match match = new Match("1kdj2e98da","Token2");
     Hero heroInstance = new Hero(match,player,deck);
     HeroCard card = new HeroCard(10,"Flamestrike","c://desktop/card/flamestrike","Overpowered as can be",1,2,3,4,5);
-
+    MinionCard minionCard = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50); 
+    MinionCard minionCard2 = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50); 
+    Minion minion1 = new Minion(minionCard);
+    Minion minion2 = new Minion(minionCard2);
+    List<Minion> minionlist = new ArrayList<Minion>();
     public HeroTest() {
     }
     
@@ -98,10 +103,32 @@ public class HeroTest {
     public void testPlayCard() {
         System.out.println("playCard");
         Card card = null;
-        boolean expResult = false;
+        boolean expResult = true;
         boolean result = heroInstance.playCard(card);
         assertEquals(expResult, result);
     }
+      @Test
+    public void testPlayCardDifferentCard() {
+        System.out.println("playCard");
+        minionlist.add(minion1);
+        minionlist.add(minion2);
+        heroInstance.setMinions(minionlist);
+        boolean expResult = true;
+        boolean result = heroInstance.playCard(card);
+        assertEquals(expResult, result);
+    }
+    
+       @Test
+    public void testPlayCardMinionCard() {
+        System.out.println("playCard");
+         minionlist.add(minion1);
+        minionlist.add(minion2);
+        heroInstance.setMinions(minionlist);
+        boolean expResult = true;
+        boolean result = heroInstance.playCard(minionCard);
+        assertEquals(expResult, result);
+    }
+    
 
     /**
      * Test of removeMinion method, of class Hero.

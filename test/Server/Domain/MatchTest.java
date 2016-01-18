@@ -5,6 +5,8 @@
  */
 package Server.Domain;
 
+import Shared.Domain.HeroCard;
+import Shared.Domain.PlayerShared;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -17,7 +19,13 @@ import static org.junit.Assert.*;
  * @author Loek
  */
 public class MatchTest {
-    
+    Player player1 = new Player(104, "JANSSEN", 45, 1, 34, 12, 40);
+    Player player2 = new Player(201, "TESTDECK", 45, 1, 34, 12, 40);
+    Shared.Domain.Deck deck = new Shared.Domain.Deck();
+    Server.Domain.Match match = new Server.Domain.Match(player1,player2);
+    Server.Domain.Hero heroInstance = new Server.Domain.Hero(match,player1,deck);
+    HeroCard card = new HeroCard(10,"Flamestrike","c://desktop/card/flamestrike","Overpowered as can be",1,2,3,4,5);
+    Server.Domain.Hero expResult = new Server.Domain.Hero(match,player1,deck);
     public MatchTest() {
     }
     
@@ -43,12 +51,9 @@ public class MatchTest {
     @Test
     public void testGetTurns() {
         System.out.println("getTurns");
-        Match instance = null;
         int expResult = 0;
-        int result = instance.getTurns();
+        int result = match.getTurns();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -57,12 +62,8 @@ public class MatchTest {
     @Test
     public void testGetHero1() {
         System.out.println("getHero1");
-        Match instance = null;
-        Hero expResult = null;
-        Hero result = instance.getHero1();
+        Hero result = match.getHero1();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -71,12 +72,8 @@ public class MatchTest {
     @Test
     public void testGetHero2() {
         System.out.println("getHero2");
-        Match instance = null;
-        Hero expResult = null;
-        Hero result = instance.getHero2();
+        Hero result = match.getHero2();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -86,7 +83,7 @@ public class MatchTest {
     public void testGetGameState() {
         System.out.println("getGameState");
         Match instance = null;
-        GameState expResult = null;
+        GameState expResult = GameState.Active;
         GameState result = instance.getGameState();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
