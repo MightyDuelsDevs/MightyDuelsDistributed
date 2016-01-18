@@ -98,18 +98,17 @@ public class LogOnFXMLController implements Initializable {
         if (tfUserName.getText().isEmpty() || tfPassWord.getText().isEmpty()) {
             StageController.getInstance().popup("You forgot something", false, "Fill both fields.");
         } else {
-            PlayerShared player = game.loginPlayer(tfUserName.getText(), tfPassWord.getText());
-            if (player == null) {
-                StageController.getInstance().popup("Wrong credentials", false, "Your username & Password do not match.");
-                tfPassWord.setText("");
-            } else {
+            try{
+                PlayerShared player = game.loginPlayer(tfUserName.getText(), tfPassWord.getText());
                 loggedInPlayer = player;
                 //Give the player to the next page;
                 String title = "Mighty Duels Welcome: " + player.getUsername();
                 String root = "MainScreenFXML.fxml";
                 StageController.getInstance().navigate(root, title);
+            } catch(Exception e){
+                StageController.getInstance().popup("Wrong credentials", false, "Either password or username \n is not correct.");
+                tfPassWord.setText("");
             }
         }
     }
-
 }

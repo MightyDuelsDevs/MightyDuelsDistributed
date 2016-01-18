@@ -26,9 +26,9 @@
                 <RowConstraints maxHeight="62.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TextField fx:id="tfUserName" prefHeight="41.0" prefWidth="317.0" promptText="User name">
+                <TextField fx:id="tfUserName" prefHeight="41.0" prefWidth="317.0" promptText="User name" text="janssen">
               </TextField>
-                <PasswordField fx:id="tfPassWord" prefHeight="41.0" prefWidth="317.0" promptText="Password" GridPane.rowIndex="1">
+                <PasswordField fx:id="tfPassWord" prefHeight="41.0" prefWidth="317.0" promptText="Password" text="qqq" GridPane.rowIndex="1">
 </PasswordField>
                 <Button fx:id="btnLogOn" alignment="BASELINE_CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#btnLogOn_OnClick" opacity="0.0" prefHeight="43.0" prefWidth="317.0" GridPane.rowIndex="2" />
                 <Button fx:id="btnRegister" alignment="BASELINE_CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#btnRegister_OnClick" opacity="0.0" prefHeight="40.0" prefWidth="319.0" text="Register" GridPane.rowIndex="3" />

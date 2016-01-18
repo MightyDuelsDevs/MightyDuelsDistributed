@@ -50,31 +50,27 @@ public class MainScreenFXMLController implements Initializable {
         MatchController.setHash(Game.getInstance().startMatch());
 
         this.timer = new Timer();
-        sec = 10;
+        sec = 5;
         timer.schedule(new TimerTask() {
 
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     StageController sc = StageController.getInstance();
-                    if (sec == 10) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
-                        sec--;
-                    } else if (sec > 1) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                    if (sec > 1) {
+                        sc.popup("Searching for a match", false, " Searching for a match: " + sec + " seconds");
                         sec--;
                     } else if (sec == 1) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
+                        sc.popup("Searching for a match", false, " Searching for a match: " + sec + " second");
                         sec--;
                     } else if (sec == 0) {
-                        sc.popup("Searching for a match", false, " next try in: now");
-                        sec--;
-                    } else if (sec < 0) {
+                        sc.popup("Searching for a match", false, " Searching for a match");
+                        sec = 5;
+                    } 
+                    // Check if a match is found
+                    if (StageController.matchFound){
                         sc.closePopUp();
-                        sec = 10;
-                        this.cancel();
-                    }
-                    if (false){ // een cancel manier
+                        StageController.matchFound = false;
                         this.cancel();
                     }
                 });

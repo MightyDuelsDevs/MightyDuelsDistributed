@@ -160,13 +160,11 @@ public class PlayerIconControllerTest {
     @Test
     public void testUpdateRating() {
         System.out.println("updateRating");
-        int playerOneId = 0;
-        int playerTwoId = 0;
-        boolean playerOneWon = false;
-        boolean expResult = false;
+        int playerOneId = 101;
+        int playerTwoId = 101;
+        boolean playerOneWon = true;
+        boolean expResult = true;
         boolean result = PlayerIconController.updateRating(playerOneId, playerTwoId, playerOneWon);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");// wachten op martijn
     }
 }
