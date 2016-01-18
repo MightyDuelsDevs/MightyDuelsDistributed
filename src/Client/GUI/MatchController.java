@@ -170,22 +170,24 @@ public class MatchController implements Initializable {
         }
         CardControl cc = new CardControl(card.get());
 
-        HeroCard playerCard = (HeroCard) cc.getCard();
+        if (cc.getCard() instanceof HeroCard) {
+            HeroCard playerCard = (HeroCard) cc.getCard();
 
-        int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
+            int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
 
-        if (maxValue == playerCard.getPhysicalDamage()) {
-            SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
-        } else if (maxValue == playerCard.getMagicalBlock()) {
-            SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
-        } else if (maxValue == playerCard.getMagicalDamage()) {
-            SoundController.play(SoundController.SoundFile.MAGICALATTACK);
-        } else if (maxValue == playerCard.getMagicalBlock()) {
-            SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
-        } else if (maxValue == playerCard.getHealValue()) {
-            SoundController.play(SoundController.SoundFile.HEAL);
+            if (maxValue == playerCard.getPhysicalDamage()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
+            } else if (maxValue == playerCard.getMagicalDamage()) {
+                SoundController.play(SoundController.SoundFile.MAGICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
+            } else if (maxValue == playerCard.getHealValue()) {
+                SoundController.play(SoundController.SoundFile.HEAL);
+            }
+            Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
         }
-        Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
     }
 
     /**
@@ -476,16 +478,18 @@ public class MatchController implements Initializable {
     }
 
     private void placeMinionCards() {
-        gridYourSide.getChildren().removeAll(yourMinions);
-        gridOpponentSide.getChildren().removeAll(opponentsMinions);
+        Platform.runLater(() -> {
+            gridYourSide.getChildren().removeAll(yourMinions);
+            gridOpponentSide.getChildren().removeAll(opponentsMinions);
 
-        for (int i = 0; i < yourMinions.size(); i++) {
-            gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
-        }
+            for (int i = 0; i < yourMinions.size(); i++) {
+                gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
+            }
 
-        for (int i = 0; i < opponentsMinions.size(); i++) {
-            gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
-        }
+            for (int i = 0; i < opponentsMinions.size(); i++) {
+                gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
+            }
+        });
     }
 
     private void Mbox(String title, String header, String content) {
@@ -528,9 +532,11 @@ public class MatchController implements Initializable {
                 card = allCards.stream().filter((c) -> c.getId() == cardID).findFirst();
                 if (card.isPresent()) {
                     CardControl cc = new CardControl(card.get());
-                    HeroCard enemyCard = (HeroCard) cc.getCard();
+                    if (cc.getCard() instanceof HeroCard) {
+                        HeroCard enemyCard = (HeroCard) cc.getCard();
 
-                    StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", hero1Hp + "", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", hero2Hp + "");
+                        StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", hero1Hp + "", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", hero2Hp + "");
+                    }
                 }
             }
         });
