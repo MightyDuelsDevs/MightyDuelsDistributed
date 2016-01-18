@@ -130,18 +130,7 @@ public class SpectateController implements Initializable {
         cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
-        //hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
-
-        //gridYourSide.add(hero1.getHeroControl(), 0, 0);
-//        btSendMessage.setOnAction((evt) -> {
-//            TextInputDialog dialog = new TextInputDialog("message");
-//            dialog.setTitle("New message");
-//            dialog.setHeaderText("Send message to opponend");
-//            dialog.setContentText("Enter a message to send to the opponend");
-//
-//            dialog.showAndWait().ifPresent((message) -> client.sendMessage(message));
-//
-//        });
+        
     }
     
     public void spectateNewMatch(String player1, String player2, int icon1, int icon2){
@@ -151,18 +140,6 @@ public class SpectateController implements Initializable {
         hero2 = new HeroControl(50, new PlayerShared(2, player2, icon2, 1, 1, 1, 1));
         Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
-
-    /**
-     * Method that adds an opponent to the match.
-     *
-     * @param name, the name of the opponent.
-     * @param iconId, the icon ID of the opponent.
-     */
-//    public void setOpponent(String name, int iconId) {
-//        LOG.log(Level.INFO, "Start match: {0} icon: {1}", new Object[]{name, iconId});
-//        hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
-//        Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
-//    }
 
     /**
      * Method that processes the turn with the card played.

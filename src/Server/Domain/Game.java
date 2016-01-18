@@ -55,8 +55,6 @@ public class Game {
             waitingPlayers.remove(closestPlayer);
             return true;
         }
-
-        waitingPlayers.remove(player);
         return false;
     }
 
