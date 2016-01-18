@@ -212,4 +212,14 @@ public class RMIClient {
     public PlayerShared getPlayer(String token) throws RemoteException {
         return mainScreenProvider.getPlayer(token);
     }
+    
+    /**
+     * Method that returns if there a boolean that represents the matches.
+     * If there is more than 0 it returns true.
+     * @return a boolean if there is more than zero games.
+     * @throws RemoteException 
+     */
+    public boolean isPossibleSpectate() throws RemoteException {
+        return mainScreenProvider.isPossibleSpectate();
+    }
 }

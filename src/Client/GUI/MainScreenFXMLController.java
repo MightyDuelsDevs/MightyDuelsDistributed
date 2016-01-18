@@ -8,6 +8,7 @@ package Client.GUI;
 import Client.Controller.SoundController;
 import Client.Controller.StageController;
 import Client.Domain.Game;
+import Client.RMI.RMIClient;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -122,10 +123,15 @@ public class MainScreenFXMLController implements Initializable {
     private void btnSpectate_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
-        System.out.println("Test");
-        String title = "Mighty Duels";
-        String root = "TutorialFXML.fxml";
-        StageController.getInstance().navigate(root, title);
+        if(RMIClient.getInstance().isPossibleSpectate())
+        {
+            Game.getInstance().startMatch();
+            String title = "Mighty Duels";
+            String root = "TutorialFXML.fxml";
+            StageController.getInstance().navigate(root, title);
+        }
+        else
+            StageController.getInstance().popup("No matches.", false, "There were no active matches found.");
     }
     
     @Override

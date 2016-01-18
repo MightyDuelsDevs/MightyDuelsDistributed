@@ -7,6 +7,7 @@ package Client.SocketManagerClient;
 
 import Client.Controller.StageController;
 import Client.GUI.MatchController;
+import Client.GUI.SpectateController;
 import com.sun.media.jfxmedia.track.Track;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ public class SocketManager {
     private boolean lastAccepted = false;
 
     private MatchController controller;
+    private SpectateController spectateController;
 
     /**
      * Initiating the SocketManager for the match.
@@ -44,6 +46,11 @@ public class SocketManager {
     public SocketManager(MatchController controller) {
         socket = new Socket();
         this.controller = controller;
+    }
+    
+    public SocketManager(SpectateController controller) {
+        socket = new Socket();
+        this.spectateController = controller;
     }
 
     /**
