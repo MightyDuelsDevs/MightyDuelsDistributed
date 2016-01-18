@@ -11,6 +11,7 @@ public class Minion implements ITarget {
 	private final int maxHitPoints;
 	private int hitPoints;
         private ITarget target;
+        private final int id;
         
 	/**
 	 * Create an new instance of minion and set its attributes according to the minionCard
@@ -21,6 +22,7 @@ public class Minion implements ITarget {
                 this.magicalDamage = minionCard.getMagicalDamage();
                 this.maxHitPoints = minionCard.getHitPoints();
                 this.hitPoints = maxHitPoints;
+                this.id = minionCard.getId();
 	}
 
         /**
@@ -32,6 +34,15 @@ public class Minion implements ITarget {
                     target.setHitPoints(target.getHitPoints() - this.getPhysicalDamage() - this.getMagicalDamage());
 	}
 
+        /**
+         * Get the id of the minion(card)
+         * @return the id of the minion
+         */
+        public int getId() {
+            return id;
+        }
+
+        
         /**
          * Get the physical damage of the minion
          * @return the amount of damage
