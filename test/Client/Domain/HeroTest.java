@@ -27,7 +27,9 @@ public class HeroTest {
     
     PlayerShared player = new PlayerShared(1, null, 45, 1, 34, 12, 40);
     Deck deck = new Deck();
-    Match match = new Match("1kdj2e98da","Token2");
+    Game instance = new Game();
+
+    Match match = new Match(instance.getToken(),instance.getToken());
     Hero heroInstance = new Hero(match,player,deck);
     HeroCard card = new HeroCard(10,"Flamestrike","c://desktop/card/flamestrike","Overpowered as can be",1,2,3,4,5);
     MinionCard minionCard = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50); 
