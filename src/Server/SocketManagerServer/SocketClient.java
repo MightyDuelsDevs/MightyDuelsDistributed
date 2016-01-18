@@ -225,6 +225,42 @@ public class SocketClient {
                     accepted();
                     match.concede(hero);
                     break;
+                case 0x06://LOGIN_SPEC
+                    LOG.info("Reading hash");
+                    int hashlength2 = 32;//todo tbd
+                    byte[] hash2 = new byte[hashlength2];
+
+                    try {
+                        in.read(hash2, 0, hashlength2);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    LOG.info("Hash done");
+//                    StringBuilder sb = new StringBuilder();
+//                    for(byte d : hash){
+//                        String hex = Integer.toHexString(0xff & d);
+//                        if(hex.length() == 1) sb.append('0');
+//                        sb.append(hex);
+//                    }
+                    player = SocketManager.getInstance().getPlayer(hash2);
+                    if (player == null) {
+                        loginDenied();
+                        closed = true;
+                        try {
+                            socket.close();
+
+                        } catch (IOException ex) {
+                            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        return;
+                    }
+                    loginAccepted();
+                    player.setSocket(this);
+                    break;
+                case 0x07://NEXT_MATCH
+                    accepted();
+                    //todo call method
+                    break;
                 case 0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
                     int message = -1;
@@ -430,6 +466,34 @@ public class SocketClient {
             //fatal error
         }
     }
+    
+    public void joinMatch(String p1Name, String p2Name, int p1Icon, int p2Icon){
+        byte[] p1Encoded;
+        byte[] p2Encoded;
+        try {
+            p1Encoded = p1Name.getBytes("UTF-8");
+            p2Encoded = p2Name.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(p1Encoded.length + p2Encoded.length+4+2+1);
+        buffer.put((byte)0x0A);
+        buffer.put(p1Encoded);
+        buffer.put((byte)0x00);
+        buffer.put(int16Encode(p1Icon));
+        buffer.put(p2Encoded);
+        buffer.put((byte)0x00);
+        buffer.put(int16Encode(p2Icon));
+        try {
+            sendData(buffer.array());
+            synchronized(this){
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void turnEnd(int card) {
         byte[] data = new byte[3];
@@ -444,6 +508,22 @@ public class SocketClient {
             //fatal error
         }
 
+    }
+    
+    public void specTurnEnd(int p1Card, int p2Card){
+        byte[] p1 = int16Encode(p1Card);
+        byte[] p2 = int16Encode(p2Card);
+        byte[] data = new byte[5];
+        data[0] = 0x0B;
+        data[1] = p1[0];
+        data[2] = p1[1];
+        data[3] = p2[0];
+        data[4] = p2[1];
+        try {
+            sendData(data);
+        } catch (IOException ex) {
+            Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void addMinion(boolean self, int pos, int card) {

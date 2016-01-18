@@ -38,6 +38,7 @@
                   <Insets bottom="30.0" />
                </GridPane.margin>
             </Button>
+            <Button fx:id="btnSpectate" alignment="TOP_LEFT" layoutX="10.0" layoutY="500.0" mnemonicParsing="false" onAction="#btnSpectate_OnClick" opacity="0.0" prefHeight="87.0" prefWidth="583.0" text="Tutorial" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP" />
          </children>
       </GridPane>
    </children>
