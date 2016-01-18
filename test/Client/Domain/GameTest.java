@@ -27,7 +27,13 @@ import sun.security.provider.certpath.BuildStep;
 public class GameTest {
     List<Icon> expResulticonlist = new ArrayList<Icon>();
     Game instance = new Game();
-    private List<Card> cards;
+    
+    String Displayname = "JANSSEN";
+    String Password = "qqq";
+    PlayerShared expResult = new PlayerShared(5,"JANSSEN", 5, 500, 20, 5, 25);
+    PlayerShared result = instance.loginPlayer(Displayname, Password);    
+    
+
     public GameTest() {
     }
     
@@ -62,9 +68,8 @@ public class GameTest {
     @Test
     public void testGetPlayer() {
         System.out.println("getPlayer");
-        PlayerShared expResult = new PlayerShared(5,"loek",5,6,7,8,9);
         PlayerShared result = instance.getPlayer();
-        assertEquals(null, result);
+        assertEquals(expResult.getUsername(), result.getUsername());
     }
     @Test
     public void testGame() {
@@ -96,9 +101,9 @@ public class GameTest {
     @Test
     public void testStartMatch() {
         System.out.println("startMatch");
-        byte[] expResult = null;
+        byte[] expResult = new byte[0];
         byte[] result = instance.startMatch();
-        assertArrayEquals(expResult, result);
+        assertEquals(expResult.getClass(), result.getClass());
     }
 
     /**
@@ -110,7 +115,7 @@ public class GameTest {
         String Displayname = "JANSSEN";
         String Password = "qqq";
         PlayerShared result = instance.loginPlayer(Displayname, Password);
-        assertEquals(null, result);
+        assertEquals(expResult.getUsername(), result.getUsername());
     }
 
     /**
@@ -119,11 +124,11 @@ public class GameTest {
     @Test
     public void testSignUpPlayer() {
         System.out.println("signUpPlayer");
-        String email = "";
-        String displayname = "";
-        String password = "";
-        String passcheck = "";
-        int expResult = 0;
+        String email = "LoekDelahaye@gmail.com";
+        String displayname = "Loek";
+        String password = "Testpw";
+        String passcheck = "Testpw";
+        int expResult = 2;
         int result = instance.signUpPlayer(email, displayname, password, passcheck);
         assertEquals(expResult, result);
     }
@@ -134,10 +139,10 @@ public class GameTest {
     @Test
     public void testGetNewMatch() {
         System.out.println("getNewMatch");
-        String token = "";
-        byte[] expResult = null;
+        String token = instance.getToken();
+        byte[] expResult = new byte[0];
         byte[] result = instance.getNewMatch(token);
-        assertArrayEquals(expResult, result);
+        assertEquals(expResult.getClass(), result.getClass());
     }
 
     /**
@@ -146,9 +151,9 @@ public class GameTest {
     @Test
     public void testGetCards() {
         System.out.println("getCards");
-        List<Card> expResult = null;
+        List<Card> expResult = new ArrayList<Card>();
         List<Card> result = instance.getCards();
-        assertEquals(expResult, result);
+        assertEquals(expResult.getClass(), result.getClass());
     }
 
     /**
@@ -157,10 +162,10 @@ public class GameTest {
     @Test
     public void testGetDecks() {
         System.out.println("getDecks");
-        String token = "";
-        List<Deck> expResult = null;
+        String token = instance.getToken();
+        List<Deck> expResult = new ArrayList<Deck>();
         List<Deck> result = instance.getDecks(token);
-        assertEquals(expResult, result.getClass());
+        assertEquals(expResult.getClass(), result.getClass());
     }
 
     /**
@@ -169,10 +174,11 @@ public class GameTest {
     @Test
     public void testGetDeck() {
         System.out.println("getDeck");
-        String token = "";
-        Deck expResult = null;
+        String token = instance.getToken();
+        Deck expResult = new Deck();
+        expResult.setName("playdeck");
         Deck result = instance.getDeck(token);
-        assertEquals(expResult, result);
+        assertEquals(expResult.getName(), result.getName());
     }
 
     /**
@@ -181,10 +187,10 @@ public class GameTest {
     @Test
     public void testGetIcons() {
         System.out.println("getIcons");
-        String token = "";
-        List<Icon> expResult = null;
+        String token = instance.getToken();
+        List<Icon> expResult = new ArrayList<Icon>();
         List<Icon> result = instance.getIcons(token);
-        assertEquals(expResult, result);
+        assertEquals(expResult.getClass(), result.getClass());
     }
 
     /**
@@ -193,9 +199,9 @@ public class GameTest {
     @Test
     public void testSetIcon() {
         System.out.println("setIcon");
-        String token = "";
-        int iconID = 0;
-        boolean expResult = false;
+        String token = instance.getToken();
+        int iconID = 1;
+        boolean expResult = true;
         boolean result = instance.setIcon(token, iconID);
         assertEquals(expResult, result);
     }
@@ -206,9 +212,9 @@ public class GameTest {
     @Test
     public void testAddDeck() {
         System.out.println("addDeck");
-        String token = "";
-        String name = "";
-        boolean expResult = false;
+        String token = instance.getToken();
+        String name = "Testdeck";
+        boolean expResult = true;
         boolean result = instance.addDeck(token, name);
         assertEquals(expResult, result);
     }
@@ -219,9 +225,9 @@ public class GameTest {
     @Test
     public void testRemoveDeck() {
         System.out.println("removeDeck");
-        String token = "";
-        int id = 0;
-        boolean expResult = false;
+        String token = instance.getToken();
+        int id = 1;
+        boolean expResult = true;
         boolean result = instance.removeDeck(token, id);
         assertEquals(expResult, result);
     }
@@ -232,9 +238,9 @@ public class GameTest {
     @Test
     public void testSetSelectedDeck() {
         System.out.println("setSelectedDeck");
-        String token = "";
-        int deckId = 0;
-        boolean expResult = false;
+        String token = instance.getToken();
+        int deckId = 1;
+        boolean expResult = true;
         boolean result = instance.setSelectedDeck(token, deckId);
         assertEquals(expResult, result);
     }
@@ -245,10 +251,9 @@ public class GameTest {
     @Test
     public void testGetPlayer_String() {
         System.out.println("getPlayer");
-        String token = "";
-        PlayerShared expResult = null;
+        String token = instance.getToken();
         PlayerShared result = instance.getPlayer(token);
-        assertEquals(expResult, result);
+        assertEquals("JANSSEN", result.getUsername());
     }
 
     /**

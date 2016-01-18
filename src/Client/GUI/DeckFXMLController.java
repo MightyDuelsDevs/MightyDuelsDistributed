@@ -76,30 +76,27 @@ public class DeckFXMLController implements Initializable {
         MatchController.setHash(Game.getInstance().startMatch());
 
         this.timer = new Timer();
-        sec = 10;
+        sec = 5;
         timer.schedule(new TimerTask() {
 
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     StageController sc = StageController.getInstance();
-                    if (sec == 10) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
-                        sec--;
-                    } else if (sec > 1) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " seconds");
+                    if (sec > 1) {
+                        sc.popup("Searching for a match", false, " Searching for a match in " + sec + " seconds");
                         sec--;
                     } else if (sec == 1) {
-                        sc.popup("Searching for a match", false, " next try in: " + sec + " second");
+                        sc.popup("Searching for a match", false, " Searching for a match in " + sec + " second");
                         sec--;
                     } else if (sec == 0) {
-                        sc.popup("Searching for a match", false, " next try in: now");
-                        sec--;
-                    } else if (sec < 0) {
-                        sc.closePopUp();
-                        this.cancel();
+                        sc.popup("Searching for a match", false, " Searching for a match");
+                        sec = 5;
                     }
-                    if (false) { // een cancel manier
+                    // Check if a match is found
+                    if (StageController.matchFound) {
+                        sc.closePopUp();
+                        StageController.matchFound = false;
                         this.cancel();
                     }
                 });
@@ -126,8 +123,9 @@ public class DeckFXMLController implements Initializable {
 
         if (decks.size() < 4) {
             game.addDeck(game.getToken(), tfDeckName.getText());
+        } else {
+            StageController.getInstance().popup("Too many decks", false, "You can't have more then 4 decks at ones.");
         }
-        //TODO pop-up for to much decks.
         String title = "Mighty Duels";
         String root = "DeckFXML.fxml";
         StageController.getInstance().navigate(root, title);
@@ -155,7 +153,7 @@ public class DeckFXMLController implements Initializable {
         int j = 0; // Row
 
         if (!decks.isEmpty()) {
-            selectedDeck = decks.get(0);
+            selectedDeck = game.getDeck(game.getToken());
             lblSelectedDeck.setText("Selected Deck: " + selectedDeck.getName());
         }
 
@@ -195,6 +193,7 @@ public class DeckFXMLController implements Initializable {
 
     /**
      * Method that selects a deck for the player.
+     *
      * @param name, the name of the deck that is selected.
      */
     static public void selectDeck(String name) {
