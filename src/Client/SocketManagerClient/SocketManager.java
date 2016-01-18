@@ -37,6 +37,8 @@ public class SocketManager {
 
     private MatchController controller;
     private SpectateController spectateController;
+    
+    private boolean spectating = false;
 
     /**
      * Initiating the SocketManager for the match.
@@ -49,6 +51,7 @@ public class SocketManager {
     }
     
     public SocketManager(SpectateController controller) {
+        spectating = true;
         socket = new Socket();
         this.spectateController = controller;
     }
@@ -160,7 +163,11 @@ public class SocketManager {
                         LOG.warning("Error receiving ADD_MINION command, data was " + boardLocation + ", " + cardId);
                         continue;
                     }
-                    controller.addMinion(cardId, boardLocation);
+                    if(!spectating){
+                        controller.addMinion(cardId, boardLocation);
+                    }else{
+                        spectateController.addMinion(cardId, boardLocation);
+                    }
                     break;
                 case 0x07: //SET_HEALTH
                     int character = -1,
@@ -182,7 +189,11 @@ public class SocketManager {
                     //self your side or other side
                     //minion if it is an minion
                     //minionId 1 or 2 for minion id
-                    controller.setHealth(self, !minion, minionId, value);
+                    if(!spectating){
+                        controller.setHealth(self, !minion, minionId, value);
+                    }else{
+                        spectateController.setHealth(self, !minion, minionId, value);
+                    }
                     break;
                 case 0x08://NEW_TURN
                     int card1 = -1,
@@ -216,15 +227,27 @@ public class SocketManager {
 
                     final int fState = state;
                     //todo send to gui
-                    Platform.runLater(() -> {
-                        if (fState == 2) {
-                            controller.win();
-                        } else if (fState == 1) {
-                            controller.tie();
-                        } else {
-                            controller.lose();
-                        }
-                    });
+                    if(!spectating){
+                        Platform.runLater(() -> {
+                            if (fState == 2) {
+                                controller.win();
+                            } else if (fState == 1) {
+                                controller.tie();
+                            } else {
+                                controller.lose();
+                            }
+                        });
+                    }else{
+                       Platform.runLater(() -> {
+                            if (fState == 2) {
+                                spectateController.win();
+                            } else if (fState == 1) {
+                                spectateController.tie();
+                            } else {
+                                spectateController.lose();
+                            }
+                        }); 
+                    }
                     nonFatalDisconnect();
                     break;
                 case 0x0A://JOIN_MATCH
@@ -269,7 +292,11 @@ public class SocketManager {
                         continue;
                     }
                     LOG.log(Level.INFO, "Reseaved message: {0}", mes);
-                    controller.receiveMessage(mes);
+                    if(!spectating){
+                        controller.receiveMessage(mes);
+                    }else{
+                        spectateController.receiveMessage(mes);
+                    }
                     accepted();
                     break;
                 case 0xE0://PING
