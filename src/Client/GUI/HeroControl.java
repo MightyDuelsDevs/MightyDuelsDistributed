@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 
 /**
@@ -23,10 +25,12 @@ public class HeroControl {
     private int health;
     private ProgressBar pHealth;
     private Label lHealt;
+    private Label lDamage;
     private PlayerShared player;
 
     /**
      * Method that sets the health of the hero of a certain player.
+     *
      * @param health, the health he hero has.
      * @param player, the player the hero belongs to.
      */
@@ -37,6 +41,7 @@ public class HeroControl {
 
     /**
      * Method that creates the visual of the hero.
+     *
      * @return an AnchorPane that represents a visual of the hero.
      */
     public AnchorPane getHeroControl() {
@@ -58,7 +63,7 @@ public class HeroControl {
         lName.setFont(font);
 
         lHealt = new Label();
-        lHealt.setText("60");
+        lHealt.setText("50");
         lHealt.setLayoutY(225 - 50);
         lHealt.setLayoutX(10);
         lHealt.setFont(font);
@@ -69,19 +74,31 @@ public class HeroControl {
         pHealth.setPrefWidth(255 - 90);
         pHealth.setStyle("-fx-accent: red;");
 
+        lDamage = new Label();
+        lDamage.setText("");
+        lDamage.setLayoutY(225 - 25);
+        lDamage.setLayoutX(10);
+        lDamage.setFont(font);
+        lDamage.setTextFill(Color.web("#FFFFFF"));
+
         setHealth(50);
 
         AnchorPane root = new AnchorPane();
-        root.getChildren().addAll(img, lName, lHealt, pHealth);
+        root.getChildren().addAll(img, lName, lHealt, pHealth, lDamage);
         return root;
     }
 
     /**
      * Method that sets the health of the hero.
+     *
      * @param health, the health that will be set.
      */
     public void setHealth(int health) {
         Platform.runLater(() -> {
+            lDamage.setText("" + (health - Integer.valueOf(lHealt.getText())));
+            if ((health - Integer.valueOf(lHealt.getText())) > 0) {
+                lDamage.setText("+" + (health - Integer.valueOf(lHealt.getText())));
+            }
             pHealth.setProgress(health / 50.0);
             lHealt.setText(health + "");
         });

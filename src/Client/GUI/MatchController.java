@@ -196,11 +196,11 @@ public class MatchController implements Initializable {
      */
     public void addMinion(int id, int boardId) {
         Optional<Card> crd = allCards.stream().filter((c) -> c.getId() == id).findFirst();
-        if(!crd.isPresent()){
+        if (!crd.isPresent()) {
             LOG.warning(id + " was not found!");
             return;
         }
-        if(!(crd.get() instanceof MinionCard)){
+        if (!(crd.get() instanceof MinionCard)) {
             LOG.warning(id + " is not an minion card!");
             return;
         }
