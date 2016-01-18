@@ -27,6 +27,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -483,11 +484,15 @@ public class MatchController implements Initializable {
             gridOpponentSide.getChildren().removeAll(opponentsMinions);
 
             for (int i = 0; i < yourMinions.size(); i++) {
-                gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
+                Node minionNode = (Node)yourMinions.get(i).CardPane();
+                minionNode.toBack();
+                gridYourSide.add(minionNode, 2 + (i * 2), 0);
             }
 
             for (int i = 0; i < opponentsMinions.size(); i++) {
-                gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
+                Node minionNode = (Node)yourMinions.get(i).CardPane();
+                minionNode.toBack();
+                gridOpponentSide.add(minionNode, 2 + (i * 2), 0);
             }
         });
     }
