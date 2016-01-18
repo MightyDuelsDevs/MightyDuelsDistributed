@@ -59,4 +59,13 @@ public class Game {
     public void addWaitingPlayer(Player waitingPlayer){
         waitingPlayers.add(waitingPlayer);
     }
+    
+    /**
+     * Method that returns the amount of matches in the game.
+     * This is used to check if the player is able to spectate.
+     * @return 
+     */
+    public int countMatches(){
+        return matches.size();
+    }
 }

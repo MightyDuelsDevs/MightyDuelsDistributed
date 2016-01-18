@@ -10,6 +10,7 @@ import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
 import Shared.Domain.HeroCard;
 import Shared.Domain.Deck;
+import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +31,8 @@ public class Match {
 
     private final Player player1;
     private Player player2;
+    
+    private List<Player> spectators = new ArrayList<>();
 
     private final Hero hero1;
     private Hero hero2;
@@ -368,6 +371,7 @@ public class Match {
     
     /**
      * Method that sends messages between players.
+     * This also sends the information to the spectators.
      * @param message, the message that will be send.
      * @param sender, the sender of the message.
      */
@@ -380,5 +384,9 @@ public class Match {
             log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
             player1.getSocket().sendMessage(message);
         }
+        
+        spectators.stream().forEach((spectator) -> {
+            spectator.getSocket().sendMessage(message);
+        });
     }
 }

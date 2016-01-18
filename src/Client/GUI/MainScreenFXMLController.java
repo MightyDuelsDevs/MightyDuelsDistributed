@@ -118,6 +118,16 @@ public class MainScreenFXMLController implements Initializable {
         StageController.getInstance().navigate(root, title);
     }
 
+    @FXML
+    private void btnSpectate_OnClick(ActionEvent event) throws IOException {
+        SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+        System.out.println("Test");
+        String title = "Mighty Duels";
+        String root = "TutorialFXML.fxml";
+        StageController.getInstance().navigate(root, title);
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
