@@ -122,7 +122,7 @@ public class SpectateController implements Initializable {
 
         System.out.println("Sending Hash...");
 
-        if (!client.login(loginHash)) {
+        if (!client.loginSpectate(loginHash)) {
             System.out.println("Error can't login!");
             //todo error logging in, show and back to main
         }
@@ -130,18 +130,26 @@ public class SpectateController implements Initializable {
         cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
-        hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
+        //hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
 
-        gridYourSide.add(hero1.getHeroControl(), 0, 0);
-        btSendMessage.setOnAction((evt) -> {
-            TextInputDialog dialog = new TextInputDialog("message");
-            dialog.setTitle("New message");
-            dialog.setHeaderText("Send message to opponend");
-            dialog.setContentText("Enter a message to send to the opponend");
-
-            dialog.showAndWait().ifPresent((message) -> client.sendMessage(message));
-
-        });
+        //gridYourSide.add(hero1.getHeroControl(), 0, 0);
+//        btSendMessage.setOnAction((evt) -> {
+//            TextInputDialog dialog = new TextInputDialog("message");
+//            dialog.setTitle("New message");
+//            dialog.setHeaderText("Send message to opponend");
+//            dialog.setContentText("Enter a message to send to the opponend");
+//
+//            dialog.showAndWait().ifPresent((message) -> client.sendMessage(message));
+//
+//        });
+    }
+    
+    public void spectateNewMatch(String player1, String player2, int icon1, int icon2){
+        LOG.log(Level.INFO, "Start match between {0} and {1}", new Object[]{player1, player2});
+        hero1 = new HeroControl(50, new PlayerShared(2, player1, icon1, 1, 1, 1, 1));
+        Platform.runLater(()->gridYourSide.add(hero1.getHeroControl(), 0, 0));
+        hero2 = new HeroControl(50, new PlayerShared(2, player2, icon2, 1, 1, 1, 1));
+        Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
 
     /**
@@ -150,25 +158,32 @@ public class SpectateController implements Initializable {
      * @param name, the name of the opponent.
      * @param iconId, the icon ID of the opponent.
      */
-    public void setOpponent(String name, int iconId) {
-        LOG.log(Level.INFO, "Start match: {0} icon: {1}", new Object[]{name, iconId});
-        hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
-        Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
-    }
+//    public void setOpponent(String name, int iconId) {
+//        LOG.log(Level.INFO, "Start match: {0} icon: {1}", new Object[]{name, iconId});
+//        hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
+//        Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
+//    }
 
     /**
      * Method that processes the turn with the card played.
      *
      * @param cardId, The id of the card played.
      */
-    public void turnEnd(int cardId) {
-        cardID = cardId;
+    public void turnEnd(int cardId1, int cardId2) {
         Optional<Card> card;
-        card = allCards.stream().filter((c) -> c.getId() == cardID).findFirst();
+        card = allCards.stream().filter((c) -> c.getId() == cardId1).findFirst();
         if (!card.isPresent()) {
             //todo error
+            return;
+        }
+        Optional<Card> card2;
+        card2 = allCards.stream().filter((c) -> c.getId() == cardId2).findFirst();
+        if (!card2.isPresent()) {
+            //todo error
+            return;
         }
         CardControl cc = new CardControl(card.get());
+        CardControl cc2 = new CardControl(card2.get());
 
         if (cc.getCard() instanceof HeroCard) {
             HeroCard playerCard = (HeroCard) cc.getCard();
@@ -186,7 +201,25 @@ public class SpectateController implements Initializable {
             } else if (maxValue == playerCard.getHealValue()) {
                 SoundController.play(SoundController.SoundFile.HEAL);
             }
-            Platform.runLater(() -> gridOpponentSide.add(cc.CardPane(), 4, 0));
+            Platform.runLater(() -> gridYourSide.add(cc.CardPane(), 1, 0));
+        }
+        if (cc2.getCard() instanceof HeroCard) {
+            HeroCard playerCard = (HeroCard) cc2.getCard();
+
+            int maxValue = Math.max(Math.max(Math.max(Math.max(playerCard.getPhysicalDamage(), playerCard.getPhysicalBlock()), playerCard.getMagicalDamage()), playerCard.getMagicalBlock()), playerCard.getHealValue());
+
+            if (maxValue == playerCard.getPhysicalDamage()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.PHYSICALBLOCK);
+            } else if (maxValue == playerCard.getMagicalDamage()) {
+                SoundController.play(SoundController.SoundFile.MAGICALATTACK);
+            } else if (maxValue == playerCard.getMagicalBlock()) {
+                SoundController.play(SoundController.SoundFile.MAGICALBLOCK);
+            } else if (maxValue == playerCard.getHealValue()) {
+                SoundController.play(SoundController.SoundFile.HEAL);
+            }
+            Platform.runLater(() -> gridOpponentSide.add(cc2.CardPane(), 4, 0));
         }
     }
 
@@ -271,16 +304,16 @@ public class SpectateController implements Initializable {
         }
     }
 
-    /**
-     * Method that prepares three cards for the player to choose from.
-     *
-     * @param card1, first card to be picked from.
-     * @param card2, second card to be picked from.
-     * @param card3, third card to be picked from.
-     */
-    public void newTurn(int card1, int card2, int card3) {
-        cardChoice.clear();
-    }
+//    /**
+//     * Method that prepares three cards for the player to choose from.
+//     *
+//     * @param card1, first card to be picked from.
+//     * @param card2, second card to be picked from.
+//     * @param card3, third card to be picked from.
+//     */
+//    public void newTurn(int card1, int card2, int card3) {
+//        cardChoice.clear();
+//    }
 
     public void receiveMessage(String message) {
         LOG.log(Level.INFO, "Received Message: {0}", message);
