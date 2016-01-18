@@ -285,7 +285,6 @@ public class SocketManager {
                     synchronized (this) {
                         notify();
                     }
-                    StageController.matchFound = true;
                     break;
                 case 0xF1://ILLEGAL_ACTION
                     lastAccepted = false;
