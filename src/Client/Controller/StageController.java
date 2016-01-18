@@ -235,6 +235,9 @@ public class StageController {
         if (popUpStage != null){
             popUpStage.close();
         }
+        if (oldPopUpStage != null){
+            oldPopUpStage.close();
+        }
     }
 
     /**

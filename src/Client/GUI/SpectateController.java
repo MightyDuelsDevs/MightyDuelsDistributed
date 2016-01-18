@@ -43,7 +43,7 @@ import javafx.scene.layout.GridPane;
  *
  * @author Matthijs
  */
-public class MatchController implements Initializable {
+public class SpectateController implements Initializable {
 
     private static final int error = -1000000000;
 
@@ -151,7 +151,7 @@ public class MatchController implements Initializable {
      * @param iconId, the icon ID of the opponent.
      */
     public void setOpponent(String name, int iconId) {
-        LOG.info("Start match: " + name + " icon: " + iconId);
+        LOG.log(Level.INFO, "Start match: {0} icon: {1}", new Object[]{name, iconId});
         hero2 = new HeroControl(50, new PlayerShared(2, name, iconId, 1, 1, 1, 1));
         Platform.runLater(() -> gridOpponentSide.add(hero2.getHeroControl(), 5, 0));
     }
@@ -279,40 +279,21 @@ public class MatchController implements Initializable {
      * @param card3, third card to be picked from.
      */
     public void newTurn(int card1, int card2, int card3) {
-        LOG.info("New cards " + card1 + " " + card2 + " " + card3 + " ");
         cardChoice.clear();
-        Optional<Card> cardO1, cardO2, cardO3;
-        cardO1 = allCards.stream().filter((c) -> c.getId() == card1).findFirst();
-        cardO2 = allCards.stream().filter((c) -> c.getId() == card2).findFirst();
-        cardO3 = allCards.stream().filter((c) -> c.getId() == card3).findFirst();
-
-        if (!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()) {
-            //groot probleem!
-            System.exit(error);
-        }
-
-        cardChoice.add(new CardControl(cardO1.get()));
-        cardChoice.add(new CardControl(cardO2.get()));
-        cardChoice.add(new CardControl(cardO3.get()));
-
-        Platform.runLater(() -> drawCards());
-    }
-
-    /**
-     * Method that adds EventHandlers to the cards and adds them to the pane.
-     */
-    private void drawCards() {
-        for (int i = 0; i < 3; i++) {
-            CardControl cardControl = cardChoice.get(i);
-            cardControl.setEventHandler(openCard(cardControl));
-            gridCardHolder.add(cardControl.CardPane(), i, 0);
-        }
     }
 
     public void receiveMessage(String message) {
         LOG.log(Level.INFO, "Received Message: {0}", message);
         Platform.runLater(() -> {
-            StageController.getInstance().popup("You received a message from your opponent.", false, hero1.getName() + ": " + message);
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Received an message");
+            alert.setHeaderText("You Received an message from opponend");
+            alert.setContentText(message);
+
+            ButtonType type = new ButtonType("Ok");
+            alert.getButtonTypes().setAll(type);
+
+            alert.show();
         });
     }
 
@@ -321,12 +302,22 @@ public class MatchController implements Initializable {
      * tell the player he won.
      */
     public void win() {
-        LOG.log(Level.INFO, "victory");
-        Platform.runLater(() -> {
-            StageController.getInstance().popup("Whoho!", false, "You have won!");
-        });
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("You Won!");
+        alert.setHeaderText("Whoho!");
+        alert.setContentText("You have won!");
+
+        ButtonType buttonTypeOne = new ButtonType("OK");
+
+        alert.getButtonTypes().setAll(buttonTypeOne);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
+
+        //todo
+        System.out.println("YAY");
     }
 
     /**
@@ -334,12 +325,20 @@ public class MatchController implements Initializable {
      * tell the player he lost.
      */
     public void lose() {
-        LOG.log(Level.INFO, "Defeat");
-        Platform.runLater(() -> {
-            StageController.getInstance().popup("Awh!", false, "You have lost!");
-        });
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("You Lost!");
+        alert.setHeaderText("Awh!");
+        alert.setContentText("You have lost!");
+
+        ButtonType buttonTypeOne = new ButtonType("OK");
+
+        alert.getButtonTypes().setAll(buttonTypeOne);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
+        System.out.println("BOE!");
     }
 
     /**
@@ -347,115 +346,33 @@ public class MatchController implements Initializable {
      * tell the player he tied.
      */
     public void tie() {
-        LOG.log(Level.INFO, "Tie");
-        Platform.runLater(() -> {
-            StageController.getInstance().popup("Hey!", false, "You played Tie!");
-        });
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("You played Tie!");
+        alert.setHeaderText("Whoho!");
+        alert.setContentText("You have played tie!");
+
+        ButtonType buttonTypeOne = new ButtonType("OK");
+
+        alert.getButtonTypes().setAll(buttonTypeOne);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
-    }
-
-    @FXML
-    private void attackTarget(ActionEvent event) throws IOException {
-        Button x = (Button) event.getSource();
-        String id = x.getId();
-        switch (id) {
-            case "btnYourSide1":
-                ownMinion = 1;
-                break;
-            case "btnYourSide2":
-                ownMinion = 2;
-                break;
-            case "btnOpponentSide1":
-                if (ownMinion != -1) {
-                    opponentMinion = 1;
-                    client.setTarget(ownMinion, opponentMinion);
-                    ownMinion = -1;
-                    opponentMinion = -1;
-                }
-                break;
-            case "btnOpponentSide2":
-                if (ownMinion != -1) {
-                    opponentMinion = 2;
-                    client.setTarget(ownMinion, opponentMinion);
-                    ownMinion = -1;
-                    opponentMinion = -1;
-                }
-                break;
-            case "btnHero":
-                if (ownMinion != -1) {
-                    opponentMinion = 0;
-                    client.setTarget(ownMinion, opponentMinion);
-                    ownMinion = -1;
-                    opponentMinion = -1;
-                }
-                break;
-        }
-
-    }
-
-    private EventHandler openCard(CardControl cardControl) {
-        EventHandler handler = new EventHandler() {
-            @Override
-            public void handle(Event event) {
-                for (int i = 0; i < 3; i++) {
-                    gridCardHolder.getChildren().clear();
-                    CardControl cardControl = cardChoice.get(i);
-                    cardControl.setEventHandler(pickCard(cardControl));
-                    gridChooseCard.add(cardControl.CardPane(), i, 0);
-                }
-            }
-        };
-        return handler;
-    }
-
-    private EventHandler pickCard(CardControl cardControl) {
-        EventHandler handler = new EventHandler() {
-
-            @Override
-            public void handle(Event event) {
-
-                System.out.println(cardControl.getCard().getName());
-                try {
-                    client.setCard(cardControl.getCard().getId());
-                } catch (Exception ex) {
-                    Logger.getLogger(MatchController.class.getName()).log(Level.SEVERE, null, ex);
-                    //todo fatal?
-                }
-                if (cardControl.getCard() instanceof HeroCard) {
-                    myHeroCard = (HeroCard) cardControl.getCard();
-
-                    gridChooseCard.getChildren().clear();
-                    cardControl.setEventHandler(null);
-                    gridYourSide.add(cardControl.CardPane(), 1, 0);
-                } else if (cardControl.getCard() instanceof MinionCard) {
-                    if (yourMinions.size() < 2) {
-                        //dit kan voor problemen zorgen
-                        gridChooseCard.getChildren().clear();
-                        //yourMinions.add(cardControl);
-                        gridYourSide.add(cardControl.CardPane(), 1, 0);
-                        placeMinionCards();
-                    }
-                }
-                //drawCards();
-            }
-        };
-        return handler;
+        System.out.println("Meh");
     }
 
     private void placeMinionCards() {
-        Platform.runLater(() -> {
-            gridYourSide.getChildren().removeAll(yourMinions);
-            gridOpponentSide.getChildren().removeAll(opponentsMinions);
+        gridYourSide.getChildren().removeAll(yourMinions);
+        gridOpponentSide.getChildren().removeAll(opponentsMinions);
 
-            for (int i = 0; i < yourMinions.size(); i++) {
-                gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
-            }
+        for (int i = 0; i < yourMinions.size(); i++) {
+            gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
+        }
 
-            for (int i = 0; i < opponentsMinions.size(); i++) {
-                gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
-            }
-        });
+        for (int i = 0; i < opponentsMinions.size(); i++) {
+            gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
+        }
     }
 
     private void Mbox(String title, String header, String content) {
@@ -472,7 +389,11 @@ public class MatchController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne) {
-            client.concede();
+            SoundController.play(SoundController.SoundFile.BUTTONPRESS);
+
+            String titlescreen = "Mighty Duels";
+            String root = "MainScreenFXML.fxml";
+            StageController.getInstance().navigate(root, titlescreen);
         } else if (result.get() == buttonTypeTwo) {
             alert.close();
         } else {
@@ -482,13 +403,8 @@ public class MatchController implements Initializable {
 
     //TODO button functionality
     private void initializeButtons() {
-        btnEndTurn.setOnMouseClicked((MouseEvent event) -> {
-            client.setFinished(true);
-            SoundController.play(SoundController.SoundFile.BUTTONPRESS);
-        });
-
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
-            Mbox("Concede", "Concede screen", "Are you sure you wish to concede?");
+            Mbox("Main Menu", "Menu screen", "Are you sure you wish to go to main menu?");
         });
 
         lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -498,11 +414,9 @@ public class MatchController implements Initializable {
                 card = allCards.stream().filter((c) -> c.getId() == cardID).findFirst();
                 if (card.isPresent()) {
                     CardControl cc = new CardControl(card.get());
-                    if (cc.getCard() instanceof HeroCard) {
-                        HeroCard enemyCard = (HeroCard) cc.getCard();
+                    HeroCard enemyCard = (HeroCard) cc.getCard();
 
-                        StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", hero1Hp + "", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", hero2Hp + "");
-                    }
+                    StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", hero1Hp + "", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", hero2Hp + "");
                 }
             }
         });
