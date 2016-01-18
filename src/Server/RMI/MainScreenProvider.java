@@ -7,6 +7,7 @@ package Server.RMI;
 
 import Server.Controller.CardDeckController;
 import Server.Controller.PlayerIconController;
+import Server.Domain.Game;
 import Shared.Domain.Deck;
 import Server.Domain.Player;
 import Server.SocketManagerServer.SocketManager;
@@ -96,6 +97,11 @@ public class MainScreenProvider extends UnicastRemoteObject implements IMainScre
     @Override
     public PlayerShared getPlayer(String token) {
         return loginProvider.getPlayerFromToken(token);
+    }
+
+    @Override
+    public boolean isPossibleSpectate() throws RemoteException {
+        return Game.getInstance().countMatches() > 0;
     }
 
 }

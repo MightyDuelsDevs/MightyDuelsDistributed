@@ -91,4 +91,10 @@ public interface IMainScreenProvider extends Remote {
      * @return a boolean if the selection was successful.
      */
     public  boolean setSelectedDeck(String token, int deckId) throws RemoteException;
+    
+    /**
+     * Ask the server if there is more than zero matches.
+     * @return a boolean if there is more than zero games.
+     */
+    public  boolean isPossibleSpectate() throws RemoteException;
 }

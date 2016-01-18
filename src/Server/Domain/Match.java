@@ -10,6 +10,7 @@ import Shared.Domain.Card;
 import Shared.Domain.MinionCard;
 import Shared.Domain.HeroCard;
 import Shared.Domain.Deck;
+import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +31,8 @@ public class Match {
 
     private final Player player1;
     private Player player2;
+    
+    private final List<Player> spectators = new ArrayList<>();
 
     private final Hero hero1;
     private Hero hero2;
@@ -37,6 +40,7 @@ public class Match {
     private boolean pingP1 = true;
 
     private ScheduledExecutorService timer;
+    
 
     /**
      * check's the players health and updates the gamestate according to their
@@ -54,10 +58,12 @@ public class Match {
                 PlayerIconController.updateRating(player1.getId(), player2.getId(), true);
                 player1.getSocket().matchEnd(2);
                 player2.getSocket().matchEnd(0);
+                spectators.stream().forEach((sp)->sp.getSocket().matchEnd(2));
             }else if(hero2.getHitPoints()>0){
                 PlayerIconController.updateRating(player1.getId(), player2.getId(), false);
                 player1.getSocket().matchEnd(0);
                 player2.getSocket().matchEnd(2);
+                spectators.stream().forEach((sp)->sp.getSocket().matchEnd(0));
             }
             return;
         }
@@ -69,6 +75,7 @@ public class Match {
         timer.shutdown();
         player1.getSocket().matchEnd(1);
         player2.getSocket().matchEnd(1);
+        spectators.stream().forEach((sp)->sp.getSocket().matchEnd(1));
     }
 
     /**
@@ -92,9 +99,11 @@ public class Match {
                 if(min1.size()==1){
                     player1.getSocket().addMinion(true, 1, p1.getId());
                     player2.getSocket().addMinion(false, 1, p1.getId());
+                    spectators.stream().forEach((sp)->sp.getSocket().addMinion(true,1,p1.getId()));
                 }else{
                     player1.getSocket().addMinion(true, 2, p1.getId());
                     player2.getSocket().addMinion(false, 2, p1.getId());
+                    spectators.stream().forEach((sp)->sp.getSocket().addMinion(true,2,p1.getId()));
                 }
             }
                 //hero1.addMinion(m);
@@ -110,11 +119,13 @@ public class Match {
             }else{
                 min2.add(m);
                 if(min2.size()==1){
-                    player2.getSocket().addMinion(true, 1, p1.getId());
-                    player1.getSocket().addMinion(false, 1, p1.getId());
+                    player2.getSocket().addMinion(true, 1, p2.getId());
+                    player1.getSocket().addMinion(false, 1, p2.getId());
+                    spectators.stream().forEach((sp)->sp.getSocket().addMinion(false,1,p2.getId()));
                 }else{
-                    player2.getSocket().addMinion(true, 2, p1.getId());
-                    player1.getSocket().addMinion(false, 2, p1.getId());
+                    player2.getSocket().addMinion(true, 2, p2.getId());
+                    player1.getSocket().addMinion(false, 2, p2.getId());
+                    spectators.stream().forEach((sp)->sp.getSocket().addMinion(false,2,p2.getId()));
                 }
             }
                 //hero2.addMinion(m);
@@ -139,12 +150,14 @@ public class Match {
             if(m.getHitPoints()<=0){
                 player1.getSocket().setHealth(true, p1min.indexOf(m)==0?2:3, 0);
                 player2.getSocket().setHealth(false, p1min.indexOf(m)==0?2:3, 0);
+                spectators.stream().forEach((sp)->sp.getSocket().setHealth(true,p1min.indexOf(m)==0?2:3,0));
             }
         });
         p2min.forEach((m)->{
             if(m.getHitPoints()<=0){
                 player1.getSocket().setHealth(false, p2min.indexOf(m)==0?2:3, 0);
                 player2.getSocket().setHealth(true, p2min.indexOf(m)==0?2:3, 0);
+                spectators.stream().forEach((sp)->sp.getSocket().setHealth(true,p2min.indexOf(m)==0?2:3,0));
             }
         });
         p1min.removeIf((m) -> m.getHitPoints() <= 0);
@@ -228,13 +241,20 @@ public class Match {
         player2.getSocket().setHealth(true, 1, hero2.getHitPoints());
         player2.getSocket().setHealth(false, 1, hero1.getHitPoints());
         
+        spectators.stream().forEach((sp)->sp.getSocket().setHealth(true,1,hero1.getHitPoints()));
+        spectators.stream().forEach((sp)->sp.getSocket().setHealth(false,1,hero2.getHitPoints()));
+        
         for (int i = 0; i < Math.min(hero1.getMinions().size(),2); i++) {
             player1.getSocket().setHealth(true, i+1, hero1.getMinions().get(i).getHitPoints());
             player2.getSocket().setHealth(false, i+1, hero1.getMinions().get(i).getHitPoints());
+            final int i2 = i;
+            spectators.stream().forEach((sp)->sp.getSocket().setHealth(true,i2+1,hero1.getMinions().get(i2).getHitPoints()));
         }
         for (int i = 0; i < Math.min(hero2.getMinions().size(),2); i++) {
             player1.getSocket().setHealth(false, i+1, hero2.getMinions().get(i).getHitPoints());
             player2.getSocket().setHealth(true, i+1, hero2.getMinions().get(i).getHitPoints());
+            final int i2 = i;
+            spectators.stream().forEach((sp)->sp.getSocket().setHealth(false,i2+1,hero2.getMinions().get(i2).getHitPoints()));
         }
         
         //todo here or somwere else?
@@ -287,6 +307,8 @@ public class Match {
                 if (hero1.getFinished() && hero2.getFinished()) {
                     player1.getSocket().turnEnd(hero2.getCardPlayed().getId());
                     player2.getSocket().turnEnd(hero1.getCardPlayed().getId());
+                    spectators.stream().forEach((sp)->sp.getSocket().specTurnEnd(hero1.getCardPlayed().getId(),hero2.getCardPlayed().getId()));
+                    
                     processTurn();
                     try {
                         Thread.sleep(1000);//wait a second before showing new cards
@@ -368,6 +390,7 @@ public class Match {
     
     /**
      * Method that sends messages between players.
+     * This also sends the information to the spectators.
      * @param message, the message that will be send.
      * @param sender, the sender of the message.
      */
@@ -380,5 +403,9 @@ public class Match {
             log.log(Level.INFO, "Sending message from {0} to {1}: {2}", new Object[]{player1.getUsername(), player2.getUsername(), message});
             player1.getSocket().sendMessage(message);
         }
+        
+        spectators.stream().forEach((spectator) -> {
+            spectator.getSocket().sendMessage(message);
+        });
     }
 }
