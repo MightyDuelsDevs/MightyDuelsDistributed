@@ -410,19 +410,27 @@ public class Match {
 
     public void addSpectator(Player spectator) {
         SocketClient socket = spectator.getSocket();
-        socket.joinMatch(player1.getUsername(), player2.getUsername(), player1.getIconId(), player2.getIconId());
-        socket.setHealth(true, 1, hero1.getHitPoints());
-        socket.setHealth(false, 1, hero2.getHitPoints());
-        for (int i = 0; i < hero1.getMinions().size(); i++) {
-            socket.addMinion(true, i + 1, hero1.getMinions().get(i).getId());
-            socket.setHealth(true, i + 1, hero1.getMinions().get(i).getHitPoints());
-        }
-        for (int i = 0; i < hero2.getMinions().size(); i++) {
-            socket.addMinion(false, i + 1, hero2.getMinions().get(i).getId());
-            socket.setHealth(false, i + 1, hero2.getMinions().get(i).getHitPoints());
-        }
+        //start new match in seperate thread to free socket
+        timer.schedule(()->{
+            socket.joinMatch(player1.getUsername(), player2.getUsername(), player1.getIconId(), player2.getIconId());
+            socket.setHealth(true, 1, hero1.getHitPoints());
+            socket.setHealth(false, 1, hero2.getHitPoints());
+            for (int i = 0; i < hero1.getMinions().size(); i++) {
+                socket.addMinion(true, i + 1, hero1.getMinions().get(i).getId());
+                socket.setHealth(true, i + 1, hero1.getMinions().get(i).getHitPoints());
+            }
+            for (int i = 0; i < hero2.getMinions().size(); i++) {
+                socket.addMinion(false, i + 1, hero2.getMinions().get(i).getId());
+                socket.setHealth(false, i + 1, hero2.getMinions().get(i).getHitPoints());
+            }
 
-        spectators.add(spectator);
+            spectators.add(spectator);
+        }, 0, SECONDS);
         
+        
+    }
+
+    public void removeSpectator(Player player) {
+        spectators.remove(player);
     }
 }
