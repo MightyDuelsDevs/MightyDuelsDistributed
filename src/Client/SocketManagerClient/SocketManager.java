@@ -111,34 +111,15 @@ public class SocketManager {
                     }
                     break;
                 case 0x04://new match with user
-                    ByteBuffer buf = ByteBuffer.allocate(1024);
-                    int opponendName = -1;
-                    try {
-                        opponendName = in.read();
-                    } catch (IOException ex) {
-                        Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    while (opponendName != 0x00) {
-                        if (opponendName == -1) {
-                            LOG.info("Received NULL while reading oppenendName");
-                            //todo throw error
-                            continue;
-                        }
-                        buf.put((byte) opponendName);
-                        try {
-                            opponendName = in.read();
-                        } catch (IOException ex) {
-                            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                    
                     String username;
                     try {
-                        username = new String(buf.array(), "UTF-8");
-                    } catch (UnsupportedEncodingException ex) {
+                        username = readString(in);
+                    } catch (IOException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
-                        //todo fatal
-                        return;
+                        continue;
                     }
+                    
                     int iconId = -1;
                     try {
                         iconId = readInt16(in);
@@ -246,33 +227,45 @@ public class SocketManager {
                     });
                     nonFatalDisconnect();
                     break;
-                case 0x80://MESSAGE
-                    ByteBuffer mbuf = ByteBuffer.allocate(1024);
-                    int message = -1;
+                case 0x0A://JOIN_MATCH
+                    String p1Name;
+                    String p2Name;
+                    int p1Icon;
+                    int p2Icon;
+            
                     try {
-                        message = in.read();
+                        p1Name = readString(in);
+                        p1Icon = readInt16(in);
+                        p2Name = readString(in);
+                        p2Icon = readInt16(in);
                     } catch (IOException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                        continue;
                     }
-                    while (message != 0x00) {
-                        if (message == -1) {
-                            //todo throw error
-
-                        }
-                        mbuf.put((byte) message);
-                        try {
-                            message = in.read();
-                        } catch (IOException ex) {
-                            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
-                            break;
-                        }
+                    
+                    //todo call method
+            
+                    break;
+                case 0x0B:
+                    int p1Card;
+                    int p2Card;
+            
+                    try {
+                        p1Card = readInt16(in);
+                        p2Card = readInt16(in);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                        continue;
                     }
+                    //todo call method
+                    break;
+                case 0x80://MESSAGE
+                    
                     String mes;
                     try {
-                        mes = new String(mbuf.array(), 0, mbuf.position(), "UTF-8");
-                    } catch (UnsupportedEncodingException ex) {
+                        mes = readString(in);
+                    } catch (IOException ex) {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
-                        //todo fatal
                         continue;
                     }
                     LOG.log(Level.INFO, "Reseaved message: {0}", mes);
@@ -322,6 +315,33 @@ public class SocketManager {
         }
     }
 
+    private String readString(InputStream in) throws IOException{
+        ByteBuffer mbuf = ByteBuffer.allocate(1024);
+        int message = -1;
+        try {
+            message = in.read();
+        } catch (IOException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        while (message != 0x00) {
+            if (message == -1) {
+                //todo throw error
+
+            }
+            mbuf.put((byte) message);
+            message = in.read();
+        }
+        String mes;
+        try {
+            mes = new String(mbuf.array(), 0, mbuf.position(), "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo fatal
+            return null;
+        }
+        return mes;
+    }
+    
     private int readInt16(InputStream in) throws IOException {
         int lb = in.read();
         int ub = in.read();
@@ -363,6 +383,28 @@ public class SocketManager {
         }
         byte[] data = new byte[loginHash.length + 1];
         data[0] = 0x01;
+        System.arraycopy(loginHash, 0, data, 1, loginHash.length);
+        try {
+            sendData(data);
+            synchronized (this) {
+                wait();
+            }
+            return lastAccepted;
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo error
+        }
+        return false;
+    }
+    
+    public boolean loginSpectate(byte[] loginHash){
+        LOG.info("Hash lenght: " + loginHash.length);
+        if (!socket.isConnected()) //todo throw error
+        {
+            return false;
+        }
+        byte[] data = new byte[loginHash.length + 1];
+        data[0] = 0x06;
         System.arraycopy(loginHash, 0, data, 1, loginHash.length);
         try {
             sendData(data);
@@ -504,6 +546,23 @@ public class SocketManager {
             //todo throw error
         }
 
+    }
+    
+    public void nextMatch(){
+        if (!socket.isConnected()) {
+            //todo throw error
+            return;
+        }
+        byte[] data = new byte[]{0x07};
+        try {
+            sendData(data);
+            synchronized (this) {
+                wait();
+            }
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
+            //todo throw error
+        }
     }
 
     public void sendMessage(String message) {
