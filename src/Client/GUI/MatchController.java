@@ -458,9 +458,9 @@ public class MatchController implements Initializable {
             }
 
             for (int i = 0; i < opponentsMinions.size(); i++) {
-                Node minionNode = (Node)yourMinions.get(i).CardPane();
+                Node minionNode = (Node)opponentsMinions.get(i).CardPane();
                 minionNode.toBack();
-                gridOpponentSide.add(minionNode, 2 + (i * 2), 0);
+                gridOpponentSide.add(minionNode, (i * 2), 0);
             }
         });
     }
