@@ -14,6 +14,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -67,12 +69,12 @@ public class MainScreenFXMLController implements Initializable {
                     } else if (sec == 0) {
                         sc.popup("Searching for a match", false, " Searching for a match");
                         sec = 5;
-                    } 
+                    }
                     // Check if a match is found
-                    if (StageController.matchFound){
-                        sc.closePopUp();
+                    if (StageController.matchFound) {
+                        super.cancel();
+                        Platform.runLater(() -> sc.closePopUp());
                         StageController.matchFound = false;
-                        this.cancel();
                     }
                 });
             }
@@ -123,18 +125,17 @@ public class MainScreenFXMLController implements Initializable {
     private void btnSpectate_OnClick(ActionEvent event) throws IOException {
         SoundController.play(SoundController.SoundFile.BUTTONPRESS);
 
-        if(RMIClient.getInstance().isPossibleSpectate())
-        {
+        if (RMIClient.getInstance().isPossibleSpectate()) {
             SpectateController.setHash(Game.getInstance().startMatch());
             Game.getInstance().startMatch();
             String title = "Mighty Duels";
             String root = "Spectate.fxml";
             StageController.getInstance().navigate(root, title);
-        }
-        else
+        } else {
             StageController.getInstance().popup("No matches.", false, "There were no active matches found.");
+        }
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
