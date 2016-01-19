@@ -418,6 +418,9 @@ public class MatchController implements Initializable {
             @Override
             public void handle(Event event) {
 
+                Platform.runLater(() -> gridYourSide.getChildren().remove(1, 2));
+                Platform.runLater(() -> gridOpponentSide.getChildren().remove(4, 5));
+
                 System.out.println(cardControl.getCard().getName());
                 try {
                     client.setCard(cardControl.getCard().getId());
@@ -452,13 +455,13 @@ public class MatchController implements Initializable {
             gridOpponentSide.getChildren().removeAll(opponentsMinions);
 
             for (int i = 0; i < yourMinions.size(); i++) {
-                Node minionNode = (Node)yourMinions.get(i).CardPane();
+                Node minionNode = (Node) yourMinions.get(i).CardPane();
                 minionNode.toBack();
                 gridYourSide.add(minionNode, 2 + (i * 2), 0);
             }
 
             for (int i = 0; i < opponentsMinions.size(); i++) {
-                Node minionNode = (Node)opponentsMinions.get(i).CardPane();
+                Node minionNode = (Node) opponentsMinions.get(i).CardPane();
                 minionNode.toBack();
                 gridOpponentSide.add(minionNode, (i * 2), 0);
             }
