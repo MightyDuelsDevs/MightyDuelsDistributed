@@ -210,30 +210,58 @@ public class MatchController implements Initializable {
         CardControl card = new CardControl(crd.get());
         switch (boardId) {
             case 1:
+                if(minion1!=null){
+                    Platform.runLater(()->gridYourSide.getChildren().remove(2, 2));
+                    yourMinions.remove(minion1);
+                }
                 minion1 = card;
                 minion1.setEventHandler((event) -> attackTarget(1));
                 yourMinions.add(card);
+                Node minionNode1 = (Node)minion1.CardPane();
+                minionNode1.toBack();
+                Platform.runLater(()->gridYourSide.add(minionNode1, 2, 0));
                 break;
             case 2:
+                if(minion2!=null){
+                    Platform.runLater(()->gridYourSide.getChildren().remove(4, 4));
+                    yourMinions.remove(minion2);
+                }
                 minion2 = card;
                 minion2.setEventHandler((event) -> attackTarget(2));
                 yourMinions.add(card);
+                Node minionNode2 = (Node)minion2.CardPane();
+                minionNode2.toBack();
+                Platform.runLater(()->gridYourSide.add(minionNode2, 4, 0));
                 break;
             case 3:
+                if(minion3!=null){
+                    Platform.runLater(()->gridOpponentSide.getChildren().remove(0, 0));
+                    opponentsMinions.remove(minion3);
+                }
                 minion3 = card;
                 minion3.setEventHandler((event) -> attackTarget(3));
                 opponentsMinions.add(card);
+                Node minionNode3 = (Node)minion3.CardPane();
+                minionNode3.toBack();
+                Platform.runLater(()->gridOpponentSide.add(minionNode3, 0, 0));
                 break;
             case 4:
+                if(minion4!=null){
+                    Platform.runLater(()->gridOpponentSide.getChildren().remove(2, 2));
+                    opponentsMinions.remove(minion4);
+                }
                 minion4 = card;
                 minion4.setEventHandler((event) -> attackTarget(4));
                 opponentsMinions.add(card);
+                Node minionNode4 = (Node)minion4.CardPane();
+                minionNode4.toBack();
+                Platform.runLater(()->gridOpponentSide.add(minionNode4, 2, 0));
                 break;
             default:
                 //todo error
                 break;
         }
-        placeMinionCards();
+        //placeMinionCards();
     }
 
     /**
@@ -433,11 +461,9 @@ public class MatchController implements Initializable {
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {
-                        //dit kan voor problemen zorgen
                         gridChooseCard.getChildren().clear();
-                        //yourMinions.add(cardControl);
                         gridYourSide.add(cardControl.CardPane(), 1, 0);
-                        placeMinionCards();
+                        //placeMinionCards();
                     }
                 }
                 //drawCards();
@@ -446,24 +472,24 @@ public class MatchController implements Initializable {
         return handler;
     }
 
-    private void placeMinionCards() {
-        Platform.runLater(() -> {
-            gridYourSide.getChildren().removeAll(yourMinions);
-            gridOpponentSide.getChildren().removeAll(opponentsMinions);
-
-            for (int i = 0; i < yourMinions.size(); i++) {
-                Node minionNode = (Node)yourMinions.get(i).CardPane();
-                minionNode.toBack();
-                gridYourSide.add(minionNode, 2 + (i * 2), 0);
-            }
-
-            for (int i = 0; i < opponentsMinions.size(); i++) {
-                Node minionNode = (Node)opponentsMinions.get(i).CardPane();
-                minionNode.toBack();
-                gridOpponentSide.add(minionNode, (i * 2), 0);
-            }
-        });
-    }
+//    private void placeMinionCards() {
+//        Platform.runLater(() -> {
+//            gridYourSide.getChildren().removeAll(yourMinions);
+//            gridOpponentSide.getChildren().removeAll(opponentsMinions);
+//
+//            for (int i = 0; i < yourMinions.size(); i++) {
+//                Node minionNode = (Node)yourMinions.get(i).CardPane();
+//                minionNode.toBack();
+//                gridYourSide.add(minionNode, 2 + (i * 2), 0);
+//            }
+//
+//            for (int i = 0; i < opponentsMinions.size(); i++) {
+//                Node minionNode = (Node)opponentsMinions.get(i).CardPane();
+//                minionNode.toBack();
+//                gridOpponentSide.add(minionNode, (i * 2), 0);
+//            }
+//        });
+//    }
 
     private void Mbox(String title, String header, String content) {
         Alert alert = new Alert(AlertType.CONFIRMATION);

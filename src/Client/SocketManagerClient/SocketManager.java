@@ -179,7 +179,7 @@ public class SocketManager {
                         Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     LOG.info("set health " + character + " " + value);
-                    if (character < 1 || value < 1) {
+                    if (character < 1 || value < 0) {
                         LOG.warning("Error receiving SET_HEALTH command, data was " + character + ", " + value);
                         continue;
                     }
