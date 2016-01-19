@@ -41,7 +41,7 @@ public class Match {
     private boolean pingP1 = true;
 
     private ScheduledExecutorService timer;
-    
+
     private static int minInd = 0;
 
     /**
@@ -144,10 +144,10 @@ public class Match {
         //log.info("Filter non hero attack, attack minions");
         //all not player attacks            
         p1min.stream().filter((m) -> m.getITarget() != hero2).forEach((m) -> {
-            m.attack();
+            m.attack(0, 0);
         });//attack all not players
         p2min.stream().filter((m) -> m.getITarget() != hero1).forEach((m) -> {
-            m.attack();
+            m.attack(0, 0);
         });//attack all not players
 
         //log.info("Remove dead minions");
@@ -156,7 +156,7 @@ public class Match {
         minInd = 0;
         p1min.forEach((m) -> {
             if (m.getHitPoints() <= 0) {
-                
+
                 player1.getSocket().setHealth(true, p1min.indexOf(m) == 0 || ++minInd >= 2 ? 2 : 3, 0);
                 player2.getSocket().setHealth(false, p1min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0);
                 spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p1min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0));
@@ -167,7 +167,7 @@ public class Match {
             if (m.getHitPoints() <= 0) {
                 player1.getSocket().setHealth(false, p2min.indexOf(m) == 0 || ++minInd >= 2 ? 2 : 3, 0);
                 player2.getSocket().setHealth(true, p2min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0);
-                spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p2min.indexOf(m) == 0 || minInd >= 2  ? 2 : 3, 0));
+                spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p2min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0));
             }
         });
         p1min.removeIf((m) -> m.getHitPoints() <= 0);
@@ -175,8 +175,18 @@ public class Match {
 
         //log.info("Filter hero attacks, attack hero");
         //all minion to player attacks
-        p1min.stream().filter((m) -> m.getITarget() == hero2).forEach((m) -> m.attack());//attack hero2
-        p2min.stream().filter((m) -> m.getITarget() == hero1).forEach((m) -> m.attack());//attack hero1
+        if (p1 instanceof HeroCard) {
+            HeroCard p1h = (HeroCard) p1;
+            p1min.stream().filter((m) -> m.getITarget() == hero2).forEach((m) -> m.attack(p1h.getPhysicalBlock(), p1h.getMagicalBlock()));//attack hero2
+        } else {
+            p1min.stream().filter((m) -> m.getITarget() == hero2).forEach((m) -> m.attack(0, 0));//attack hero2
+        }
+        if (p2 instanceof HeroCard) {
+            HeroCard p2h = (HeroCard) p1;
+            p2min.stream().filter((m) -> m.getITarget() == hero1).forEach((m) -> m.attack(p2h.getPhysicalBlock(), p2h.getMagicalBlock()));//attack hero1
+        } else {
+            p2min.stream().filter((m) -> m.getITarget() == hero1).forEach((m) -> m.attack(0, 0));//attack hero1
+        }
 
         //log.info("Process HeroCard attacks");
         //attack using cards
@@ -419,7 +429,7 @@ public class Match {
     public void addSpectator(Player spectator) {
         SocketClient socket = spectator.getSocket();
         //start new match in seperate thread to free socket
-        timer.schedule(()->{
+        timer.schedule(() -> {
             socket.joinMatch(player1.getUsername(), player2.getUsername(), player1.getIconId(), player2.getIconId());
             socket.setHealth(true, 1, hero1.getHitPoints());
             socket.setHealth(false, 1, hero2.getHitPoints());
@@ -434,8 +444,7 @@ public class Match {
 
             spectators.add(spectator);
         }, 0, SECONDS);
-        
-        
+
     }
 
     public void removeSpectator(Player player) {
