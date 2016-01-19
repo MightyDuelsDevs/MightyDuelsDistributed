@@ -29,9 +29,9 @@ public class Minion implements ITarget {
          * Attack the stored target
          */
 	public void attack() {
-		ITarget target = this.getITarget();
-                if(target != null)
-                    target.setHitPoints(target.getHitPoints() - this.getPhysicalDamage() - this.getMagicalDamage());
+            if(target != null)
+                target.setHitPoints(target.getHitPoints() - this.getPhysicalDamage() - this.getMagicalDamage());
+            target = null;
 	}
 
         /**
