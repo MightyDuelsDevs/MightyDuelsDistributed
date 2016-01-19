@@ -284,17 +284,16 @@ public class MatchController implements Initializable {
             } else {
                 if (id == 1) {
                  if(health<1){
-                        Platform.runLater(()->gridYourSide.getChildren().remove(3, 4));
+                        Platform.runLater(()->{gridYourSide.getChildren().remove(minion1.oldCardPane());minion1 = null;});
                         yourMinions.remove(minion1);
-                        minion1 = null;
+                        
                     }else{
                         Platform.runLater(() -> minion1.setHealth(health));
                     }
                 } else {
                     if(health<1){
-                        Platform.runLater(()->gridYourSide.getChildren().remove(5, 6));
+                        Platform.runLater(()->{gridYourSide.getChildren().remove(minion2.oldCardPane());minion2=null;});
                         yourMinions.remove(minion2);
-                        minion2 = null;
                     }else{
                         Platform.runLater(() -> minion2.setHealth(health));
                     }
@@ -309,17 +308,15 @@ public class MatchController implements Initializable {
             } else {
                 if (id == 1) {
                  if(health <1){
-                        Platform.runLater(()->gridOpponentSide.getChildren().remove(0, 1));
+                        Platform.runLater(()->{gridOpponentSide.getChildren().remove(minion3.oldCardPane());minion3=null;});
                         opponentsMinions.remove(minion3);
-                        minion3 = null;
                     }else{
                         Platform.runLater(() -> minion3.setHealth(health));
                     }
                 } else {
                     if(health <1){
-                        Platform.runLater(()->gridOpponentSide.getChildren().remove(2, 3));
+                        Platform.runLater(()->{gridOpponentSide.getChildren().remove(minion4.oldCardPane());minion4=null;});
                         opponentsMinions.remove(minion4);
-                        minion4 = null;
                     }else{
                         Platform.runLater(() -> minion4.setHealth(health));
                     }
