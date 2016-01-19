@@ -283,9 +283,21 @@ public class MatchController implements Initializable {
 
             } else {
                 if (id == 1) {
-                    Platform.runLater(() -> minion1.setHealth(health));
+                 if(health<1){
+                        Platform.runLater(()->gridYourSide.getChildren().remove(2, 2));
+                        yourMinions.remove(minion1);
+                        minion1 = null;
+                    }else{
+                        Platform.runLater(() -> minion1.setHealth(health));
+                    }
                 } else {
-                    Platform.runLater(() -> minion2.setHealth(health));
+                    if(health<1){
+                        Platform.runLater(()->gridYourSide.getChildren().remove(4, 4));
+                        yourMinions.remove(minion2);
+                        minion2 = null;
+                    }else{
+                        Platform.runLater(() -> minion2.setHealth(health));
+                    }
                 }
             }
         } else {
@@ -296,9 +308,21 @@ public class MatchController implements Initializable {
                 });
             } else {
                 if (id == 1) {
-                    Platform.runLater(() -> minion3.setHealth(health));
+                 if(health <1){
+                        Platform.runLater(()->gridOpponentSide.getChildren().remove(0, 0));
+                        opponentsMinions.remove(minion3);
+                        minion3 = null;
+                    }else{
+                        Platform.runLater(() -> minion3.setHealth(health));
+                    }
                 } else {
-                    Platform.runLater(() -> minion4.setHealth(health));
+                    if(health <1){
+                        Platform.runLater(()->gridOpponentSide.getChildren().remove(2, 2));
+                        opponentsMinions.remove(minion4);
+                        minion4 = null;
+                    }else{
+                        Platform.runLater(() -> minion4.setHealth(health));
+                    }
                 }
             }
         }
