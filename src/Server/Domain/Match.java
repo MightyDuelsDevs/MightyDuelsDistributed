@@ -41,6 +41,8 @@ public class Match {
     private boolean pingP1 = true;
 
     private ScheduledExecutorService timer;
+    
+    private static int minInd = 0;
 
     /**
      * check's the players health and updates the gamestate according to their
@@ -150,18 +152,22 @@ public class Match {
 
         //log.info("Remove dead minions");
         //remove dead minions
+        //++var is first increate then inspect
+        minInd = 0;
         p1min.forEach((m) -> {
             if (m.getHitPoints() <= 0) {
-                player1.getSocket().setHealth(true, p1min.indexOf(m) == 0 ? 2 : 3, 0);
-                player2.getSocket().setHealth(false, p1min.indexOf(m) == 0 ? 2 : 3, 0);
-                spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p1min.indexOf(m) == 0 ? 2 : 3, 0));
+                
+                player1.getSocket().setHealth(true, p1min.indexOf(m) == 0 || ++minInd >= 2 ? 2 : 3, 0);
+                player2.getSocket().setHealth(false, p1min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0);
+                spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p1min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0));
             }
         });
+        minInd = 0;
         p2min.forEach((m) -> {
             if (m.getHitPoints() <= 0) {
-                player1.getSocket().setHealth(false, p2min.indexOf(m) == 0 ? 2 : 3, 0);
-                player2.getSocket().setHealth(true, p2min.indexOf(m) == 0 ? 2 : 3, 0);
-                spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p2min.indexOf(m) == 0 ? 2 : 3, 0));
+                player1.getSocket().setHealth(false, p2min.indexOf(m) == 0 || ++minInd >= 2 ? 2 : 3, 0);
+                player2.getSocket().setHealth(true, p2min.indexOf(m) == 0 || minInd >= 2 ? 2 : 3, 0);
+                spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, p2min.indexOf(m) == 0 || minInd >= 2  ? 2 : 3, 0));
             }
         });
         p1min.removeIf((m) -> m.getHitPoints() <= 0);
