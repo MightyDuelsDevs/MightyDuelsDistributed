@@ -113,7 +113,7 @@ public class CardControl {
         Label lName = new Label();
         lName.setFont(fontBig);
         lName.setLayoutX(70);
-        lName.setLayoutY(150);
+        lName.setLayoutY(140);
         lName.setAlignment(Pos.CENTER);
         lName.setPrefWidth(width / 6 * 5);
         lName.setTextAlignment(TextAlignment.CENTER);

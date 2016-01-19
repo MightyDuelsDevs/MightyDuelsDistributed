@@ -467,8 +467,8 @@ public class MatchController implements Initializable {
             @Override
             public void handle(Event event) {
 
-                Platform.runLater(() -> gridYourSide.getChildren().remove(1, 2));
-                Platform.runLater(() -> gridOpponentSide.getChildren().remove(4, 5));
+//                Platform.runLater(() -> gridYourSide.getChildren().remove(1, 2));
+//                Platform.runLater(() -> gridOpponentSide.getChildren().remove(4, 5));
 
                 System.out.println(cardControl.getCard().getName());
                 try {
