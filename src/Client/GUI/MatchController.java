@@ -284,7 +284,7 @@ public class MatchController implements Initializable {
             } else {
                 if (id == 1) {
                  if(health<1){
-                        Platform.runLater(()->gridYourSide.getChildren().remove(2, 2));
+                        Platform.runLater(()->gridYourSide.getChildren().remove(3, 4));
                         yourMinions.remove(minion1);
                         minion1 = null;
                     }else{
@@ -292,7 +292,7 @@ public class MatchController implements Initializable {
                     }
                 } else {
                     if(health<1){
-                        Platform.runLater(()->gridYourSide.getChildren().remove(4, 4));
+                        Platform.runLater(()->gridYourSide.getChildren().remove(5, 6));
                         yourMinions.remove(minion2);
                         minion2 = null;
                     }else{
@@ -309,7 +309,7 @@ public class MatchController implements Initializable {
             } else {
                 if (id == 1) {
                  if(health <1){
-                        Platform.runLater(()->gridOpponentSide.getChildren().remove(0, 0));
+                        Platform.runLater(()->gridOpponentSide.getChildren().remove(0, 1));
                         opponentsMinions.remove(minion3);
                         minion3 = null;
                     }else{
@@ -317,7 +317,7 @@ public class MatchController implements Initializable {
                     }
                 } else {
                     if(health <1){
-                        Platform.runLater(()->gridOpponentSide.getChildren().remove(2, 2));
+                        Platform.runLater(()->gridOpponentSide.getChildren().remove(2, 3));
                         opponentsMinions.remove(minion4);
                         minion4 = null;
                     }else{
