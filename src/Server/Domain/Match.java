@@ -248,16 +248,16 @@ public class Match {
         spectators.stream().forEach((sp) -> sp.getSocket().setHealth(false, 1, hero2.getHitPoints()));
 
         for (int i = 0; i < Math.min(hero1.getMinions().size(), 2); i++) {
-            player1.getSocket().setHealth(true, i + 1, hero1.getMinions().get(i).getHitPoints());
-            player2.getSocket().setHealth(false, i + 1, hero1.getMinions().get(i).getHitPoints());
+            player1.getSocket().setHealth(true, i + 2, hero1.getMinions().get(i).getHitPoints());
+            player2.getSocket().setHealth(false, i + 2, hero1.getMinions().get(i).getHitPoints());
             final int i2 = i;
-            spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, i2 + 1, hero1.getMinions().get(i2).getHitPoints()));
+            spectators.stream().forEach((sp) -> sp.getSocket().setHealth(true, i2 + 2, hero1.getMinions().get(i2).getHitPoints()));
         }
         for (int i = 0; i < Math.min(hero2.getMinions().size(), 2); i++) {
-            player1.getSocket().setHealth(false, i + 1, hero2.getMinions().get(i).getHitPoints());
-            player2.getSocket().setHealth(true, i + 1, hero2.getMinions().get(i).getHitPoints());
+            player1.getSocket().setHealth(false, i + 2, hero2.getMinions().get(i).getHitPoints());
+            player2.getSocket().setHealth(true, i + 2, hero2.getMinions().get(i).getHitPoints());
             final int i2 = i;
-            spectators.stream().forEach((sp) -> sp.getSocket().setHealth(false, i2 + 1, hero2.getMinions().get(i2).getHitPoints()));
+            spectators.stream().forEach((sp) -> sp.getSocket().setHealth(false, i2 + 2, hero2.getMinions().get(i2).getHitPoints()));
         }
 
         //todo here or somwere else?

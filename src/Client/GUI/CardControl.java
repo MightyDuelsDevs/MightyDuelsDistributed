@@ -32,7 +32,8 @@ public class CardControl {
     private final int width = 180;
     private EventHandler handler;
     private Label lHealth;
-
+    private StackPane pane;
+    
     /**
      * Method that checks what kind of card is being player. This can either be
      * a HeroCard or a MinionCard.
@@ -76,6 +77,10 @@ public class CardControl {
         } else {
             return null;
         }
+    }
+    
+    public StackPane oldCardPane(){
+        return pane;
     }
 
     /**
@@ -193,6 +198,7 @@ public class CardControl {
         StackPane root = new StackPane();
         root.getChildren().add(grImg);
         root.getChildren().add(pane);
+        this.pane = root;
         return root;
     }
 

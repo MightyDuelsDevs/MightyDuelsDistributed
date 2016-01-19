@@ -90,9 +90,9 @@ public class CardDeckController {
                         String description = column.get(3);
                         int physicalDamage = Integer.parseInt(column.get(5));
                         int magicalDamage = Integer.parseInt(column.get(6));
-                        int physicalBlock = Integer.parseInt(column.get(7));
+                        int hitPoints = Integer.parseInt(column.get(9));
 
-                        cards.add(new MinionCard(id, cardName, fileName, description, physicalDamage, magicalDamage, physicalBlock) {
+                        cards.add(new MinionCard(id, cardName, fileName, description, physicalDamage, magicalDamage, hitPoints) {
                         });
                     }
                 }
