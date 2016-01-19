@@ -82,5 +82,6 @@
             <RowConstraints maxHeight="336.0" minHeight="10.0" prefHeight="308.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
+      <Button layoutX="744.0" layoutY="62.0" mnemonicParsing="false" onAction="#selectHero" opacity="0.0" prefHeight="306.0" prefWidth="239.0" text="Button" />
   </children>
 </AnchorPane>

@@ -427,6 +427,11 @@ public class MatchController implements Initializable {
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
     }
+    
+    public void selectHero() {
+        LOG.log(Level.INFO, "Hero Selected");
+        attackTarget(5);
+    }
 
     @FXML
     private void attackTarget(int id) {
