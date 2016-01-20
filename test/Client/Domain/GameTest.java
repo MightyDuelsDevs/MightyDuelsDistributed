@@ -10,6 +10,7 @@ import Shared.Domain.Card;
 import Shared.Domain.Deck;
 import Shared.Domain.Icon;
 import Shared.Domain.PlayerShared;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
@@ -105,7 +106,6 @@ public class GameTest {
         byte[] result = instance.startMatch();
         assertEquals(expResult.getClass(), result.getClass());
     }
-
     /**
      * Test of loginPlayer method, of class Game.
      */
@@ -175,8 +175,7 @@ public class GameTest {
     public void testGetDeck() {
         System.out.println("getDeck");
         String token = instance.getToken();
-        Deck expResult = new Deck();
-        expResult.setName("playdeck");
+        Deck expResult = new Deck(1,"de mam");
         Deck result = instance.getDeck(token);
         assertEquals(expResult.getName(), result.getName());
     }
