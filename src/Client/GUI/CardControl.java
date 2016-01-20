@@ -9,10 +9,13 @@ import Shared.Domain.Card;
 import Shared.Domain.HeroCard;
 import Shared.Domain.MinionCard;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -194,11 +197,31 @@ public class CardControl {
         }
 
         Group grImg = new Group(imNic, imOverlay);
-
+        
         StackPane root = new StackPane();
         root.getChildren().add(grImg);
         root.getChildren().add(pane);
         this.pane = root;
+        
+        pane.setOnMouseEntered((event)->{
+            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseEntered",event);
+            int depth = 70; //Setting the uniform variable for the glow width and height
+ 
+            DropShadow borderGlow= new DropShadow();
+            borderGlow.setOffsetY(0f);
+            borderGlow.setOffsetX(0f);
+            borderGlow.setColor(Color.BLUE);
+            borderGlow.setWidth(depth);
+            borderGlow.setHeight(depth);
+ 
+            grImg.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
+        });
+        
+        pane.setOnMouseExited((event)->{
+            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseExited",event);
+            grImg.setEffect(null);
+        });
+        
         return root;
     }
 
