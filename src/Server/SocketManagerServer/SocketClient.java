@@ -40,10 +40,10 @@ public class SocketClient {
     private Thread inputThread;
     private boolean closed = false;
     private boolean lastAccepted = false;
-    
+
     /**
-     * 
-     * @param socket, is the connecting element, given by the server. 
+     *
+     * @param socket, is the connecting element, given by the server.
      */
     public SocketClient(Socket socket) {
         this.socket = socket;
@@ -256,10 +256,24 @@ public class SocketClient {
                     }
                     loginAccepted();
                     player.setSocket(this);
+                    Match m = Game.getInstance().findMatch();
+                    if (m == null) {
+                        fatalDisconnect();
+                    }
+                    match = m;
+                    match.addSpectator(player);
                     break;
                 case 0x07://NEXT_MATCH
                     accepted();
-                    //todo call method
+                    Match m2 = Game.getInstance().findMatch();
+                    if (m2 == null) {
+                        fatalDisconnect();
+                    }
+                    if (match != null) {
+                        match.removeSpectator(player);
+                    }
+                    match = m2;
+                    match.addSpectator(player);
                     break;
                 case 0x80://MESSAGE
                     ByteBuffer mbuf = ByteBuffer.allocate(1024);
@@ -273,7 +287,7 @@ public class SocketClient {
                         if (message == -1) {
                             //todo throw error
                         }
-                        mbuf.put((byte)message);
+                        mbuf.put((byte) message);
                         try {
                             message = in.read();
                         } catch (IOException ex) {
@@ -282,13 +296,13 @@ public class SocketClient {
                     }
                     String mes;
                     try {
-                        mes = new String(mbuf.array(), 0, mbuf.position(),"UTF-8");
+                        mes = new String(mbuf.array(), 0, mbuf.position(), "UTF-8");
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(SocketClient.class.getName() + "-" + player.getUsername()).log(Level.SEVERE, null, ex);
                         //todo fatal
                         continue;
                     }
-                    
+
                     match.forwardMessage(mes, hero);
                     accepted();
                     break;
@@ -330,24 +344,28 @@ public class SocketClient {
         }
 
     }
+
     /**
      * Boolean method checking if connection is closed
-     * @return Returns the true or false value of the connection state 
+     *
+     * @return Returns the true or false value of the connection state
      */
-    public boolean isClosed(){
+    public boolean isClosed() {
         return closed;
     }
+
     /**
-     * This function is not initialised 
+     * This function is not initialised
      */
-    public void stop(){
-        
+    public void stop() {
+
     }
+
     /**
-     * Sends the confirmation of the connection back to the server. 
+     * Sends the confirmation of the connection back to the server.
      */
-    public void connAccepted(){
-        byte[] data = new byte[]{(byte)0x01};
+    public void connAccepted() {
+        byte[] data = new byte[]{(byte) 0x01};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -355,11 +373,12 @@ public class SocketClient {
             //todo end connection?
         }
     }
+
     /**
-     * Sends the acceptance of the login credentials. 
+     * Sends the acceptance of the login credentials.
      */
-    public void loginAccepted(){
-        byte[] data = new byte[]{(byte)0x02};
+    public void loginAccepted() {
+        byte[] data = new byte[]{(byte) 0x02};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -367,11 +386,12 @@ public class SocketClient {
             //todo end connection?
         }
     }
+
     /**
-     * Sends the confirmation of the authentication failure to the server. 
+     * Sends the confirmation of the authentication failure to the server.
      */
-    public void loginDenied(){
-        byte[] data = new byte[]{(byte)0x03};
+    public void loginDenied() {
+        byte[] data = new byte[]{(byte) 0x03};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -384,11 +404,12 @@ public class SocketClient {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
-     * Sends the confirmation of the connection back to the server. 
+     * Sends the confirmation of the connection back to the server.
      */
-    public void accepted(){
-        byte[] data = new byte[]{(byte)0xF0};
+    public void accepted() {
+        byte[] data = new byte[]{(byte) 0xF0};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -396,9 +417,9 @@ public class SocketClient {
             //todo end connection?
         }
     }
-    
-    public void illegalAction(){
-        byte[] data = new byte[]{(byte)0xF1};
+
+    public void illegalAction() {
+        byte[] data = new byte[]{(byte) 0xF1};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -406,11 +427,12 @@ public class SocketClient {
             //todo end connection?
         }
     }
+
     /**
      * Pings the server
      */
-    public void ping(){
-        byte[] data = new byte[]{(byte)0xE0};
+    public void ping() {
+        byte[] data = new byte[]{(byte) 0xE0};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -425,11 +447,12 @@ public class SocketClient {
             Logger.getLogger(SocketManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-     /**
+
+    /**
      * Pongs the server
      */
-    public void pong(){
-        byte[] data = new byte[]{(byte)0xE1};
+    public void pong() {
+        byte[] data = new byte[]{(byte) 0xE1};
         try {
             sendData(data);
         } catch (IOException ex) {
@@ -437,7 +460,7 @@ public class SocketClient {
         }
     }
 
-    public void newMatch(Match match,String username, int id){
+    public void newMatch(Match match, String username, int id) {
         this.match = match;
         byte[] usernameEncoded;
         try {
@@ -466,8 +489,8 @@ public class SocketClient {
             //fatal error
         }
     }
-    
-    public void joinMatch(String p1Name, String p2Name, int p1Icon, int p2Icon){
+
+    public void joinMatch(String p1Name, String p2Name, int p1Icon, int p2Icon) {
         byte[] p1Encoded;
         byte[] p2Encoded;
         try {
@@ -477,17 +500,17 @@ public class SocketClient {
             Logger.getLogger(SocketClient.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
-        ByteBuffer buffer = ByteBuffer.allocate(p1Encoded.length + p2Encoded.length+4+2+1);
-        buffer.put((byte)0x0A);
+        ByteBuffer buffer = ByteBuffer.allocate(p1Encoded.length + p2Encoded.length + 4 + 2 + 1);
+        buffer.put((byte) 0x0A);
         buffer.put(p1Encoded);
-        buffer.put((byte)0x00);
+        buffer.put((byte) 0x00);
         buffer.put(int16Encode(p1Icon));
         buffer.put(p2Encoded);
-        buffer.put((byte)0x00);
+        buffer.put((byte) 0x00);
         buffer.put(int16Encode(p2Icon));
         try {
             sendData(buffer.array());
-            synchronized(this){
+            synchronized (this) {
                 wait();
             }
         } catch (IOException | InterruptedException ex) {
@@ -509,8 +532,8 @@ public class SocketClient {
         }
 
     }
-    
-    public void specTurnEnd(int p1Card, int p2Card){
+
+    public void specTurnEnd(int p1Card, int p2Card) {
         byte[] p1 = int16Encode(p1Card);
         byte[] p2 = int16Encode(p2Card);
         byte[] data = new byte[5];
@@ -547,7 +570,9 @@ public class SocketClient {
 
     public void setHealth(boolean self, int pos, int value) {
         byte totalPos = (byte) (self ? pos : pos + 3);
-        if(value<0)value=0;
+        if (value < 0) {
+            value = 0;
+        }
         byte[] data = new byte[3];
         data[0] = 0x07;
         data[1] = totalPos;

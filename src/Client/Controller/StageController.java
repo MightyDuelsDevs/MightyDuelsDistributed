@@ -229,6 +229,11 @@ public class StageController {
      * Method that closes the pop-up.
      */
     public void closePopUp() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(StageController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         synchronized (this) {
             this.notify();
         }

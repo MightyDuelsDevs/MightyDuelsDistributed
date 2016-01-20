@@ -8,10 +8,14 @@ package Client.GUI;
 import Shared.Domain.Card;
 import Shared.Domain.HeroCard;
 import Shared.Domain.MinionCard;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -25,75 +29,85 @@ import javafx.scene.text.TextAlignment;
  * @author Matthijs
  */
 public class CardControl {
+
     private final MinionCard minionCard;
     private final HeroCard heroCard;
     private final int width = 180;
     private EventHandler handler;
     private Label lHealth;
+    private StackPane pane;
     
     /**
-     * Method that checks what kind of card is being player.
-     * This can either be a HeroCard or a MinionCard.
+     * Method that checks what kind of card is being player. This can either be
+     * a HeroCard or a MinionCard.
+     *
      * @param card, the card that is being checked.
      */
-    public CardControl(Card card){
-        if(card instanceof MinionCard){
-            this.minionCard = (MinionCard)card;
+    public CardControl(Card card) {
+        if (card instanceof MinionCard) {
+            this.minionCard = (MinionCard) card;
             this.heroCard = null;
-        }
-        else if(card instanceof HeroCard){
-            this.heroCard = (HeroCard)card;
+        } else if (card instanceof HeroCard) {
+            this.heroCard = (HeroCard) card;
             this.minionCard = null;
-        }
-        else{
+        } else {
             this.heroCard = null;
             this.minionCard = null;
         }
     }
-    
+
     /**
      * Method for giving the CardControl an EventHandler.
-     * @param handler, the EventHandler that will be associated with this CardControl.
+     *
+     * @param handler, the EventHandler that will be associated with this
+     * CardControl.
      */
-    public void setEventHandler(EventHandler handler){
+    public void setEventHandler(EventHandler handler) {
         this.handler = handler;
     }
-    
+
     /**
-     * Method that returns the card that this CardControl represents.
-     * This can either be a HeroCard or a MinionCard.
+     * Method that returns the card that this CardControl represents. This can
+     * either be a HeroCard or a MinionCard.
+     *
      * @return the card that this CardControl represents.
      */
-    public Card getCard(){
-        if(minionCard != null){
+    public Card getCard() {
+        if (minionCard != null) {
             return minionCard;
-        }
-        else if(heroCard != null){
+        } else if (heroCard != null) {
             return heroCard;
-        }
-        else {
+        } else {
             return null;
         }
     }
     
+    public StackPane oldCardPane(){
+        return pane;
+    }
+
     /**
-     * Method that creates the visual of the card.
-     * The card will look different depending on what type of card it is.
+     * Method that creates the visual of the card. The card will look different
+     * depending on what type of card it is.
+     *
      * @return A StackPane that represents the card of the CardControl.
      */
-    public StackPane CardPane(){               
+    public StackPane CardPane() {
         AnchorPane pane = new AnchorPane();
         Font font = new Font("Matura MT Script Capitals", 18.0);
         Font fontBig = new Font("Matura MT Script Capitals", 22.0);
         ImageView imOverlay = new ImageView(), imNic = new ImageView();
-        if(minionCard!= null){
+
+        if (minionCard != null) {
             imOverlay.setImage(new Image("/Client/Resources/Images/MinionCard Template.png"));
-            imNic.setImage(new Image("/Client/Resources/Images/question-mark.jpg"));
+            imNic.setImage(new Image("/Client/Resources/Images/Cards/C" + minionCard.getId() + ".jpg"));
+
         }
-        if(heroCard!= null){
+        if (heroCard != null) {
             imOverlay.setImage(new Image("/Client/Resources/Images/Card Template.png"));
-            imNic.setImage(new Image("/Client/Resources/Images/question-mark.jpg"));
+            imNic.setImage(new Image("/Client/Resources/Images/Cards/C" + heroCard.getId() + ".jpg"));
         }
+
         imOverlay.setPreserveRatio(true);
         imNic.setPreserveRatio(true);
         imOverlay.setFitWidth(width);
@@ -102,15 +116,15 @@ public class CardControl {
         Label lName = new Label();
         lName.setFont(fontBig);
         lName.setLayoutX(70);
-        lName.setLayoutY(150);
+        lName.setLayoutY(140);
         lName.setAlignment(Pos.CENTER);
-        lName.setPrefWidth(width/6*5);
+        lName.setPrefWidth(width / 6 * 5);
         lName.setTextAlignment(TextAlignment.CENTER);
-        
-        if(minionCard!= null){
+
+        if (minionCard != null) {
             //Name
             lName.setText(minionCard.getName());
-            
+
             //Sword x=58 y=360
             Label lPAttack = new Label(minionCard.getPhysicalDamage() + "");
             lPAttack.setFont(font);
@@ -133,11 +147,11 @@ public class CardControl {
             lHealth.setTextFill(Color.web("#FFFFFF"));
             pane.getChildren().addAll(lName, lPAttack, lHealth, lMAttack);
         }
-        
-        if(heroCard!= null){
+
+        if (heroCard != null) {
             //Name
             lName.setText(heroCard.getName());
-            
+
             //Sword x=58 y=360
             Label lPAttack = new Label(heroCard.getPhysicalDamage() + "");
             lPAttack.setFont(font);
@@ -175,26 +189,48 @@ public class CardControl {
 
             pane.getChildren().addAll(lName, lPAttack, lPDefence, lMAttack, lMDefence, lHeal);
         }
-        
+
         pane.setMinWidth(300);
-        if(pane.getOnMouseClicked() == null){
+        if (pane.getOnMouseClicked() == null) {
             pane.setPickOnBounds(true);
             pane.setOnMouseClicked(handler);
         }
-        
+
         Group grImg = new Group(imNic, imOverlay);
         
         StackPane root = new StackPane();
         root.getChildren().add(grImg);
         root.getChildren().add(pane);
+        this.pane = root;
+        
+        pane.setOnMouseEntered((event)->{
+            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseEntered",event);
+            int depth = 70; //Setting the uniform variable for the glow width and height
+ 
+            DropShadow borderGlow= new DropShadow();
+            borderGlow.setOffsetY(0f);
+            borderGlow.setOffsetX(0f);
+            borderGlow.setColor(Color.BLUE);
+            borderGlow.setWidth(depth);
+            borderGlow.setHeight(depth);
+ 
+            grImg.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
+        });
+        
+        pane.setOnMouseExited((event)->{
+            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseExited",event);
+            grImg.setEffect(null);
+        });
+        
         return root;
     }
-    
+
     /**
      * Method that sets the health of the minion.
+     *
      * @param hp, the current health of the minion.
      */
-    public void setHealth(int hp){
-        lHealth.setText(hp+"");
+    public void setHealth(int hp) {
+        lHealth.setText(hp + "");
     }
 }

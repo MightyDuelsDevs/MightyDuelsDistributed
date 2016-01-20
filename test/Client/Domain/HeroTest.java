@@ -24,34 +24,46 @@ import static org.junit.Assert.*;
  * @author Loek
  */
 public class HeroTest {
-    
-    PlayerShared player = new PlayerShared(1, null, 45, 1, 34, 12, 40);
-    Deck deck = new Deck();
-    Game instance = new Game();
 
-    Match match = new Match(instance.getToken(),instance.getToken());
-    Hero heroInstance = new Hero(match,player,deck);
-    HeroCard card = new HeroCard(10,"Flamestrike","c://desktop/card/flamestrike","Overpowered as can be",1,2,3,4,5);
-    MinionCard minionCard = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50); 
-    MinionCard minionCard2 = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50); 
-    Minion minion1 = new Minion(minionCard);
-    Minion minion2 = new Minion(minionCard2);
-    List<Minion> minionlist = new ArrayList<Minion>();
+    PlayerShared player;
+    Deck deck;
+    Game instance;
+
+    Match match;
+    Hero heroInstance;
+    HeroCard card;
+    MinionCard minionCard;
+    MinionCard minionCard2;
+    Minion minion1;
+    Minion minion2;
+    List<Minion> minionlist;
+
     public HeroTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
+        deck = new Deck();
+        instance = new Game();
+        player = instance.loginPlayer("unittest", "qqq");
+        match = new Match(instance.getToken(), instance.getToken());
+        heroInstance = new Hero(match, player, deck);
+        card = new HeroCard(10, "Flamestrike", "c://desktop/card/flamestrike", "Overpowered as can be", 1, 2, 3, 4, 5);
+        minionCard = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50);
+        minionCard2 = new MinionCard(5, "Flamestrike", "c://documents/cards/flamestrike", "Kills the entire board", 50, 50, 50);
+        minion1 = new Minion(minionCard);
+        minion2 = new Minion(minionCard2);
+        minionlist = new ArrayList<>();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -109,7 +121,8 @@ public class HeroTest {
         boolean result = heroInstance.playCard(card);
         assertEquals(expResult, result);
     }
-      @Test
+
+    @Test
     public void testPlayCardDifferentCard() {
         System.out.println("playCard");
         minionlist.add(minion1);
@@ -119,18 +132,17 @@ public class HeroTest {
         boolean result = heroInstance.playCard(card);
         assertEquals(expResult, result);
     }
-    
-       @Test
+
+    @Test
     public void testPlayCardMinionCard() {
         System.out.println("playCard");
-         minionlist.add(minion1);
+        minionlist.add(minion1);
         minionlist.add(minion2);
         heroInstance.setMinions(minionlist);
-        boolean expResult = true;
+        boolean expResult = false;
         boolean result = heroInstance.playCard(minionCard);
         assertEquals(expResult, result);
     }
-    
 
     /**
      * Test of removeMinion method, of class Hero.
@@ -143,5 +155,5 @@ public class HeroTest {
         heroInstance.removeMinion(minion);
 
     }
-    
+
 }
