@@ -121,7 +121,23 @@ public class CardControl {
         lName.setPrefWidth(width / 6 * 5);
         lName.setTextAlignment(TextAlignment.CENTER);
 
+        Group grImg = new Group(imNic, imOverlay);
+        
         if (minionCard != null) {
+            pane.setOnMouseEntered((event)->{
+                Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseEntered",event);
+                int depth = 70; //Setting the uniform variable for the glow width and height
+
+                DropShadow borderGlow= new DropShadow();
+                borderGlow.setOffsetY(0f);
+                borderGlow.setOffsetX(0f);
+                borderGlow.setColor(Color.RED);
+                borderGlow.setWidth(depth);
+                borderGlow.setHeight(depth);
+
+                grImg.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
+            });
+            
             //Name
             lName.setText(minionCard.getName());
 
@@ -149,6 +165,19 @@ public class CardControl {
         }
 
         if (heroCard != null) {
+            pane.setOnMouseEntered((event)->{
+                Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseEntered",event);
+                int depth = 70; //Setting the uniform variable for the glow width and height
+
+                DropShadow borderGlow= new DropShadow();
+                borderGlow.setOffsetY(0f);
+                borderGlow.setOffsetX(0f);
+                borderGlow.setColor(Color.BLUE);
+                borderGlow.setWidth(depth);
+                borderGlow.setHeight(depth);
+
+                grImg.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
+            });
             //Name
             lName.setText(heroCard.getName());
 
@@ -196,31 +225,15 @@ public class CardControl {
             pane.setOnMouseClicked(handler);
         }
 
-        Group grImg = new Group(imNic, imOverlay);
+        pane.setOnMouseExited((event)->{
+            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseExited",event);
+            grImg.setEffect(null);
+        });
         
         StackPane root = new StackPane();
         root.getChildren().add(grImg);
         root.getChildren().add(pane);
         this.pane = root;
-        
-        pane.setOnMouseEntered((event)->{
-            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseEntered",event);
-            int depth = 70; //Setting the uniform variable for the glow width and height
- 
-            DropShadow borderGlow= new DropShadow();
-            borderGlow.setOffsetY(0f);
-            borderGlow.setOffsetX(0f);
-            borderGlow.setColor(Color.BLUE);
-            borderGlow.setWidth(depth);
-            borderGlow.setHeight(depth);
- 
-            grImg.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
-        });
-        
-        pane.setOnMouseExited((event)->{
-            Logger.getLogger(CardControl.class.getName()).log(Level.INFO,"OnMouseExited",event);
-            grImg.setEffect(null);
-        });
         
         return root;
     }
