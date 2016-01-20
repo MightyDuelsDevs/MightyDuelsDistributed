@@ -539,6 +539,7 @@ public class MatchController implements Initializable {
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {
                         gridYourSide.add(cardControl.CardPane(), 1, 0);
+                        cardControl.setEventHandler(null);
                         //placeMinionCards();
                     }
                 }
