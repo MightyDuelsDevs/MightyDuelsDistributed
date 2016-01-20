@@ -410,7 +410,7 @@ public class MatchController implements Initializable {
     public void win() {
         LOG.log(Level.INFO, "victory");
         Platform.runLater(() -> {
-            StageController.getInstance().popup("Whoho!", false, "You have won!" + getRatingString());
+            StageController.getInstance().popup("You have won!", false, getRatingString());
         });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
@@ -423,7 +423,7 @@ public class MatchController implements Initializable {
     public void lose() {
         LOG.log(Level.INFO, "Defeat");
         Platform.runLater(() -> {
-            StageController.getInstance().popup("Awh!", false, "You have lost!" + getRatingString());
+            StageController.getInstance().popup("You have lost!", false, getRatingString());
         });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
@@ -436,7 +436,7 @@ public class MatchController implements Initializable {
     public void tie() {
         LOG.log(Level.INFO, "Tie");
         Platform.runLater(() -> {
-            StageController.getInstance().popup("Hey!", false, "You played Tie!" + getRatingString());
+            StageController.getInstance().popup("You played Tie!", false, getRatingString());
         });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
@@ -447,7 +447,7 @@ public class MatchController implements Initializable {
         int newR = Game.getInstance().getPlayer(Game.getInstance().getToken()).getRating();
         int dif = newR - oldR;
         String change = dif >= 0 ? "+" + dif : "" + dif;
-        return "\n Your rating changed " + change + " points. \n Your new rating is " + newR + ".";
+        return "Your rating changed " + change + " points. \n Your new rating is " + newR + ".";
     }
 
     public void selectHero() {

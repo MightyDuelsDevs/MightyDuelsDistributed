@@ -258,7 +258,8 @@ public class Game {
      */
     public PlayerShared getPlayer(String token) {
         try {
-            return client.getPlayer(token);
+            player = client.getPlayer(token);
+            return player;
         } catch (RemoteException ex) {
             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             return null;
