@@ -126,8 +126,7 @@ public class CardControl {
         Group grImg = new Group(imNic, imOverlay);
 
         if (minionCard != null) {
-            pane.setOnMouseEntered((event) -> {
-                Logger.getLogger(CardControl.class.getName()).log(Level.INFO, "OnMouseEntered", event);
+            pane.setOnMouseEntered((event)->{
                 int depth = 70; //Setting the uniform variable for the glow width and height
 
                 DropShadow borderGlow = new DropShadow();
@@ -177,8 +176,7 @@ public class CardControl {
         }
 
         if (heroCard != null) {
-            pane.setOnMouseEntered((event) -> {
-                Logger.getLogger(CardControl.class.getName()).log(Level.INFO, "OnMouseEntered", event);
+            pane.setOnMouseEntered((event)->{
                 int depth = 70; //Setting the uniform variable for the glow width and height
 
                 DropShadow borderGlow = new DropShadow();
@@ -237,8 +235,7 @@ public class CardControl {
             pane.setOnMouseClicked(handler);
         }
 
-        pane.setOnMouseExited((event) -> {
-            Logger.getLogger(CardControl.class.getName()).log(Level.INFO, "OnMouseExited", event);
+        pane.setOnMouseExited((event)->{
             grImg.setEffect(null);
         });
 

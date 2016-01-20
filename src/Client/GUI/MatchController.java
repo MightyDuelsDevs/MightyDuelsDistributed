@@ -292,10 +292,14 @@ public class MatchController implements Initializable {
                     if (health < 1) {
 
                         Platform.runLater(() -> {
-                            gridYourSide.getChildren().remove(minion1.oldCardPane());
-                            minion1 = null;
+                            if(gridYourSide.getChildren().contains(minion1.oldCardPane())){
+                                gridYourSide.getChildren().remove(minion1.oldCardPane());
+                                minion1 = null;
+                            }
                         });
-                        yourMinions.remove(minion1);
+                        if(yourMinions.contains(minion1)){
+                            yourMinions.remove(minion1);
+                        }
                         if (minion2 != null) {
 
                             Platform.runLater(() -> {
@@ -313,10 +317,14 @@ public class MatchController implements Initializable {
                 } else {
                     if (health < 1) {
                         Platform.runLater(() -> {
-                            gridYourSide.getChildren().remove(minion2.oldCardPane());
-                            minion2 = null;
+                            if(gridYourSide.getChildren().contains(minion2.oldCardPane())){
+                                gridYourSide.getChildren().remove(minion2.oldCardPane());
+                                minion2 = null;
+                            }
                         });
-                        yourMinions.remove(minion2);
+                        if(yourMinions.contains(minion2)){
+                            yourMinions.remove(minion2);
+                        }
                     } else {
                         Platform.runLater(() -> minion2.setHealth(health));
                     }
@@ -332,10 +340,14 @@ public class MatchController implements Initializable {
                 if (id == 1) {
                     if (health < 1) {
                         Platform.runLater(() -> {
-                            gridOpponentSide.getChildren().remove(minion3.oldCardPane());
-                            minion3 = null;
+                            if(gridOpponentSide.getChildren().contains(minion3.oldCardPane())){
+                                gridOpponentSide.getChildren().remove(minion3.oldCardPane());
+                                minion3 = null;
+                            }
                         });
-                        opponentsMinions.remove(minion3);
+                        if(opponentsMinions.contains(minion3)){
+                            opponentsMinions.remove(minion3);
+                        }
                         if (minion4 != null) {
 
                             Platform.runLater(() -> {
@@ -352,10 +364,14 @@ public class MatchController implements Initializable {
                 } else {
                     if (health < 1) {
                         Platform.runLater(() -> {
-                            gridOpponentSide.getChildren().remove(minion4.oldCardPane());
-                            minion4 = null;
+                            if(gridOpponentSide.getChildren().contains(minion4.oldCardPane())){
+                                gridOpponentSide.getChildren().remove(minion4.oldCardPane());
+                                minion4 = null;
+                            }
                         });
-                        opponentsMinions.remove(minion4);
+                        if(opponentsMinions.contains(minion4)){
+                            opponentsMinions.remove(minion4);
+                        }
                     } else {
                         Platform.runLater(() -> minion4.setHealth(health));
                     }
@@ -569,6 +585,7 @@ public class MatchController implements Initializable {
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {
                         gridYourSide.add(cardControl.CardPane(), 1, 0);
+                        cardControl.setEventHandler(null);
                         //placeMinionCards();
                     }
                 }
