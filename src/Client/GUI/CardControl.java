@@ -11,6 +11,7 @@ import Shared.Domain.MinionCard;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -36,7 +37,8 @@ public class CardControl {
     private EventHandler handler;
     private Label lHealth;
     private StackPane pane;
-    
+    private Label lTarget;
+
     /**
      * Method that checks what kind of card is being player. This can either be
      * a HeroCard or a MinionCard.
@@ -81,8 +83,8 @@ public class CardControl {
             return null;
         }
     }
-    
-    public StackPane oldCardPane(){
+
+    public StackPane oldCardPane() {
         return pane;
     }
 
@@ -122,12 +124,12 @@ public class CardControl {
         lName.setTextAlignment(TextAlignment.CENTER);
 
         Group grImg = new Group(imNic, imOverlay);
-        
+
         if (minionCard != null) {
             pane.setOnMouseEntered((event)->{
                 int depth = 70; //Setting the uniform variable for the glow width and height
 
-                DropShadow borderGlow= new DropShadow();
+                DropShadow borderGlow = new DropShadow();
                 borderGlow.setOffsetY(0f);
                 borderGlow.setOffsetX(0f);
                 borderGlow.setColor(Color.RED);
@@ -136,9 +138,9 @@ public class CardControl {
 
                 grImg.setEffect(borderGlow); //Apply the borderGlow effect to the JavaFX node
             });
-            
+
             //Name
-            lName.setText(minionCard.getName());
+            lName.setText(minionCard.getName());//Name
 
             //Sword x=58 y=360
             Label lPAttack = new Label(minionCard.getPhysicalDamage() + "");
@@ -160,14 +162,24 @@ public class CardControl {
             lHealth.setLayoutX(145);
             lHealth.setLayoutY(200);
             lHealth.setTextFill(Color.web("#FFFFFF"));
-            pane.getChildren().addAll(lName, lPAttack, lHealth, lMAttack);
+
+            //Target
+            lTarget = new Label();
+            lTarget.setFont(new Font(18.0));
+            lTarget.setLayoutX(65);
+            lTarget.setLayoutY(-32);
+            lTarget.setAlignment(Pos.CENTER);
+            lTarget.setTextAlignment(TextAlignment.CENTER);
+            lTarget.setTextFill(Color.web("#FFFF00"));
+            pane.getChildren().addAll(lName, lPAttack, lHealth, lMAttack, lTarget);
+            
         }
 
         if (heroCard != null) {
             pane.setOnMouseEntered((event)->{
                 int depth = 70; //Setting the uniform variable for the glow width and height
 
-                DropShadow borderGlow= new DropShadow();
+                DropShadow borderGlow = new DropShadow();
                 borderGlow.setOffsetY(0f);
                 borderGlow.setOffsetX(0f);
                 borderGlow.setColor(Color.BLUE);
@@ -226,12 +238,12 @@ public class CardControl {
         pane.setOnMouseExited((event)->{
             grImg.setEffect(null);
         });
-        
+
         StackPane root = new StackPane();
         root.getChildren().add(grImg);
         root.getChildren().add(pane);
         this.pane = root;
-        
+
         return root;
     }
 
@@ -242,5 +254,24 @@ public class CardControl {
      */
     public void setHealth(int hp) {
         lHealth.setText(hp + "");
+    }
+
+    public void setTarget(int target) {
+        System.out.println("setTarget: " + target);
+        Platform.runLater(() -> {
+            String stringTarget = "";
+            if (target == 1) {
+                stringTarget = "Target an enemy";
+            } else if (target == 2) {
+                stringTarget = "Target an enemy";
+            } else if (target == 3) {
+                stringTarget = "Left minion targeted";
+            } else if (target == 4) {
+                stringTarget = "Right minion targeted";
+            } else if (target == 5) {
+                stringTarget = "Enemy hero targeted";
+            }
+            lTarget.setText(stringTarget);
+        });
     }
 }
