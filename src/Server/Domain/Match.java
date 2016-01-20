@@ -182,7 +182,7 @@ public class Match {
             p1min.stream().filter((m) -> m.getITarget() == hero2).forEach((m) -> m.attack(0, 0));//attack hero2
         }
         if (p2 instanceof HeroCard) {
-            HeroCard p2h = (HeroCard) p1;
+            HeroCard p2h = (HeroCard) p2;
             p2min.stream().filter((m) -> m.getITarget() == hero1).forEach((m) -> m.attack(p2h.getPhysicalBlock(), p2h.getMagicalBlock()));//attack hero1
         } else {
             p2min.stream().filter((m) -> m.getITarget() == hero1).forEach((m) -> m.attack(0, 0));//attack hero1
