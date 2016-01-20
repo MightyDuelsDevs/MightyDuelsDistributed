@@ -206,6 +206,7 @@ public class MatchController implements Initializable {
      * @param boardId, the ID of the side of the board.
      */
     public void addMinion(int id, int boardId) {
+        SoundController.play(SoundController.SoundFile.MINION);
         Optional<Card> crd = allCards.stream().filter((c) -> c.getId() == id).findFirst();
         if (!crd.isPresent()) {
             LOG.warning(id + " was not found!");
