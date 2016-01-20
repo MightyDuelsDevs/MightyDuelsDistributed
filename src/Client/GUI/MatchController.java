@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,7 +29,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -386,6 +384,13 @@ public class MatchController implements Initializable {
             System.exit(error);
         }
 
+        if (minion1 != null) {
+            minion1.setTarget(0);
+        }
+        if (minion2 != null) {
+            minion2.setTarget(0);
+        }
+
         cardChoice.add(new CardControl(cardO1.get()));
         cardChoice.add(new CardControl(cardO2.get()));
         cardChoice.add(new CardControl(cardO3.get()));
@@ -468,13 +473,28 @@ public class MatchController implements Initializable {
         switch (id) {
             case 1:
                 ownMinion = 1;
+                if (ownMinion == 1) {
+                    minion1.setTarget(id);
+                } else if (ownMinion == 2) {
+                    minion2.setTarget(id);
+                }
                 break;
             case 2:
                 ownMinion = 2;
+                if (ownMinion == 1) {
+                    minion1.setTarget(id);
+                } else if (ownMinion == 2) {
+                    minion2.setTarget(id);
+                }
                 break;
             case 3:
                 if (ownMinion != -1) {
                     opponentMinion = 1;
+                    if (ownMinion == 1) {
+                        minion1.setTarget(id);
+                    } else if (ownMinion == 2) {
+                        minion2.setTarget(id);
+                    }
                     client.setTarget(ownMinion, opponentMinion);
                     ownMinion = -1;
                     opponentMinion = -1;
@@ -483,6 +503,11 @@ public class MatchController implements Initializable {
             case 4:
                 if (ownMinion != -1) {
                     opponentMinion = 2;
+                    if (ownMinion == 1) {
+                        minion1.setTarget(id);
+                    } else if (ownMinion == 2) {
+                        minion2.setTarget(id);
+                    }
                     client.setTarget(ownMinion, opponentMinion);
                     ownMinion = -1;
                     opponentMinion = -1;
@@ -491,6 +516,11 @@ public class MatchController implements Initializable {
             case 5:
                 if (ownMinion != -1) {
                     opponentMinion = 0;
+                    if (ownMinion == 1) {
+                        minion1.setTarget(id);
+                    } else if (ownMinion == 2) {
+                        minion2.setTarget(id);
+                    }
                     client.setTarget(ownMinion, opponentMinion);
                     ownMinion = -1;
                     opponentMinion = -1;
