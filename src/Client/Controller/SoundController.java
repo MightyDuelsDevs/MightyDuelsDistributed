@@ -156,7 +156,7 @@ public class SoundController {
 
                 } else if (type == LineEvent.Type.STOP) {
                     playCompleted = true;
-                    System.out.println("Playback completed.");
+                    //System.out.println("Playback completed.");
                 }
             }
         }
