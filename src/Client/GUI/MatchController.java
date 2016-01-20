@@ -283,29 +283,35 @@ public class MatchController implements Initializable {
 
             } else {
                 if (id == 1) {
-                 if(health<1){
-                        
-                        Platform.runLater(()->{gridYourSide.getChildren().remove(minion1.oldCardPane());minion1 = null;});
+                    if (health < 1) {
+
+                        Platform.runLater(() -> {
+                            gridYourSide.getChildren().remove(minion1.oldCardPane());
+                            minion1 = null;
+                        });
                         yourMinions.remove(minion1);
-                        if(minion2!=null){
-                            
-                            Platform.runLater(()->{
-                                minion1=minion2;
+                        if (minion2 != null) {
+
+                            Platform.runLater(() -> {
+                                minion1 = minion2;
                                 gridYourSide.getChildren().remove(minion2.oldCardPane());
-                                minion2=null;
+                                minion2 = null;
                                 minion1.oldCardPane().getChildren().get(0).setOnMouseClicked((event) -> attackTarget(1));
                                 gridYourSide.add(minion1.oldCardPane(), 2, 0);
                             });
                         }
-                        
-                    }else{
+
+                    } else {
                         Platform.runLater(() -> minion1.setHealth(health));
                     }
                 } else {
-                    if(health<1){
-                        Platform.runLater(()->{gridYourSide.getChildren().remove(minion2.oldCardPane());minion2=null;});
+                    if (health < 1) {
+                        Platform.runLater(() -> {
+                            gridYourSide.getChildren().remove(minion2.oldCardPane());
+                            minion2 = null;
+                        });
                         yourMinions.remove(minion2);
-                    }else{
+                    } else {
                         Platform.runLater(() -> minion2.setHealth(health));
                     }
                 }
@@ -318,27 +324,33 @@ public class MatchController implements Initializable {
                 });
             } else {
                 if (id == 1) {
-                 if(health <1){
-                        Platform.runLater(()->{gridOpponentSide.getChildren().remove(minion3.oldCardPane());minion3=null;});
+                    if (health < 1) {
+                        Platform.runLater(() -> {
+                            gridOpponentSide.getChildren().remove(minion3.oldCardPane());
+                            minion3 = null;
+                        });
                         opponentsMinions.remove(minion3);
-                        if(minion4!=null){
-                            
-                            Platform.runLater(()->{
-                                minion3=minion4;
+                        if (minion4 != null) {
+
+                            Platform.runLater(() -> {
+                                minion3 = minion4;
                                 gridOpponentSide.getChildren().remove(minion3.oldCardPane());
-                                minion4=null;
+                                minion4 = null;
                                 minion3.oldCardPane().getChildren().get(0).setOnMouseClicked((event) -> attackTarget(3));
                                 gridOpponentSide.add(minion3.oldCardPane(), 0, 0);
                             });
                         }
-                    }else{
+                    } else {
                         Platform.runLater(() -> minion3.setHealth(health));
                     }
                 } else {
-                    if(health <1){
-                        Platform.runLater(()->{gridOpponentSide.getChildren().remove(minion4.oldCardPane());minion4=null;});
+                    if (health < 1) {
+                        Platform.runLater(() -> {
+                            gridOpponentSide.getChildren().remove(minion4.oldCardPane());
+                            minion4 = null;
+                        });
                         opponentsMinions.remove(minion4);
-                    }else{
+                    } else {
                         Platform.runLater(() -> minion4.setHealth(health));
                     }
                 }
@@ -398,7 +410,7 @@ public class MatchController implements Initializable {
     public void win() {
         LOG.log(Level.INFO, "victory");
         Platform.runLater(() -> {
-            StageController.getInstance().popup("Whoho!", false, "You have won!");
+            StageController.getInstance().popup("Whoho!", false, "You have won!" + getRatingString());
         });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
@@ -411,7 +423,7 @@ public class MatchController implements Initializable {
     public void lose() {
         LOG.log(Level.INFO, "Defeat");
         Platform.runLater(() -> {
-            StageController.getInstance().popup("Awh!", false, "You have lost!");
+            StageController.getInstance().popup("Awh!", false, "You have lost!" + getRatingString());
         });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
@@ -424,12 +436,20 @@ public class MatchController implements Initializable {
     public void tie() {
         LOG.log(Level.INFO, "Tie");
         Platform.runLater(() -> {
-            StageController.getInstance().popup("Hey!", false, "You played Tie!");
+            StageController.getInstance().popup("Hey!", false, "You played Tie!" + getRatingString());
         });
         StageController.getInstance().navigate("MainScreenFXML.fxml", "Mighty Duels");
         client.nonFatalDisconnect();
     }
-    
+
+    private String getRatingString() {
+        int oldR = Game.getInstance().getPlayer().getRating();
+        int newR = Game.getInstance().getPlayer(Game.getInstance().getToken()).getRating();
+        int dif = newR - oldR;
+        String change = dif >= 0 ? "+" + dif : "" + dif;
+        return "\n Your rating changed " + change + " points. \n Your new rating is " + newR + ".";
+    }
+
     public void selectHero() {
         LOG.log(Level.INFO, "Hero Selected");
         attackTarget(5);
@@ -495,7 +515,6 @@ public class MatchController implements Initializable {
 
 //                Platform.runLater(() -> gridYourSide.getChildren().remove(1, 2));
 //                Platform.runLater(() -> gridOpponentSide.getChildren().remove(4, 5));
-
                 System.out.println(cardControl.getCard().getName());
                 try {
                     client.setCard(cardControl.getCard().getId());
