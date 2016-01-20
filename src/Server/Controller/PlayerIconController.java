@@ -270,8 +270,9 @@ public class PlayerIconController {
         return unlockedIcons;
     }
 
-    /**
+                /**
      * Function that updates the rating of two players in the database.
+     *
      * @param playerOneId, The ID of the first player.
      * @param playerTwoId, The ID of the second player.
      * @param playerOneWon, true if the first player won.
@@ -282,23 +283,28 @@ public class PlayerIconController {
         String statementTwo;
         String statementThree;
         String statementFour;
-        
+
         Player playerOne = createPlayerWithId(playerOneId);
         Player playerTwo = createPlayerWithId(playerTwoId);
-        
-        //Player who won.
-        int ratingDifferenceWon =  (int)((1 - 0.5/(1 + (10*Math.abs(Math.abs(playerOne.getRating() - playerTwo.getRating())))/400)) * ratingMultiplier);
-        //Player who lost.
-        int ratingDifferenceLost = (int)((0 - 0.5/(1 + (10*Math.abs(Math.abs(playerOne.getRating() - playerTwo.getRating())))/400)) * ratingMultiplier);
-            
+
         if (playerOneWon) {
-            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerOne.getRating() + ratingDifferenceWon, playerOneId);
-            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", Math.max(800, playerTwo.getRating() + ratingDifferenceLost), playerTwoId);
+            //Player one won.
+            int ratingDifferenceWonOne = (int) ((1 - 0.5 / (1 + (10 * Math.abs(playerOne.getRating() - playerTwo.getRating())) / 400)) * ratingMultiplier);
+            //Player two lost.
+            int ratingDifferenceLostTwo = (int) ((0 - 0.5 / (1 + (10 * Math.abs(playerTwo.getRating() - playerOne.getRating())) / 400)) * ratingMultiplier);
+
+            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerOne.getRating() + ratingDifferenceWonOne, playerOneId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", Math.max(800, playerTwo.getRating() + ratingDifferenceLostTwo), playerTwoId);
             statementThree = String.format("UPDATE PLAYER SET WINS = WINS + 1 WHERE ID = %1$s", playerOne.getId());
             statementFour = String.format("UPDATE PLAYER SET LOSSES = LOSSES + 1 WHERE ID = %1$s", playerTwo.getId());
         } else {
-            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerTwo.getRating() + ratingDifferenceWon, playerTwoId);
-            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", Math.max(800, playerOne.getRating() + ratingDifferenceLost), playerOneId);
+            //Player one lost.
+            int ratingDifferenceLostOne = (int) ((0 - 0.5 / (1 + (10 * Math.abs(playerOne.getRating() - playerTwo.getRating())) / 400)) * ratingMultiplier);
+            //Player two won.
+            int ratingDifferenceWonTwo = (int) ((1 - 0.5 / (1 + (10 * Math.abs(playerTwo.getRating() - playerOne.getRating())) / 400)) * ratingMultiplier);
+
+            statementOne = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", playerTwo.getRating() + ratingDifferenceWonTwo, playerTwoId);
+            statementTwo = String.format("UPDATE PLAYER SET RATING = %1$s WHERE ID = %2$s", Math.max(800, playerOne.getRating() + ratingDifferenceLostOne), playerOneId);
             statementThree = String.format("UPDATE PLAYER SET WINS = WINS + 1 WHERE ID = %1$s", playerTwo.getId());
             statementFour = String.format("UPDATE PLAYER SET LOSSES = LOSSES + 1 WHERE ID = %1$s", playerOne.getId());
         }
