@@ -38,6 +38,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -77,7 +78,7 @@ public class MatchController implements Initializable {
     @FXML
     private Label lblDamageVisualisation;
     @FXML
-    private Button btSendMessage;
+    private ImageView ivSendMessage;
 
     private CardControl minion1;
     private CardControl minion2;
@@ -134,7 +135,7 @@ public class MatchController implements Initializable {
         hero1 = new HeroControl(50, Game.getInstance().getPlayer());//todo own settings
 
         gridYourSide.add(hero1.getHeroControl(), 0, 0);
-        btSendMessage.setOnAction((evt) -> {
+        ivSendMessage.setOnMouseClicked((evt) -> {
             TextInputDialog dialog = new TextInputDialog("message");
             dialog.setTitle("New message");
             dialog.setHeaderText("Send message to opponend");
@@ -142,6 +143,13 @@ public class MatchController implements Initializable {
 
             dialog.showAndWait().ifPresent((message) -> client.sendMessage(message));
 
+        });
+        //Method for when a player closes the window.
+        StageController.getInstance().getStage().setOnCloseRequest((WindowEvent we) -> {
+            if (client != null) {
+                client.concede();
+            }
+            System.exit(0);
         });
     }
 
