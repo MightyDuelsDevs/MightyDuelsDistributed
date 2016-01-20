@@ -50,6 +50,7 @@ public class DeckTest {
     public void testAddCard() {
         System.out.println("addCard");
         deck.addCard(card);
+        assertEquals(card.getName(),deck.getCards().get(0).getName() );
     }
 
     /**

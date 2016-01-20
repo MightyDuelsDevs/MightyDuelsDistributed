@@ -36,6 +36,9 @@ public class Game {
     }
 
     public synchronized boolean findMatch(Player player) {
+        if(!waitingPlayers.contains(player)){
+            return true;//player is already in an match
+        }
         Player closestPlayer = null;
         for (Player p : waitingPlayers) {
             if (p == player) {
