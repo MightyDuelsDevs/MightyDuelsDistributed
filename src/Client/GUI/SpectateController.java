@@ -27,6 +27,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -47,8 +48,6 @@ public class SpectateController implements Initializable {
 
     private static final int error = -1000000000;
 
-    private int ownMinion = -1;
-    private int opponentMinion = -1;
     private static byte[] loginHash;
     private static final Logger LOG = Logger.getLogger(MatchController.class.getName());
 
@@ -62,21 +61,13 @@ public class SpectateController implements Initializable {
     }
 
     @FXML
-    private GridPane gridCardHolder;
-    @FXML
-    private GridPane gridChooseCard;
-    @FXML
     private GridPane gridYourSide;
     @FXML
     private GridPane gridOpponentSide;
     @FXML
-    private ImageView btnEndTurn;
-    @FXML
     private ImageView btnConcede;
     @FXML
     private Label lblDamageVisualisation;
-    @FXML
-    private Button btSendMessage;
 
     private CardControl minion1;
     private CardControl minion2;
@@ -87,7 +78,6 @@ public class SpectateController implements Initializable {
     private HeroControl hero1;
     private HeroControl hero2;
 
-    private ArrayList<CardControl> cardChoice;
     private ArrayList<CardControl> yourMinions;
     private ArrayList<CardControl> opponentsMinions;
 
@@ -127,7 +117,6 @@ public class SpectateController implements Initializable {
             //todo error logging in, show and back to main
         }
         System.out.println("OK!");
-        cardChoice = new ArrayList<>();
         yourMinions = new ArrayList<>();
         opponentsMinions = new ArrayList<>();
         
@@ -219,26 +208,54 @@ public class SpectateController implements Initializable {
         CardControl card = new CardControl(crd.get());
         switch (boardId) {
             case 1:
+                if (minion1 != null) {
+                    Platform.runLater(() -> gridYourSide.getChildren().remove(2, 2));
+                    yourMinions.remove(minion1);
+                }
                 minion1 = card;
                 yourMinions.add(card);
+                Node minionNode1 = (Node) minion1.CardPane();
+                minionNode1.toBack();
+                Platform.runLater(() -> gridYourSide.add(minionNode1, 2, 0));
                 break;
             case 2:
+                if (minion2 != null) {
+                    Platform.runLater(() -> gridYourSide.getChildren().remove(4, 4));
+                    yourMinions.remove(minion2);
+                }
                 minion2 = card;
                 yourMinions.add(card);
+                Node minionNode2 = (Node) minion2.CardPane();
+                minionNode2.toBack();
+                Platform.runLater(() -> gridYourSide.add(minionNode2, 4, 0));
                 break;
             case 3:
+                if (minion3 != null) {
+                    Platform.runLater(() -> gridOpponentSide.getChildren().remove(0, 0));
+                    opponentsMinions.remove(minion3);
+                }
                 minion3 = card;
                 opponentsMinions.add(card);
+                Node minionNode3 = (Node) minion3.CardPane();
+                minionNode3.toBack();
+                Platform.runLater(() -> gridOpponentSide.add(minionNode3, 0, 0));
                 break;
             case 4:
+                if (minion4 != null) {
+                    Platform.runLater(() -> gridOpponentSide.getChildren().remove(2, 2));
+                    opponentsMinions.remove(minion4);
+                }
                 minion4 = card;
                 opponentsMinions.add(card);
+                Node minionNode4 = (Node) minion4.CardPane();
+                minionNode4.toBack();
+                Platform.runLater(() -> gridOpponentSide.add(minionNode4, 2, 0));
                 break;
             default:
                 //todo error
                 break;
         }
-        placeMinionCards();
+        //placeMinionCards();
     }
 
     /**
@@ -260,9 +277,44 @@ public class SpectateController implements Initializable {
 
             } else {
                 if (id == 1) {
-                    Platform.runLater(() -> minion1.setHealth(health));
+                    if (health < 1) {
+
+                        Platform.runLater(() -> {
+                            if(gridYourSide.getChildren().contains(minion1.oldCardPane())){
+                                gridYourSide.getChildren().remove(minion1.oldCardPane());
+                                minion1 = null;
+                            }
+                        });
+                        if(yourMinions.contains(minion1)){
+                            yourMinions.remove(minion1);
+                        }
+                        if (minion2 != null) {
+
+                            Platform.runLater(() -> {
+                                minion1 = minion2;
+                                gridYourSide.getChildren().remove(minion2.oldCardPane());
+                                minion2 = null;
+                                gridYourSide.add(minion1.oldCardPane(), 2, 0);
+                            });
+                        }
+
+                    } else {
+                        Platform.runLater(() -> minion1.setHealth(health));
+                    }
                 } else {
-                    Platform.runLater(() -> minion2.setHealth(health));
+                    if (health < 1) {
+                        Platform.runLater(() -> {
+                            if(gridYourSide.getChildren().contains(minion2.oldCardPane())){
+                                gridYourSide.getChildren().remove(minion2.oldCardPane());
+                                minion2 = null;
+                            }
+                        });
+                        if(yourMinions.contains(minion2)){
+                            yourMinions.remove(minion2);
+                        }
+                    } else {
+                        Platform.runLater(() -> minion2.setHealth(health));
+                    }
                 }
             }
         } else {
@@ -273,9 +325,42 @@ public class SpectateController implements Initializable {
                 });
             } else {
                 if (id == 1) {
-                    Platform.runLater(() -> minion3.setHealth(health));
+                    if (health < 1) {
+                        Platform.runLater(() -> {
+                            if(gridOpponentSide.getChildren().contains(minion3.oldCardPane())){
+                                gridOpponentSide.getChildren().remove(minion3.oldCardPane());
+                                minion3 = null;
+                            }
+                        });
+                        if(opponentsMinions.contains(minion3)){
+                            opponentsMinions.remove(minion3);
+                        }
+                        if (minion4 != null) {
+
+                            Platform.runLater(() -> {
+                                minion3 = minion4;
+                                gridOpponentSide.getChildren().remove(minion3.oldCardPane());
+                                minion4 = null;
+                                gridOpponentSide.add(minion3.oldCardPane(), 0, 0);
+                            });
+                        }
+                    } else {
+                        Platform.runLater(() -> minion3.setHealth(health));
+                    }
                 } else {
-                    Platform.runLater(() -> minion4.setHealth(health));
+                    if (health < 1) {
+                        Platform.runLater(() -> {
+                            if(gridOpponentSide.getChildren().contains(minion4.oldCardPane())){
+                                gridOpponentSide.getChildren().remove(minion4.oldCardPane());
+                                minion4 = null;
+                            }
+                        });
+                        if(opponentsMinions.contains(minion4)){
+                            opponentsMinions.remove(minion4);
+                        }
+                    } else {
+                        Platform.runLater(() -> minion4.setHealth(health));
+                    }
                 }
             }
         }
@@ -372,19 +457,6 @@ public class SpectateController implements Initializable {
         System.out.println("Meh");
     }
 
-    private void placeMinionCards() {
-        gridYourSide.getChildren().removeAll(yourMinions);
-        gridOpponentSide.getChildren().removeAll(opponentsMinions);
-
-        for (int i = 0; i < yourMinions.size(); i++) {
-            gridYourSide.add(yourMinions.get(i).CardPane(), 2 + (i * 2), 0);
-        }
-
-        for (int i = 0; i < opponentsMinions.size(); i++) {
-            gridOpponentSide.add(opponentsMinions.get(i).CardPane(), 0 + (i * 2), 0);
-        }
-    }
-
     private void Mbox(String title, String header, String content) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -415,29 +487,6 @@ public class SpectateController implements Initializable {
     private void initializeButtons() {
         btnConcede.setOnMouseClicked((MouseEvent event) -> {
             Mbox("Main Menu", "Menu screen", "Are you sure you wish to go to main menu?");
-        });
-
-        lblDamageVisualisation.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Optional<Card> card;
-                card = allCards.stream().filter((c) -> c.getId() == cardID).findFirst();
-                if (card.isPresent()) {
-                    CardControl cc = new CardControl(card.get());
-                    HeroCard enemyCard = (HeroCard) cc.getCard();
-
-                    StageController.getInstance().dmgPopup(myHeroCard.getPhysicalDamage() + "", myHeroCard.getPhysicalBlock() + "", myHeroCard.getMagicalDamage() + "", myHeroCard.getMagicalBlock() + "", myHeroCard.getHealValue() + "", hero1Hp + "", enemyCard.getPhysicalDamage() + "", enemyCard.getPhysicalBlock() + "", enemyCard.getMagicalDamage() + "", enemyCard.getMagicalBlock() + "", enemyCard.getHealValue() + "", hero2Hp + "");
-                }
-            }
-        });
-
-        lblDamageVisualisation.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Platform.runLater(() -> {
-                    StageController.getInstance().closePopUp();
-                });
-            }
         });
     }
 }
