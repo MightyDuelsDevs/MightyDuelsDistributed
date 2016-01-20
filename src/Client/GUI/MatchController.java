@@ -293,6 +293,7 @@ public class MatchController implements Initializable {
                                 minion1=minion2;
                                 gridYourSide.getChildren().remove(minion2.oldCardPane());
                                 minion2=null;
+                                minion1.oldCardPane().getChildren().get(0).setOnMouseClicked((event) -> attackTarget(1));
                                 gridYourSide.add(minion1.oldCardPane(), 2, 0);
                             });
                         }
@@ -326,6 +327,7 @@ public class MatchController implements Initializable {
                                 minion3=minion4;
                                 gridOpponentSide.getChildren().remove(minion3.oldCardPane());
                                 minion4=null;
+                                minion3.oldCardPane().getChildren().get(0).setOnMouseClicked((event) -> attackTarget(3));
                                 gridOpponentSide.add(minion3.oldCardPane(), 0, 0);
                             });
                         }
