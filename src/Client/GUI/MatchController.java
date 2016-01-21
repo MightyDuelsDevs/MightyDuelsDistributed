@@ -78,6 +78,7 @@ public class MatchController implements Initializable {
     @FXML
     private ImageView ivSendMessage;
 
+    private CardControl choosenMinion;
     private CardControl minion1;
     private CardControl minion2;
     private CardControl minion3;
@@ -221,6 +222,9 @@ public class MatchController implements Initializable {
                     Platform.runLater(() -> gridYourSide.getChildren().remove(2, 2));
                     yourMinions.remove(minion1);
                 }
+                if(choosenMinion != null)
+                    Platform.runLater(() -> gridYourSide.getChildren().remove(choosenMinion.oldCardPane()));
+                
                 minion1 = card;
                 minion1.setEventHandler((event) -> attackTarget(1));
                 yourMinions.add(card);
@@ -233,6 +237,9 @@ public class MatchController implements Initializable {
                     Platform.runLater(() -> gridYourSide.getChildren().remove(4, 4));
                     yourMinions.remove(minion2);
                 }
+                if(choosenMinion != null)
+                    Platform.runLater(() -> gridYourSide.getChildren().remove(choosenMinion.oldCardPane()));
+                
                 minion2 = card;
                 minion2.setEventHandler((event) -> attackTarget(2));
                 yourMinions.add(card);
@@ -578,6 +585,7 @@ public class MatchController implements Initializable {
                     //todo fatal?
                 }
                 gridChooseCard.getChildren().clear();
+                
                 if (cardControl.getCard() instanceof HeroCard) {
                     myHeroCard = (HeroCard) cardControl.getCard();
 
@@ -585,6 +593,7 @@ public class MatchController implements Initializable {
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {
+                        choosenMinion = cardControl;
                         gridYourSide.add(cardControl.CardPane(), 1, 0);
                         cardControl.setEventHandler(null);
                         //placeMinionCards();
