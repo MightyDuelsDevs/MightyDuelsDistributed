@@ -5,20 +5,43 @@ import Shared.Domain.Icon;
 import java.io.Serializable;
 import Shared.Domain.PlayerShared;
 /**
- * An class containing attributes of an player
+ * An class containing attributes of a player
  */
 public class Player extends PlayerShared implements Serializable {
 
+    /**
+     * The socketclient
+     */
     private SocketClient socket;
     
+    /**
+     *
+     * @param id Id of the player
+     * @param username The username of the player
+     * @param iconId The id of the icon of the player
+     * @param rating The rating of the player
+     * @param wins The wins of the player
+     * @param losses The losses of the player
+     * @param matches The amount of matches of the player
+     */
     public Player(int id, String username, int iconId, int rating, int wins, int losses, int matches) {
         super(id, username, iconId, rating, wins, losses, matches);
     }
 
+    /**
+     * Sets the socketClient
+     * 
+     * @param socket
+     */
     public void setSocket(SocketClient socket){
         this.socket = socket;
     }
     
+    /**
+     * Returns the socketClient
+     * 
+     * @return the socketclient
+     */
     public SocketClient getSocket(){
         return socket;
     }

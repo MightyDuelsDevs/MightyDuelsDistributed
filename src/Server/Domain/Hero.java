@@ -105,7 +105,7 @@ public class Hero implements ITarget {
     /**
      * sets the hand of the player
      *
-     * @param inHand
+     * @param inHand the cards in the players hand
      */
     public void setNewHand(List<Card> inHand) {
         this.cardsInHand = inHand;
@@ -123,7 +123,7 @@ public class Hero implements ITarget {
     /**
      * sets the card played by the Hero
      *
-     * @param cardPlayed
+     * @param cardPlayed the card who is played by the hero
      */
     public void setCardPlayed(Card cardPlayed) {
         this.cardPlayed = cardPlayed;
@@ -149,8 +149,8 @@ public class Hero implements ITarget {
     /**
      * tries to play the card the Player selected
      *
-     * @param card
-     * @return boolean if the method succeeded
+     * @param card the card who is played by the hero
+     * @return boolean true if card is played, false if card can not be played
      */
     public boolean playCard(Card card) {
         if (this.getMinions().size() >= 2) {
@@ -169,7 +169,7 @@ public class Hero implements ITarget {
     /**
      * removes the minions from the List of minions
      *
-     * @param minion
+     * @param minion the minion who will be removed
      */
     public void removeMinion(Minion minion) {
         minions.remove(minion);
@@ -188,7 +188,7 @@ public class Hero implements ITarget {
     /**
      * sets the hitPoints of the Hero
      *
-     * @param hitPoints
+     * @param hitPoints the hitpoints from the Hero
      */
     @Override
     public void setHitPoints(int hitPoints) {
