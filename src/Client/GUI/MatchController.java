@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,7 +29,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -80,6 +78,7 @@ public class MatchController implements Initializable {
     @FXML
     private ImageView ivSendMessage;
 
+    private CardControl choosenMinion;
     private CardControl minion1;
     private CardControl minion2;
     private CardControl minion3;
@@ -206,6 +205,7 @@ public class MatchController implements Initializable {
      * @param boardId, the ID of the side of the board.
      */
     public void addMinion(int id, int boardId) {
+        SoundController.play(SoundController.SoundFile.MINION);
         Optional<Card> crd = allCards.stream().filter((c) -> c.getId() == id).findFirst();
         if (!crd.isPresent()) {
             LOG.warning(id + " was not found!");
@@ -222,6 +222,9 @@ public class MatchController implements Initializable {
                     Platform.runLater(() -> gridYourSide.getChildren().remove(2, 2));
                     yourMinions.remove(minion1);
                 }
+                if(choosenMinion != null)
+                    Platform.runLater(() -> gridYourSide.getChildren().remove(choosenMinion.oldCardPane()));
+                
                 minion1 = card;
                 minion1.setEventHandler((event) -> attackTarget(1));
                 yourMinions.add(card);
@@ -234,6 +237,9 @@ public class MatchController implements Initializable {
                     Platform.runLater(() -> gridYourSide.getChildren().remove(4, 4));
                     yourMinions.remove(minion2);
                 }
+                if(choosenMinion != null)
+                    Platform.runLater(() -> gridYourSide.getChildren().remove(choosenMinion.oldCardPane()));
+                
                 minion2 = card;
                 minion2.setEventHandler((event) -> attackTarget(2));
                 yourMinions.add(card);
@@ -294,10 +300,14 @@ public class MatchController implements Initializable {
                     if (health < 1) {
 
                         Platform.runLater(() -> {
-                            gridYourSide.getChildren().remove(minion1.oldCardPane());
-                            minion1 = null;
+                            if(gridYourSide.getChildren().contains(minion1.oldCardPane())){
+                                gridYourSide.getChildren().remove(minion1.oldCardPane());
+                                minion1 = null;
+                            }
                         });
-                        yourMinions.remove(minion1);
+                        if(yourMinions.contains(minion1)){
+                            yourMinions.remove(minion1);
+                        }
                         if (minion2 != null) {
 
                             Platform.runLater(() -> {
@@ -315,10 +325,14 @@ public class MatchController implements Initializable {
                 } else {
                     if (health < 1) {
                         Platform.runLater(() -> {
-                            gridYourSide.getChildren().remove(minion2.oldCardPane());
-                            minion2 = null;
+                            if(gridYourSide.getChildren().contains(minion2.oldCardPane())){
+                                gridYourSide.getChildren().remove(minion2.oldCardPane());
+                                minion2 = null;
+                            }
                         });
-                        yourMinions.remove(minion2);
+                        if(yourMinions.contains(minion2)){
+                            yourMinions.remove(minion2);
+                        }
                     } else {
                         Platform.runLater(() -> minion2.setHealth(health));
                     }
@@ -334,10 +348,14 @@ public class MatchController implements Initializable {
                 if (id == 1) {
                     if (health < 1) {
                         Platform.runLater(() -> {
-                            gridOpponentSide.getChildren().remove(minion3.oldCardPane());
-                            minion3 = null;
+                            if(gridOpponentSide.getChildren().contains(minion3.oldCardPane())){
+                                gridOpponentSide.getChildren().remove(minion3.oldCardPane());
+                                minion3 = null;
+                            }
                         });
-                        opponentsMinions.remove(minion3);
+                        if(opponentsMinions.contains(minion3)){
+                            opponentsMinions.remove(minion3);
+                        }
                         if (minion4 != null) {
 
                             Platform.runLater(() -> {
@@ -354,10 +372,14 @@ public class MatchController implements Initializable {
                 } else {
                     if (health < 1) {
                         Platform.runLater(() -> {
-                            gridOpponentSide.getChildren().remove(minion4.oldCardPane());
-                            minion4 = null;
+                            if(gridOpponentSide.getChildren().contains(minion4.oldCardPane())){
+                                gridOpponentSide.getChildren().remove(minion4.oldCardPane());
+                                minion4 = null;
+                            }
                         });
-                        opponentsMinions.remove(minion4);
+                        if(opponentsMinions.contains(minion4)){
+                            opponentsMinions.remove(minion4);
+                        }
                     } else {
                         Platform.runLater(() -> minion4.setHealth(health));
                     }
@@ -384,6 +406,13 @@ public class MatchController implements Initializable {
         if (!cardO1.isPresent() || !cardO2.isPresent() || !cardO3.isPresent()) {
             //groot probleem!
             System.exit(error);
+        }
+
+        if (minion1 != null) {
+            minion1.setTarget(0);
+        }
+        if (minion2 != null) {
+            minion2.setTarget(0);
         }
 
         cardChoice.add(new CardControl(cardO1.get()));
@@ -468,13 +497,28 @@ public class MatchController implements Initializable {
         switch (id) {
             case 1:
                 ownMinion = 1;
+                if (ownMinion == 1) {
+                    minion1.setTarget(id);
+                } else if (ownMinion == 2) {
+                    minion2.setTarget(id);
+                }
                 break;
             case 2:
                 ownMinion = 2;
+                if (ownMinion == 1) {
+                    minion1.setTarget(id);
+                } else if (ownMinion == 2) {
+                    minion2.setTarget(id);
+                }
                 break;
             case 3:
                 if (ownMinion != -1) {
                     opponentMinion = 1;
+                    if (ownMinion == 1) {
+                        minion1.setTarget(id);
+                    } else if (ownMinion == 2) {
+                        minion2.setTarget(id);
+                    }
                     client.setTarget(ownMinion, opponentMinion);
                     ownMinion = -1;
                     opponentMinion = -1;
@@ -483,6 +527,11 @@ public class MatchController implements Initializable {
             case 4:
                 if (ownMinion != -1) {
                     opponentMinion = 2;
+                    if (ownMinion == 1) {
+                        minion1.setTarget(id);
+                    } else if (ownMinion == 2) {
+                        minion2.setTarget(id);
+                    }
                     client.setTarget(ownMinion, opponentMinion);
                     ownMinion = -1;
                     opponentMinion = -1;
@@ -491,6 +540,11 @@ public class MatchController implements Initializable {
             case 5:
                 if (ownMinion != -1) {
                     opponentMinion = 0;
+                    if (ownMinion == 1) {
+                        minion1.setTarget(id);
+                    } else if (ownMinion == 2) {
+                        minion2.setTarget(id);
+                    }
                     client.setTarget(ownMinion, opponentMinion);
                     ownMinion = -1;
                     opponentMinion = -1;
@@ -531,6 +585,7 @@ public class MatchController implements Initializable {
                     //todo fatal?
                 }
                 gridChooseCard.getChildren().clear();
+                
                 if (cardControl.getCard() instanceof HeroCard) {
                     myHeroCard = (HeroCard) cardControl.getCard();
 
@@ -538,7 +593,9 @@ public class MatchController implements Initializable {
                     gridYourSide.add(cardControl.CardPane(), 1, 0);
                 } else if (cardControl.getCard() instanceof MinionCard) {
                     if (yourMinions.size() < 2) {
+                        choosenMinion = cardControl;
                         gridYourSide.add(cardControl.CardPane(), 1, 0);
+                        cardControl.setEventHandler(null);
                         //placeMinionCards();
                     }
                 }
