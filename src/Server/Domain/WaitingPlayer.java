@@ -17,6 +17,10 @@ public class WaitingPlayer {
     private final Timer timer;
     private Game game;
     
+    /**
+     * 
+     * @param player 
+     */
     public WaitingPlayer(Player player){
         this.game = Game.getInstance();
         this.player = player;

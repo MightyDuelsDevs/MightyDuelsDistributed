@@ -426,6 +426,10 @@ public class Match {
         });
     }
 
+    /**
+     * 
+     * @param spectator a player who is going to spectate
+     */
     public void addSpectator(Player spectator) {
         SocketClient socket = spectator.getSocket();
         //start new match in seperate thread to free socket
@@ -447,6 +451,10 @@ public class Match {
 
     }
 
+    /**
+     * 
+     * @param player the player who is no longer spectating
+     */
     public void removeSpectator(Player player) {
         spectators.remove(player);
     }

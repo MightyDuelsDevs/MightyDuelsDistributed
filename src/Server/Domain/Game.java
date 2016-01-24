@@ -35,6 +35,11 @@ public class Game {
         return instance;
     }
 
+    /**
+     * 
+     * @param player
+     * @return 
+     */
     public synchronized boolean findMatch(Player player) {
         if(!waitingPlayers.contains(player)){
             return true;//player is already in an match
@@ -64,6 +69,10 @@ public class Game {
         return false;
     }
 
+    /**
+     * 
+     * @param waitingPlayer add a player to the waiting list
+     */
     public void addWaitingPlayer(Player waitingPlayer) {
         waitingPlayers.add(waitingPlayer);
     }
@@ -72,7 +81,7 @@ public class Game {
      * Method that returns the amount of matches in the game. This is used to
      * check if the player is able to spectate.
      *
-     * @return
+     * @return amount of matches
      */
     public int countMatches() {
         return matches.size();
@@ -89,6 +98,10 @@ public class Game {
         return matches.get(random.nextInt(matches.size()));
     }
     
+    /**
+     * 
+     * @param match the match you want  to remove from the match list
+     */
     public void removeMatch(Match match){
         matches.remove(match);
     }
